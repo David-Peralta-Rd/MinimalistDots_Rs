@@ -1,4 +1,5 @@
 """Entrada de `mdots`. Sin lógica de negocio."""
+
 import argparse
 
 from installer.context import Context
@@ -17,7 +18,7 @@ def main() -> None:
     if args.list:
         print("\n".join(f"{s.order:>3}  {s.name}" for s in steps))
         return
-    ctx = Context(dry_run=args.dry_run)
+    ctx = Context.create(dry_run=args.dry_run)
     for step in steps:
         print(f"== {step.name}")
         step.run(ctx)
