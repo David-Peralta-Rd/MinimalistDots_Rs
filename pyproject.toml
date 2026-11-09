@@ -1,30 +1,26 @@
-[project]
-name = "minimalistdots-rs"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-authors = [
-    { name = "David-Peralta-Rd", email = "crdavidperalta@gmail.com" }
-]
-requires-python = ">=3.15"
-dependencies = [
-    "utils",
-    "langs",
-]
-
-[project.scripts]
-minimalistdots-rs = "minimalistdots_rs:main"
-
-[build-system]
-requires = ["uv_build>=0.13.7,<0.14.0"]
-build-backend = "uv_build"
-
 [tool.uv.workspace]
-members = [
-    "utils",
-    "langs",
-]
+members = ["installer"]
 
-[tool.uv.sources]
-utils = { workspace = true }
-langs = { workspace = true }
+[tool.uv]
+prerelease = "disallow"
+exclude-newer = "2026-11-02T00:00:00Z"  # cooldown 7 dias
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "S", "UP", "N"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S101"]
+
+[tool.mypy]
+strict = true
+
+[tool.importlinter]
+root_package = "installer"
+
+[[tool.importlinter.contracts]]
+name = "Los pasos no se importan entre si"
+type = "independence"
+modules = ["installer.steps.*"]

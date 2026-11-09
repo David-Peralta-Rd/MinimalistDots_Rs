@@ -1,0 +1,5 @@
+[[grupo]]
+nombre = "core"
+origen = "repo"
+obligatorio = true
+paquetes = ["git", "hyprland", "hypridle", "hyprlock", "hyprpaper", "cliphist"]

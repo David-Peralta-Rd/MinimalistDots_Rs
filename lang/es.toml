@@ -1,0 +1,6 @@
+[meta]
+codigo = "es"
+nombre = "Español"
+
+[comun]
+bienvenido = "Bienvenido a MinimalistDots"
