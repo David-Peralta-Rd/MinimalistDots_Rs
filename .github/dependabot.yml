@@ -1,0 +1,14 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: uv # verificar que el ecosistema esté disponible
+    directory: /
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 } # verificar sintaxis vigente
+  - package-ecosystem: cargo
+    directory: /
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }
