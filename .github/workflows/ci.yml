@@ -8,7 +8,7 @@ jobs:
   python:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5 # verificar versión (idealmente pin por SHA)
+      - uses: actions/checkout@v7 # verificar versión (idealmente pin por SHA)
       - run: pip install uv # verificar versión
       - run: uv sync --frozen
       - run: uv run ruff check .
@@ -20,7 +20,7 @@ jobs:
   rust:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5 # verificar versión
+      - uses: actions/checkout@v7 # verificar versión
       - run: rustup show # toolchain desde rust-toolchain.toml
       - run: cargo fmt --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
