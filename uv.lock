@@ -1,0 +1,47 @@
+version = 1
+revision = 5
+requires-python = ">=3.15"
+
+[manifest]
+members = [
+    "langs",
+    "minimalistdots-rs",
+    "utils",
+]
+
+[[package]]
+name = "langs"
+version = "0.1.0"
+source = { editable = "langs" }
+dependencies = [
+    { name = "regex-rust" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "regex-rust", specifier = ">=0.4.0" }]
+
+[[package]]
+name = "minimalistdots-rs"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "langs" },
+    { name = "utils" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "langs", editable = "langs" },
+    { name = "utils", editable = "utils" },
+]
+
+[[package]]
+name = "regex-rust"
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2e/a9/2b9b3e6e7cbf7e42faa8bf869b6edc23edf57d975a3d7620d59dd63b68e4/regex_rust-0.4.0.tar.gz", hash = "sha256:791c188a88d8b5a6bc4939a11a01e3116319f10a252be0a9d146c2b431d638d1", size = 14980, upload-time = "2024-04-25T20:42:51.37Z" }
+
+[[package]]
+name = "utils"
+version = "0.1.0"
+source = { editable = "utils" }
