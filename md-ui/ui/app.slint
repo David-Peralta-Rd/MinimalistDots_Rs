@@ -511,3 +511,285 @@ export component MdNotifications inherits Window {
         }
     }
 }
+
+// Temporizador Pomodoro (reemplaza a `pomodoro.qml`).
+//
+// En concentración es una tarjeta pequeña; en descanso crece a una tarjeta
+// grande (salvo que se minimice). El temporizador y las fases los lleva el
+// anfitrión (Rust, con `md_core::Pomodoro`); este widget solo pinta el estado
+// (`clock-text`, `session-text`, `subtitle`, `paused`, `big-break`, `pct`) y
+// emite los botones (`pause`/`restart`/`stop`/`collapse`).
+export component MdPomodoro inherits Window {
+    in property <color> accent: #e06c75;
+    in property <length> md-radius: 10px;
+    in-out property <string> md-title: "md.pomodoro";
+    in-out property <length> md-width: 190px;
+    in-out property <length> md-height: 96px;
+
+    title <=> root.md-title;
+    width <=> root.md-width;
+    height <=> root.md-height;
+    background: #00000000;
+
+    // ----- datos (los fija el anfitrión) -----
+    in property <string> clock-text: "25:00";
+    in property <string> session-text: "1/4";
+    in property <string> subtitle: "";
+    in property <bool> paused: false;
+    in property <bool> big-break: false;
+    in property <int> pct: 100;
+
+    // ----- callbacks hacia el anfitrión -----
+    callback pause-requested();
+    callback restart-requested();
+    callback stop-requested();
+    callback collapse-requested();
+
+    // ---------- tarjeta pequeña (concentración o descanso minimizado) ----------
+    if (!root.big-break) : Rectangle {
+        width: parent.width;
+        height: parent.height;
+        background: #1e222a;
+        border-radius: root.md-radius;
+        border-width: 1px;
+        border-color: #4b5263;
+
+        VerticalLayout {
+            padding: 10px;
+            spacing: 4px;
+
+            Text {
+                text: root.clock-text;
+                color: root.paused ? #5c6370 : #abb2bf;
+                font-size: 18px;
+                font-weight: 700;
+                horizontal-alignment: center;
+            }
+
+            Text {
+                text: root.session-text;
+                color: #5c6370;
+                font-size: 10px;
+                horizontal-alignment: center;
+            }
+
+            // barra fina: se vacía a medida que pasa el tiempo
+            Rectangle {
+                width: 100%;
+                height: 3px;
+                background: #3e4451;
+                border-radius: 1px;
+
+                Rectangle {
+                    width: parent.width * root.pct / 100;
+                    height: 100%;
+                    background: root.accent;
+                    border-radius: 1px;
+                }
+            }
+
+            // botones: pausa / reiniciar / detener
+            HorizontalLayout {
+                alignment: center;
+                spacing: 6px;
+
+                pause-btn := Rectangle {
+                    width: 28px;
+                    height: 22px;
+                    border-radius: 4px;
+                    background: pause-area.has-hover ? #3e4451 : #00000000;
+
+                    Text {
+                        text: root.paused ? "▶" : "❚❚";
+                        color: #abb2bf;
+                        font-size: 11px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    pause-area := TouchArea {
+                        clicked => { root.pause-requested(); }
+                    }
+                }
+
+                restart-btn := Rectangle {
+                    width: 28px;
+                    height: 22px;
+                    border-radius: 4px;
+                    background: restart-area.has-hover ? #3e4451 : #00000000;
+
+                    Text {
+                        text: "↻";
+                        color: #abb2bf;
+                        font-size: 11px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    restart-area := TouchArea {
+                        clicked => { root.restart-requested(); }
+                    }
+                }
+
+                stop-btn := Rectangle {
+                    width: 28px;
+                    height: 22px;
+                    border-radius: 4px;
+                    background: stop-area.has-hover ? #3e4451 : #00000000;
+
+                    Text {
+                        text: "✕";
+                        color: #abb2bf;
+                        font-size: 11px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    stop-area := TouchArea {
+                        clicked => { root.stop-requested(); }
+                    }
+                }
+            }
+        }
+    }
+
+    // ---------- tarjeta grande (descanso) ----------
+    if (root.big-break) : Rectangle {
+        width: parent.width;
+        height: parent.height;
+        background: #1e222a;
+        border-radius: 22px;
+        border-width: 2px;
+        border-color: root.paused ? #5c6370 : root.accent;
+
+        VerticalLayout {
+            padding: 24px;
+            spacing: 10px;
+
+            Text {
+                text: root.paused ? "⏸  En pausa" : "☕  Hora de descansar";
+                color: root.paused ? #5c6370 : root.accent;
+                font-size: 24px;
+                font-weight: 700;
+                horizontal-alignment: center;
+            }
+
+            Text {
+                text: root.clock-text;
+                color: #abb2bf;
+                font-size: 72px;
+                font-weight: 700;
+                horizontal-alignment: center;
+            }
+
+            Text {
+                text: root.subtitle;
+                color: #5c6370;
+                font-size: 14px;
+                horizontal-alignment: center;
+            }
+
+            Text {
+                text: "Levántate, estírate y mira a lo lejos.";
+                color: #5c6370;
+                font-size: 13px;
+                horizontal-alignment: center;
+            }
+
+            Rectangle {
+                width: 100%;
+                height: 6px;
+                background: #3e4451;
+                border-radius: 3px;
+
+                Rectangle {
+                    width: parent.width * root.pct / 100;
+                    height: 100%;
+                    background: root.accent;
+                    border-radius: 3px;
+                }
+            }
+
+            HorizontalLayout {
+                alignment: center;
+                spacing: 8px;
+
+                bp := Rectangle {
+                    width: 104px;
+                    height: 30px;
+                    border-radius: 8px;
+                    background: bp-area.has-hover ? #3e4451 : #282c34;
+
+                    Text {
+                        text: root.paused ? "▶ Reanudar" : "❚❚ Pausar";
+                        color: #abb2bf;
+                        font-size: 12px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    bp-area := TouchArea {
+                        clicked => { root.pause-requested(); }
+                    }
+                }
+
+                br := Rectangle {
+                    width: 104px;
+                    height: 30px;
+                    border-radius: 8px;
+                    background: br-area.has-hover ? #3e4451 : #282c34;
+
+                    Text {
+                        text: "↻ Reiniciar";
+                        color: #abb2bf;
+                        font-size: 12px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    br-area := TouchArea {
+                        clicked => { root.restart-requested(); }
+                    }
+                }
+
+                bc := Rectangle {
+                    width: 104px;
+                    height: 30px;
+                    border-radius: 8px;
+                    background: bc-area.has-hover ? #3e4451 : #282c34;
+
+                    Text {
+                        text: "▾ Minimizar";
+                        color: #abb2bf;
+                        font-size: 12px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    bc-area := TouchArea {
+                        clicked => { root.collapse-requested(); }
+                    }
+                }
+
+                bs := Rectangle {
+                    width: 104px;
+                    height: 30px;
+                    border-radius: 8px;
+                    background: bs-area.has-hover ? #3e4451 : #282c34;
+
+                    Text {
+                        text: "✕ Detener";
+                        color: #abb2bf;
+                        font-size: 12px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    bs-area := TouchArea {
+                        clicked => { root.stop-requested(); }
+                    }
+                }
+            }
+        }
+    }
+}

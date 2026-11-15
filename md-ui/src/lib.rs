@@ -14,11 +14,13 @@ mod generated {
 mod menu;
 mod notifications;
 mod osd;
+mod pomodoro;
 
 pub use generated::*;
 pub use menu::{MenuConfig, MenuEvent, run as run_menu};
 pub use notifications::{NotificationData, Notifications};
 pub use osd::{OsdConfig, run as run_osd};
+pub use pomodoro::{PomodoroConfig, PomodoroEvents, run as run_pomodoro};
 
 /// Puerto por el que los widgets muestran sus ventanas.
 ///
