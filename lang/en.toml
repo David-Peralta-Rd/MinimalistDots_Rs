@@ -28,6 +28,10 @@ invalido = "❌ ERROR: COULD NOT VALIDATE THE SUDOERS CONFIGURATION."
 nuevas_carpetas = "CREATING FOLDERS TO BE USED IN DOTFILES"
 nombre_de_carpeta = "NEW FOLDER CREATED == "
 
+# Step 1b: language catalog deployment (for `md` at runtime).
+[idioma]
+desplegando = "COPYING LANGUAGE CATALOGS"
+
 # Step 2: package installation.
 [paquetes]
 instalando_paquetes = "INSTALLING DOCUMENTED PACKAGE LISTS"

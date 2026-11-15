@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from installer.context import Context
 from installer.paths import Paths
-from installer.steps import ai, network, services, zsh
+from installer.steps import ai, lang, network, services, zsh
 
 
 def _paths(tmp_path: Path) -> Paths:
@@ -70,6 +70,22 @@ def test_services_deploys_and_removes_old(tmp_path: Path) -> None:
     assert (paths.services / "polkit.lua").exists()
     assert (paths.services / "wallpaper.lua").exists()
     assert not (paths.services / "old.lua").exists()
+
+
+def test_lang_deploys_catalogs(tmp_path: Path) -> None:
+    paths = _paths(tmp_path)
+    paths.lang.mkdir(parents=True)
+    (paths.lang / "es.toml").write_text(
+        '[meta]\ncodigo = "es"\nnombre = "Español"\n'
+    )
+    (paths.lang / "en.toml").write_text(
+        '[meta]\ncodigo = "en"\nnombre = "English"\n'
+    )
+
+    lang.run(Context(paths=paths, dry_run=False, language="es"))
+
+    assert (paths.lang_dest / "es.toml").exists()
+    assert (paths.lang_dest / "en.toml").exists()
 
 
 def test_ai_copies_templates_and_configs(

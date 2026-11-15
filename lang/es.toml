@@ -28,6 +28,10 @@ invalido = "❌ ERROR: NO SE PUDO VALIDAR LA CONFIGURACIÓN DE SUDOERS."
 nuevas_carpetas = "CREANDO CARPETAS QUE SE USARAN EN EL DOTFILES"
 nombre_de_carpeta = "NUEVA CARPETA CREADA == "
 
+# Paso 1b: despliegue de catálogos de idioma (para `md` en runtime).
+[idioma]
+desplegando = "COPIANDO CATÁLOGOS DE IDIOMA"
+
 # Paso 2: instalación de paquetes.
 [paquetes]
 instalando_paquetes = "INSTALANDO LISTAS DE PAQUETES DOCUMENTADOS"

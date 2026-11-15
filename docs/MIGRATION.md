@@ -124,7 +124,14 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 | ⬜ | **md clock**: reloj de escritorio persistente | `clock.qml` |
 | ⬜ | **md ai menu**: elegir modelos, levantar/apagar `llama-server` (:8080/:8081), descarga de `.gguf`, RAM, `doctor` | `llm_menu.sh` |
 | ⬜ | **md ai dev**: `ai-up/down/doctor/bench/code/new`, `models.env`, config OpenCode | `ai.sh` |
-| ⬜ | **Idioma conmutable en runtime**: `md` lee `settings.toml` al arrancar (cambio aplica al reiniciar, sin proceso residente) | ADR-0004 |
+| ✅ | **Idioma conmutable en runtime**: `md` lee `settings.toml` al arrancar (cambio aplica al reiniciar, sin proceso residente) | ADR-0004 |
+
+> Idioma runtime: `md/i18n.rs` lee `~/.config/minimalistdots/settings.toml` (clave
+> `idioma`) y carga la cadena de catálogos desde `~/.config/minimalistdots/lang/`
+> (sección `[escritorio]` de `es.toml`/`en.toml`, 36 claves). El instalador despliega
+> `lang/*.toml` en el paso `lang` (ORDER 25). Las app names de `notify-send`
+> (Screenshot, Screen Recorder, Process Manager, Historial) son identificadores y no
+> se traducen. `md` traduce títulos/prompt de menús y los avisos de shot/record/process.
 
 ## H8 · Cierre y pulido
 

@@ -52,6 +52,10 @@ class Paths:
         return self.config / "minimalistdots" / "settings.toml"
 
     @property
+    def lang_dest(self) -> Path:
+        return self.config / "minimalistdots" / "lang"
+
+    @property
     def services(self) -> Path:
         return self.home / ".local" / "bin" / "MinimalistDots" / "services"
 

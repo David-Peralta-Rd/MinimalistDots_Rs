@@ -32,20 +32,16 @@ impl Texts {
     }
 }
 
-/// Directorio de configuración: `$XDG_CONFIG_HOME` o `~/.config`.
-fn config_home() -> PathBuf {
-    std::env::var_os("XDG_CONFIG_HOME")
-        .map(PathBuf::from)
-        .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".config")))
-        .unwrap_or_else(|| PathBuf::from("."))
-}
-
-/// Raíz de MinimalistDots (`~/.config/minimalistdots`), salvo override por entorno
-/// (`MINIMALISTDOTS_CONFIG`, útil en pruebas).
+/// Raíz de MinimalistDots (`~/.config/minimalistdots`), igual que escribe el
+/// instalador (`Paths.settings` usa `$HOME`, no `$XDG_CONFIG_HOME`). Override por
+/// entorno (`MINIMALISTDOTS_CONFIG`, útil en pruebas).
 fn minimalistdots_dir() -> PathBuf {
     std::env::var_os("MINIMALISTDOTS_CONFIG")
         .map(PathBuf::from)
-        .unwrap_or_else(|| config_home().join("minimalistdots"))
+        .or_else(|| {
+            std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".config/minimalistdots"))
+        })
+        .unwrap_or_else(|| PathBuf::from(".config/minimalistdots"))
 }
 
 /// Directorio de catálogos (`~/.config/minimalistdots/lang`).
