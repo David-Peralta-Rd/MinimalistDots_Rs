@@ -4,18 +4,22 @@
 //! todo lo fallable devuelve `Result` o `Option`.
 
 mod color;
+mod desktop;
 mod digest;
 mod fuzzy;
 mod language;
+mod menu;
 mod palette;
 
 pub use color::{Color, ColorError};
+pub use desktop::{DesktopEntry, IconIndex, data_dirs, discover_desktop_entries, exec_args};
 pub use digest::{TreeDigestError, compute_tree_digest};
 pub use fuzzy::{fuzzy, score};
 pub use language::{
     Catalog, CatalogError, CatalogReport, Translator, available_languages, base_of, load_chain,
     validate_language_catalogs,
 };
+pub use menu::{MenuEntry, MenuMode, filter, parse_dmenu_line};
 pub use palette::{Palette, PaletteError};
 
 #[cfg(test)]

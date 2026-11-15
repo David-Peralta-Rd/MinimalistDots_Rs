@@ -1,10 +1,24 @@
 local Rules = require("hyprland.lib.rules")
 
--- Ventanas Slint de MinimalistDots (app-id "md.<nombre>"): flotantes y centradas.
--- Se afinará en H4 (pin, noborder, noanim, stayfocused) al verificar el app-id real.
+-- Ventanas Slint de MinimalistDots (app-id "md.<nombre>"): flotantes, centradas,
+-- pinadas (visibles en todos los workspaces) y sin borde ni animación, para que
+-- parezcan popups. `pin` solo afecta a ventanas flotantes, por eso va con `float`.
 Rules.forClass("^md%..*$"):custom({
-    float  = true,
-    center = true,
+    float     = true,
+    center    = true,
+    pin       = true,
+    no_border = true,
+    no_anim   = true,
+})
+
+-- El lanzador y los menús conservan el foco de teclado mientras están visibles.
+-- (El OSD y las notificaciones de H5/H6 NO deben robar foco: irán en una regla
+-- aparte, sin `stay_focused`, cuando se implementen.)
+Rules.forClass("^md%.launcher$"):custom({
+    stay_focused = true,
+})
+Rules.forClass("^md%.menu%..*$"):custom({
+    stay_focused = true,
 })
 
 Rules.forClass(".*"):noBlur()

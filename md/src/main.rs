@@ -2,6 +2,9 @@
 
 use clap::{Parser, Subcommand};
 
+mod launcher;
+mod menu;
+
 #[derive(Parser)]
 #[command(
     name = "md",
@@ -17,12 +20,53 @@ struct Cli {
 enum Command {
     /// Diálogo "Acerca de" (AboutSlint).
     About,
+
+    /// Lanzador de aplicaciones (lista los `.desktop` instalados).
+    Launcher,
+
+    /// Menú dmenu genérico: lee líneas por stdin e imprime la elegida.
+    Menu {
+        /// Nombre del menú (define el app-id `md.menu.<nombre>`).
+        name: String,
+
+        /// Texto que se muestra junto a la caja de búsqueda.
+        #[arg(long)]
+        prompt: Option<String>,
+
+        /// La línea completa es la etiqueta (sin separar miniatura por TAB).
+        #[arg(long)]
+        raw: bool,
+
+        /// Comando para borrar una entrada (recibe la línea por stdin).
+        #[arg(long, value_name = "CMD")]
+        delete_cmd: Option<String>,
+
+        /// Comando para borrar todas las entradas.
+        #[arg(long, value_name = "CMD")]
+        wipe_cmd: Option<String>,
+    },
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
     match cli.command {
         Command::About => md_ui::about(&md_ui::SlintHost)?,
+        Command::Launcher => launcher::run()?,
+        Command::Menu {
+            name,
+            prompt,
+            raw,
+            delete_cmd,
+            wipe_cmd,
+        } => {
+            menu::run(&menu::Args {
+                name,
+                prompt: prompt.unwrap_or_default(),
+                raw,
+                delete_cmd,
+                wipe_cmd,
+            })?;
+        }
     }
     Ok(())
 }

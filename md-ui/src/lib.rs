@@ -11,7 +11,10 @@ mod generated {
     slint::include_modules!();
 }
 
+mod menu;
+
 pub use generated::*;
+pub use menu::{MenuConfig, MenuEvent, run as run_menu};
 
 /// Puerto por el que los widgets muestran sus ventanas.
 ///

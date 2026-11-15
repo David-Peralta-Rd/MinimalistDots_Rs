@@ -78,10 +78,15 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 
 | | Tarea | Origen → Destino |
 |---|---|---|
-| ⬜ | **md launcher**: listar `.desktop`, búsqueda fuzzy con relevancia, lanzar apps (incl. Terminal=true) | `launcher.qml` |
-| ⬜ | **md menu**: dmenu genérico (stdin → elegir), `--raw`, miniatura por TAB/`\x1f`, borrado (`deleteCmd`/`wipeCmd`) | `MdMenu.qml` + `md_menu` wrapper |
-| ⬜ | Widget Slint `MdMenu` reutilizable en `md-ui` (buscar, navegar, seleccionar, borrar) | `MdMenu.qml` |
-| ⬜ | Wrappers/symlinks para compatibilidad de atajos si hace falta | `md_menu`, `md_launcher` |
+| ✅ | **md launcher**: listar `.desktop`, búsqueda fuzzy con relevancia, lanzar apps (incl. Terminal=true) | `launcher.qml` |
+| ✅ | **md menu**: dmenu genérico (stdin → elegir), `--raw`, miniatura por TAB/`\x1f`, borrado (`--delete-cmd`/`--wipe-cmd`) | `MdMenu.qml` + `md_menu` wrapper |
+| ✅ | Widget Slint `MdMenu` reutilizable en `md-ui` (buscar, navegar, seleccionar, borrar) | `MdMenu.qml` |
+| ➖ | Wrappers/symlinks para compatibilidad de atajos: no hacen falta, `vars.lua` ya apunta a `md <subcomando>` | `md_menu`, `md_launcher` |
+
+> Pendiente de verificación real: el app-id de las ventanas Slint y las windowrules
+> (`pin`, `no_border`, `no_anim`, `stay_focused`) necesitan una sesión Wayland; se
+> comprobará en el spike de H8. La resolución de iconos del launcher es "mejor
+> esfuerzo" (rutas absolutas + índice de `png`/`svg`/`xpm` en los temas de iconos).
 
 ## H5 · Utilidades (`md` subcomandos)
 

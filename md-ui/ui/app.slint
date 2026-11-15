@@ -7,8 +7,15 @@ export component MdWindow inherits Window {
     in property <color> accent: #7ec7a2;
     in property <length> md-radius: 10px;
 
-    width: 600px;
-    height: 400px;
+    // Título y tamaño configurables desde Rust (alias de las props de Window).
+    in-out property <string> md-title: "MinimalistDots";
+    in-out property <length> md-width: 600px;
+    in-out property <length> md-height: 400px;
+
+    title <=> root.md-title;
+    width <=> root.md-width;
+    height <=> root.md-height;
+
     background: #1e222a;
 }
 
@@ -20,4 +27,280 @@ export component AboutWindow inherits Window {
     height: 520px;
 
     AboutSlint { }
+}
+
+// Fila de un menú. `icon` es una imagen ya cargada por el anfitrión (un
+// `slint::Image`); una imagen vacía (ancho 0) significa "sin icono".
+export struct MenuItem {
+    label: string,
+    icon: image,
+}
+
+// Menú genérico reutilizable (lo usan `md menu` y `md launcher`).
+//
+// Hereda directamente de `Window` (no de `MdWindow`) para exponer setters de
+// `accent`/tamaño/título en la API generada: Slint no re-expone como setters
+// las propiedades heredadas de una base.
+//
+// El filtrado y el orden lo hace el anfitrión (Rust) con `md_core::menu`; este
+// widget solo pinta la lista ya filtrada (`shown`) y emite callbacks.
+export component MdMenu inherits Window {
+    in property <color> accent: #7ec7a2;
+    in property <length> md-radius: 10px;
+    in-out property <string> md-title: "MinimalistDots";
+    in-out property <length> md-width: 600px;
+    in-out property <length> md-height: 400px;
+
+    title <=> root.md-title;
+    width <=> root.md-width;
+    height <=> root.md-height;
+    background: #1e222a;
+
+    // ----- configuración (la fija el anfitrión) -----
+    in property <string> prompt: "";
+    in property <length> row-height: 40px;
+    in property <bool> can-delete: false;
+    in property <bool> can-wipe: false;
+    // Si es `true`, Enter con la lista vacía emite `activated(-1)` (usar el
+    // texto tecleado); en caso contrario no hace nada.
+    in property <bool> submit-empty: false;
+
+    // ----- datos -----
+    in property <[MenuItem]> shown;
+    in-out property <string> query;
+
+    // ----- selección (el anfitrión la resetea a 0 al re-filtrar) -----
+    in-out property <int> current-index: 0;
+
+    // ----- callbacks hacia el anfitrión -----
+    callback query-changed(string);
+    callback activated(int);
+    callback cancelled();
+    callback delete-requested(int);
+    callback wipe-requested();
+
+    // Confirmación del borrado total (dos pulsaciones en 3 s).
+    property <bool> confirm-wipe: false;
+
+    // ---------- funciones de navegación ----------
+    function clamp-index(index: int) -> int {
+        if (shown.length == 0) {
+            return 0;
+        }
+        return index.clamp(0, shown.length - 1);
+    }
+
+    function move-selection(delta: int) {
+        current-index = clamp-index(current-index + delta);
+        scroll-to-current();
+    }
+
+    function scroll-to-current() {
+        let item-y = current-index * row-height;
+        if (item-y < -list.content-y) {
+            list.content-y = -item-y;
+        } else if (item-y + row-height > -list.content-y + list.height) {
+            list.content-y = -(item-y + row-height - list.height);
+        }
+    }
+
+    function activate-current() {
+        if (shown.length == 0) {
+            if (submit-empty) {
+                activated(-1);
+            }
+        } else {
+            activated(current-index);
+        }
+    }
+
+    function delete-current() {
+        if (shown.length > 0) {
+            delete-requested(current-index);
+        }
+    }
+
+    function request-wipe() {
+        if (confirm-wipe) {
+            confirm-wipe = false;
+            wipe-timer.stop();
+            wipe-requested();
+        } else {
+            confirm-wipe = true;
+            wipe-timer.start();
+        }
+    }
+
+    wipe-timer := Timer {
+        interval: 3s;
+        running: false;
+        triggered => {
+            root.confirm-wipe = false;
+            self.running = false;
+        }
+    }
+
+    forward-focus: input;
+
+    // ---------- barra de búsqueda ----------
+    input-box := Rectangle {
+        x: 10px;
+        y: 10px;
+        width: parent.width - 20px;
+        height: 40px;
+        background: #282c34;
+        border-radius: 6px;
+    }
+
+    prompt := Text {
+        x: input-box.x + 10px;
+        y: input-box.y;
+        height: input-box.height;
+        vertical-alignment: center;
+        text: root.prompt;
+        color: root.accent;
+        font-weight: 600;
+        visible: root.prompt != "";
+    }
+
+    wipe-btn := Rectangle {
+        x: input-box.x + input-box.width - 116px;
+        y: input-box.y + 6px;
+        width: 106px;
+        height: 28px;
+        border-radius: 4px;
+        visible: root.can-wipe;
+        background: root.confirm-wipe ? #e06c75 : (wipe-area.has-hover ? #3e4451 : #00000000);
+
+        Text {
+            text: root.confirm-wipe ? "¿Seguro? Pulsa otra vez" : "🧹 Borrar todo";
+            color: root.confirm-wipe ? #1e222a : #abb2bf;
+            font-size: 12px;
+            vertical-alignment: center;
+            horizontal-alignment: center;
+            width: 100%;
+        }
+
+        wipe-area := TouchArea {
+            clicked => { root.request-wipe(); }
+        }
+    }
+
+    input := TextInput {
+        x: prompt.visible ? prompt.x + prompt.width + 8px : input-box.x + 10px;
+        y: input-box.y;
+        height: input-box.height;
+        width: (wipe-btn.visible ? wipe-btn.x : input-box.x + input-box.width - 10px) - self.x;
+        text <=> root.query;
+        color: #abb2bf;
+        vertical-alignment: center;
+        single-line: true;
+
+        edited => {
+            root.query-changed(self.text);
+        }
+
+        key-pressed(event) => {
+            let ctrl = event.modifiers.control;
+            let shift = event.modifiers.shift;
+            let key = event.text;
+            if (key == Key.Escape) {
+                root.cancelled();
+                return accept;
+            }
+            if (key == Key.UpArrow || (ctrl && (key == "k" || key == "K" || key == "p" || key == "P"))) {
+                root.move-selection(-1);
+                return accept;
+            }
+            if (key == Key.DownArrow || (ctrl && (key == "j" || key == "J" || key == "n" || key == "N"))) {
+                root.move-selection(1);
+                return accept;
+            }
+            if (key == Key.Return) {
+                root.activate-current();
+                return accept;
+            }
+            if (root.can-wipe && ctrl && shift && key == Key.Delete) {
+                root.request-wipe();
+                return accept;
+            }
+            if (root.can-delete && ((shift && key == Key.Delete) || (ctrl && (key == "d" || key == "D")))) {
+                root.delete-current();
+                return accept;
+            }
+            return reject;
+        }
+    }
+
+    // ---------- lista ----------
+    list := Flickable {
+        x: 10px;
+        y: 54px;
+        width: parent.width - 20px;
+        height: parent.height - 64px;
+        content-height: root.shown.length * root.row-height;
+
+        for item[index] in root.shown : Rectangle {
+            // selección por hover y activación por clic (capa inferior)
+            row-area := TouchArea {
+                pointer-event(event) => {
+                    if (event.kind == PointerEventKind.move) {
+                        root.current-index = index;
+                    }
+                }
+                clicked => { root.activated(index); }
+            }
+
+            y: index * root.row-height;
+            width: parent.width;
+            height: root.row-height;
+            border-radius: 4px;
+            background: index == root.current-index ? #3e4451 : #00000000;
+
+            // icono (solo si la imagen no está vacía)
+            if (item.icon.width > 0) : Image {
+                x: 6px;
+                y: (parent.height - self.height) / 2;
+                width: root.row-height - 8px;
+                height: root.row-height - 8px;
+                source: item.icon;
+                image-fit: contain;
+            }
+
+            // etiqueta
+            Text {
+                x: item.icon.width > 0 ? root.row-height + 2px : 8px;
+                y: 0px;
+                height: parent.height;
+                width: parent.width - (item.icon.width > 0 ? root.row-height + 2px : 8px) - (root.can-delete ? 40px : 8px);
+                vertical-alignment: center;
+                text: item.label;
+                color: index == root.current-index ? root.accent : #abb2bf;
+                font-weight: index == root.current-index ? 600 : 400;
+                overflow: elide;
+            }
+
+            // botón de borrar esta fila (solo en la fila seleccionada)
+            if (root.can-delete && index == root.current-index) : Rectangle {
+                x: parent.width - 34px;
+                y: (parent.height - 22px) / 2;
+                width: 26px;
+                height: 22px;
+                border-radius: 4px;
+                background: #00000000;
+
+                Text {
+                    text: "🗑";
+                    color: #abb2bf;
+                    vertical-alignment: center;
+                    horizontal-alignment: center;
+                    width: 100%;
+                }
+
+                del-area := TouchArea {
+                    clicked => { root.delete-requested(index); }
+                }
+            }
+        }
+    }
 }
