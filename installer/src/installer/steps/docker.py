@@ -2,6 +2,7 @@
 
 import getpass
 import os
+import shutil
 
 from installer.context import Context
 
@@ -21,7 +22,14 @@ def run(ctx: Context) -> None:
         ctx.run(["sudo", "groupadd", "docker"])
     ctx.run(["sudo", "usermod", "-aG", "docker", user])
 
-    if ctx.dry_run or ctx.run_ok(["sg", "docker", "-c", "docker info"]):
+    if ctx.dry_run:
+        docker_ok = True
+    elif shutil.which("sg"):
+        docker_ok = ctx.run_ok(["sg", "docker", "-c", "docker info"])
+    else:
+        # `sg` (shadow-utils) no está instalado: probamos docker directamente.
+        docker_ok = ctx.run_ok(["docker", "info"])
+    if docker_ok:
         print(ctx.t("docker.funciona"), f"'{user}'.")
     else:
         print(ctx.t("docker.sin_respuesta"))

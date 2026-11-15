@@ -7,7 +7,7 @@ Rules.forClass("^md%..*$"):custom({
     float     = true,
     center    = true,
     pin       = true,
-    no_border = true,
+    border_size = 0,
     no_anim   = true,
 })
 
