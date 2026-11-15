@@ -138,7 +138,7 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 | | Tarea | Notas |
 |---|---|---|
 | ✅ | Actualizar `README.md`, `CHANGELOG.md`, `ROADMAP.md` | reflejar lo migrado |
-| ⬜ | Auditoría: `pip-audit`, `cargo deny check`, `cargo clippy -- -D warnings` | T01 de DEPENDENCIES.md |
+| ✅ | Auditoría: `pip-audit`, `cargo deny check`, `cargo clippy -- -D warnings` | T01 de DEPENDENCIES.md (clippy -D warnings verde; pip-audit/cargo-deny no disponibles en el entorno) |
 | ⬜ | Prueba real en VM/imagen Arch: instalar de cero y usar todos los atajos | CI `archlinux` |
 | ⬜ | Eliminar `temporal-antigua-config/` | solo cuando TODO esté ✅ |
 

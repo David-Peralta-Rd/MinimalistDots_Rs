@@ -31,6 +31,11 @@ Rules.forClass("^(md%.clock)$"):custom({
     float = true,
 })
 
+Rules.forClass("^(md%.notifications)$"):custom({
+    float = true,
+    move  = "monitor_w-window_w-20 20",
+})
+
 Rules.forClass(".*"):noBlur()
 Rules.forClass("^(pavucontrol)$"):float()
 Rules.forClass("^(blueman%-manager)$"):float()

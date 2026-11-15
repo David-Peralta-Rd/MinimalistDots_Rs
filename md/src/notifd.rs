@@ -19,6 +19,7 @@ use zbus::zvariant::OwnedValue;
 
 /// Tiempo visible por defecto (ms) para notificaciones no críticas sin `timeout`.
 const DEFAULT_TIMEOUT: Duration = Duration::from_millis(6000);
+const CRITICAL_TIMEOUT: Duration = Duration::from_millis(15000);
 /// Número máximo de tarjetas visibles a la vez.
 const MAX_POPUPS: usize = 5;
 /// Líneas de historial que se conservan al arrancar.
@@ -203,7 +204,7 @@ fn timeout_for(urgency: Urgency, expire_timeout: i32, default: Duration) -> Opti
     if expire_timeout > 0 {
         Some(Duration::from_millis(expire_timeout as u64))
     } else if urgency.is_critical() {
-        None
+        Some(CRITICAL_TIMEOUT)
     } else {
         Some(default)
     }
@@ -279,8 +280,14 @@ mod tests {
             Some(Duration::from_millis(3000))
         );
         // críticas sin timeout explícito: no expiran solas.
-        assert_eq!(timeout_for(Urgency::Critical, -1, DEFAULT_TIMEOUT), None);
-        assert_eq!(timeout_for(Urgency::Critical, 0, DEFAULT_TIMEOUT), None);
+        assert_eq!(
+            timeout_for(Urgency::Critical, -1, DEFAULT_TIMEOUT),
+            Some(CRITICAL_TIMEOUT)
+        );
+        assert_eq!(
+            timeout_for(Urgency::Critical, 0, DEFAULT_TIMEOUT),
+            Some(CRITICAL_TIMEOUT)
+        );
         // no críticas sin timeout: usan el por defecto.
         assert_eq!(
             timeout_for(Urgency::Normal, -1, DEFAULT_TIMEOUT),

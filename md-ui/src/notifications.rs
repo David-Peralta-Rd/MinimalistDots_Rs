@@ -17,7 +17,7 @@ use crate::generated::{MdNotifications, NotificationItem};
 
 /// Alto fijo de cada tarjeta y separación entre ellas. El alto de la ventana se
 /// calcula a partir de estos valores para ajustarse exactamente al contenido.
-const CARD_HEIGHT: f32 = 76.0;
+const CARD_HEIGHT: f32 = 56.0;
 const SPACING: f32 = 8.0;
 
 /// Intervalo del temporizador que expira las notificaciones vencidas.
