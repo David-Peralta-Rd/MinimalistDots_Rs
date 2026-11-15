@@ -4,6 +4,7 @@ use clap::{Parser, Subcommand};
 
 mod binds;
 mod clip;
+mod clock;
 mod i18n;
 mod launcher;
 mod menu;
@@ -82,6 +83,9 @@ enum Command {
         command: Option<pomodoro::PomodoroCommand>,
     },
 
+    /// Reloj de escritorio persistente.
+    Clock,
+
     /// Menú dmenu genérico: lee líneas por stdin e imprime la elegida.
     Menu {
         /// Nombre del menú (define el app-id `md.menu.<nombre>`).
@@ -121,6 +125,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Pomodoro { command } => {
             pomodoro::run(command.unwrap_or(pomodoro::PomodoroCommand::Toggle))?;
         }
+        Command::Clock => clock::run()?,
         Command::Menu {
             name,
             prompt,

@@ -793,3 +793,45 @@ export component MdPomodoro inherits Window {
         }
     }
 }
+
+// Reloj de escritorio persistente (reemplaza a `clock.qml`).
+//
+// Muestra la hora (`HH:MM`) y la fecha (`"dom, 15 nov"`), actualizadas por el
+// anfitrión con un temporizador de 1 s (solo pinta cuando cambia el minuto). La
+// ventana es transparente; la posicionan las windowrules de Hyprland.
+export component MdClock inherits Window {
+    in property <length> md-radius: 10px;
+    in-out property <string> md-title: "md.clock";
+    in-out property <length> md-width: 280px;
+    in-out property <length> md-height: 120px;
+
+    title <=> root.md-title;
+    width <=> root.md-width;
+    height <=> root.md-height;
+    background: #00000000;
+
+    // ----- datos (los fija el anfitrión) -----
+    in property <string> clock-text: "00:00";
+    in property <string> date-text: "";
+
+    VerticalLayout {
+        padding: 10px;
+        spacing: 4px;
+
+        Text {
+            text: root.clock-text;
+            color: #abb2bf;
+            font-size: 56px;
+            font-weight: 700;
+            horizontal-alignment: right;
+        }
+
+        Text {
+            text: root.date-text;
+            color: #5c6370;
+            font-size: 16px;
+            font-weight: 500;
+            horizontal-alignment: right;
+        }
+    }
+}

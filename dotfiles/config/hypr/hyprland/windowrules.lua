@@ -21,6 +21,16 @@ Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%
     stay_focused = true,
 })
 
+-- El reloj (`md clock`) va a la izquierda, centrado en vertical y 40px más abajo
+-- (como el eww/QML original). El `move` es una aproximación: su anclado exacto y
+-- el comportamiento "detrás de las ventanas" (que exigiría layer-shell) se
+-- verifican en H8.
+Rules.forClass("^(md%.clock)$"):custom({
+    name  = "move-md-clock",
+    move  = "0 monitor_h/2-20",
+    float = true,
+})
+
 Rules.forClass(".*"):noBlur()
 Rules.forClass("^(pavucontrol)$"):float()
 Rules.forClass("^(blueman%-manager)$"):float()

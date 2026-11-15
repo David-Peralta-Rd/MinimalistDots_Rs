@@ -11,11 +11,13 @@ mod generated {
     slint::include_modules!();
 }
 
+mod clock;
 mod menu;
 mod notifications;
 mod osd;
 mod pomodoro;
 
+pub use clock::{ClockConfig, ClockText, run as run_clock};
 pub use generated::*;
 pub use menu::{MenuConfig, MenuEvent, run as run_menu};
 pub use notifications::{NotificationData, Notifications};
