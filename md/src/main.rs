@@ -3,6 +3,7 @@
 use clap::{Parser, Subcommand};
 
 mod binds;
+mod clip;
 mod launcher;
 mod menu;
 mod process;
@@ -26,6 +27,9 @@ enum Command {
 
     /// Lanzador de aplicaciones (lista los `.desktop` instalados).
     Launcher,
+
+    /// Historial del portapapeles (cliphist): elegir para copiar, borrar.
+    Clip,
 
     /// Visor de atajos de teclado agrupados por categoría.
     Binds,
@@ -67,6 +71,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     match cli.command {
         Command::About => md_ui::about(&md_ui::SlintHost)?,
         Command::Launcher => launcher::run()?,
+        Command::Clip => clip::run()?,
         Command::Binds => binds::run()?,
         Command::Process => process::run()?,
         Command::Volume { action } => volume::run(action)?,

@@ -3,6 +3,7 @@
 //! Sin `unsafe`, sin E/S salvo lectura de archivos de datos, y sin `panic`:
 //! todo lo fallable devuelve `Result` o `Option`.
 
+mod clip;
 mod color;
 mod desktop;
 mod digest;
@@ -14,6 +15,7 @@ mod palette;
 mod process;
 mod volume;
 
+pub use clip::{ClipEntry, parse_clip_line, parse_clip_list};
 pub use color::{Color, ColorError};
 pub use desktop::{DesktopEntry, IconIndex, data_dirs, discover_desktop_entries, exec_args};
 pub use digest::{TreeDigestError, compute_tree_digest};
