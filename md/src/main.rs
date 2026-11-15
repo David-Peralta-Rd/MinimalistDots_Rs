@@ -8,6 +8,7 @@ mod launcher;
 mod menu;
 mod process;
 mod volume;
+mod wallpaper;
 
 #[derive(Parser)]
 #[command(
@@ -36,6 +37,9 @@ enum Command {
 
     /// Gestor de procesos: lista y mata procesos del usuario.
     Process,
+
+    /// Selector de fondos de pantalla (hyprpaper).
+    Wallpaper,
 
     /// Cambia el volumen con `wpctl` y muestra un OSD transitorio.
     Volume {
@@ -74,6 +78,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Clip => clip::run()?,
         Command::Binds => binds::run()?,
         Command::Process => process::run()?,
+        Command::Wallpaper => wallpaper::run()?,
         Command::Volume { action } => volume::run(action)?,
         Command::Menu {
             name,

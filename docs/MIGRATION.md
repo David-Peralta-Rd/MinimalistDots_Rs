@@ -96,6 +96,7 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 | ✅ | **md binds**: visor de atajos agrupado por categoría (lee `keybinds.json`) | `show_binds` wrapper |
 | ✅ | **md process**: gestor de procesos (lista `ps` y mata por PID) | `bk2_process_manager.sh` |
 | ✅ | **md clip**: historial de `cliphist` (elegir→`wl-copy`, borrar, wipe) | `md_cliphist_list` + `cliphist` |
+| ✅ | **md wallpaper**: selector con miniaturas + `hyprpaper` | `select_wallpaper.sh` |
 | ⬜ | **md shot**: capturas (pantalla/área/congelado/OCR/QR) con notificación | `screenshot.sh` |
 | ⬜ | **md record**: grabación con `gpu-screen-recorder` (área/monitor/audio/toggle) | `screenrecord.sh` |
 | ⬜ | **md wallpaper**: selector con miniaturas + `hyprpaper` | `select_wallpaper.sh` |

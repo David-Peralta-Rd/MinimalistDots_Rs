@@ -14,6 +14,7 @@ mod menu;
 mod palette;
 mod process;
 mod volume;
+mod wallpaper;
 
 pub use clip::{ClipEntry, parse_clip_line, parse_clip_list};
 pub use color::{Color, ColorError};
@@ -29,6 +30,7 @@ pub use menu::{MenuEntry, MenuMode, filter, parse_dmenu_line};
 pub use palette::{Palette, PaletteError};
 pub use process::{ProcessEntry, parse_ps};
 pub use volume::VolumeState;
+pub use wallpaper::{Wallpaper, discover_wallpapers};
 
 #[cfg(test)]
 mod test_util {
