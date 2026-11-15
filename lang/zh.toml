@@ -1,0 +1,224 @@
+[meta]
+codigo = "zh"
+nombre = "中文"
+
+# Shared messages across steps (transversal errors and notices).
+[comun]
+configuracion_no_encontrada = "CONFIGURATION NOT FOUND"
+paso_fallido = "❌ STEP FAILED:"
+instalacion_con_errores = "⚠️ THE INSTALLATION FINISHED WITH ERRORS. CHECK THE ❌ MESSAGES ABOVE."
+
+# General orchestration (steps.sh).
+[instalador]
+bienvenido = "WELCOME TO THE MINIMALISTDOTS INSTALLATION"
+recarga = "🔄 RELOADING HYPRLAND"
+recarga_error = "❌ ERROR RELOADING THE SYSTEM"
+recarga_exito = "✅ RELOADED SUCCESSFULLY"
+no_sesion = "ℹ️ NO ACTIVE HYPRLAND SESSION FOUND"
+configuraciones_listas = "✨ BACKUP FINISHED AND CONFIGURATIONS ADAPTED"
+
+# Step 0: sudo session.
+[sudo]
+configurando_sudo = "CONFIGURING THE SUDO SESSION FOR THE INSTALLATION"
+no_root = "❌ ERROR: THIS INSTALLER MUST BE RUN AS A NORMAL USER (WITH SUDO), NOT AS ROOT."
+invalido = "❌ ERROR: COULD NOT VALIDATE THE SUDOERS CONFIGURATION."
+
+# Step 1: folder creation.
+[carpetas]
+nuevas_carpetas = "CREATING FOLDERS TO BE USED IN DOTFILES"
+nombre_de_carpeta = "NEW FOLDER CREATED == "
+
+# Step 1b: language catalog deployment (for `md` at runtime).
+[idioma]
+desplegando = "COPYING LANGUAGE CATALOGS"
+
+# Step 2: package installation.
+[paquetes]
+instalando_paquetes = "INSTALLING DOCUMENTED PACKAGE LISTS"
+instalando_paru = "==> 'paru' is not in the repositories, building it from the AUR..."
+
+# Step 3: backup and installation of configs.
+[dotfiles]
+comenzando_backup = "CREATING BACKUP FOR CONFIGURATIONS INSIDE '~/.config'"
+encabezado = "INSTALLING ADDITIONAL CONFIGURATIONS"
+confirmacion = "THIS WILL REPLACE EXISTING CONFIGURATIONS (WITH PREVIOUS BACKUP). CONTINUE?"
+letra_confirmacion = "Y"
+cancelado = "CANCELLED. NO CHANGES WERE MADE."
+backup_si_existe = "🔄 BACKUP OF"
+limpiando_destino = "🗑️ CLEANING PREVIOUS DESTINATION:"
+paquete_detectado = "✨ NEW PACKAGE DETECTED:"
+copiando_paquete = "📂 COPYING"
+configurando_especificos = "⚙️ CONFIGURING HYPRLAND SPECIFIC FILES..."
+custom_restaurado = "♻️ CUSTOM OVERRIDES RESTORED IN"
+
+# Step 4: services and scripts.
+[servicios]
+instalando = "STARTING INSTALLATION OF SERVICES AND SCRIPTS"
+listando_servicios_antiguos = "THIS IS THE LIST OF OLD SERVICES TO BE DELETED IN '~/.local/bin/MinimalistDots/services':"
+borrando_servicios_antiguos = "DELETING OLD SERVICES INSIDE '~/.local/bin/MinimalistDots/services'"
+copiando_servicios_nuevos = "COPYING NEW SERVICES INSIDE '~/.local/bin/MinimalistDots/services'"
+listando_scripts_antiguos = "THIS IS THE LIST OF OLD SCRIPTS TO BE DELETED IN '~/.local/bin/MinimalistDots/scripts':"
+borrando_scripts_antiguos = "DELETING OLD SCRIPTS INSIDE '~/.local/bin/MinimalistDots/scripts'"
+copiando_scripts_nuevos = "COPYING NEW SCRIPTS INSIDE '~/.local/bin/MinimalistDots/scripts'"
+
+# Sub-step: Zsh.
+[zsh]
+instalado = "==> Zsh configuration completed."
+
+# Sub-step: process manager.
+[procesos]
+instalado = "==> Process Manager successfully installed in"
+
+# Sub-step: SDDM theme.
+[sddm]
+version_reciente = "==> Checking the latest theme version..."
+descarga = "==> Downloading and installing"
+instalado = "==> SDDM theme configured correctly."
+
+# Sub-step: Docker.
+[docker]
+funciona = "✅ DOCKER WORKS WITHOUT SUDO FOR USER"
+sin_respuesta = "⚠️ DOCKER IS CONFIGURED BUT DOES NOT RESPOND YET. LOG OUT AND IN AGAIN, THEN TRY: docker info"
+reiniciar_sesion = "ℹ️ TO USE IT IN ALREADY OPEN TERMINALS: LOG OUT (OR REBOOT) OR RUN 'newgrp docker'."
+
+# Sub-step: Git and GitHub.
+[github]
+sin_terminal = "No interactive terminal: GitHub setup skipped."
+pregunta = "Set up Git and GitHub now?"
+omitido = "Skipped. You can do it later with:"
+pedir_nombre = "Full name"
+pedir_correo = "GitHub email"
+datos_obligatorios = "❌ Name and email are required."
+sesion_activa = "A GitHub session is already active."
+abriendo_navegador = "The browser will open. Paste the one-time code shown here."
+generando_gpg = "Generating GPG key (ed25519, expires in 2 years). You will be asked for a passphrase to protect it."
+gpg_error = "❌ Could not get the GPG key."
+gpg_subida_error = "⚠️ Could not upload the GPG key (already on GitHub?). Check: gh gpg-key list"
+listo = "✅ Git and GitHub ready for"
+
+# Sub-step: network optimization.
+[red]
+iniciando = "⚡ STARTING NETWORK OPTIMIZATION..."
+sin_interfaz = "❌ ERROR: COULD NOT DETECT AN ACTIVE NETWORK INTERFACE."
+interfaz_detectada = "🌐 ACTIVE INTERFACE DETECTED:"
+aplicando_sysctl = "📦 APPLYING KERNEL SETTINGS (SYSCTL)..."
+sysctl_aviso = "⚠️ SOME SYSCTL PARAMETERS COULD NOT BE APPLIED (THE KERNEL MAY NOT SUPPORT THEM)."
+optimizando_nic = "🔌 OPTIMIZING THE NETWORK CARD:"
+sin_ethtool = "⚠️ 'ethtool' IS NOT INSTALLED: NETWORK CARD OPTIMIZATION SKIPPED."
+persistencia = "💾 MAKING THE NETWORK CARD OPTIMIZATION PERSISTENT (UDEV + SYSTEMD)..."
+configurando_dns = "🌐 CONFIGURING DNS (CLOUDFLARE, QUAD9, GOOGLE) WITH LOCAL CACHE..."
+listo = "🔥 DONE! NETWORK OPTIMIZATION APPLIED. YOU CAN CHECK DNS WITH: resolvectl status"
+
+# Sub-step: AI for development.
+[ai]
+instalado = "AI FOR DEVELOPMENT: TEMPLATES INSTALLED IN"
+models_creado = "MODELS.ENV CREATED (EDIT THE PATHS OF YOUR .GGUF FILES):"
+models_existe = "MODELS.ENV ALREADY EXISTS: LEFT UNTOUCHED."
+api_creado = "API_MODELS.CONF CREATED (APIS FOR AI-CODE):"
+opencode_fallo = "COULD NOT INSTALL OPENCODE. TRY MANUALLY: paru -S opencode-bin"
+opencode_config_fallo = "COULD NOT GENERATE THE OPENCODE CONFIG. CHECK models.env AND RUN: ai-config"
+siguiente = "NEXT (IN A NEW TERMINAL): ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MY-PROJECT"
+
+# Desktop tools (`md`): menus, OSD and notifications (H7).
+[escritorio]
+lanzador = "启动器"
+portapapeles = "剪贴板"
+atajos = "快捷键"
+gestor_procesos = "进程管理器"
+fondo_pantalla = "壁纸"
+notificaciones = "通知"
+notificaciones_prompt = "Notifications — Enter copies"
+activar_no_molestar = "🔕 Enable Do not disturb"
+desactivar_no_molestar = "🔔 Disable Do not disturb"
+borrar_historial = "🗑️ Clear history"
+no_molestar_activado = "Do not disturb enabled"
+no_molestar_activado_cuerpo = "Saved to history without showing."
+no_molestar_desactivado = "Do not disturb disabled"
+historial_borrado = "History cleared"
+copiado_portapapeles = "Copied to clipboard"
+captura_guardada = "Screenshot saved"
+captura_guardada_cuerpo = "Saved to {ruta}"
+ocr_exitoso = "OCR success"
+ocr_error = "OCR error"
+ocr_error_cuerpo = "Could not detect text in the image"
+qr_detectado = "QR detected"
+qr_error = "QR error"
+qr_error_cuerpo = "No QR code found"
+texto_copiado = "Text copied to clipboard"
+contenido_copiado = "Content copied to clipboard"
+grabacion_detenida = "Recording stopped"
+grabacion_procesando = "Processing and saving the video..."
+no_grabacion = "There was no recording in progress."
+grabacion_cancelada = "Recording cancelled"
+no_area = "No area was selected."
+grabacion_iniciada = "Recording started"
+grabacion_iniciada_cuerpo = "Press the shortcut again to stop."
+grabacion_guardada = "Recording saved"
+grabacion_guardada_cuerpo = "Saved to: {ruta}"
+proceso_terminado = "Process terminated"
+proceso_terminado_cuerpo = "Process closed with PID: {pid}"
+pomodoro_concentracion = "Focus (min)"
+pomodoro_descanso = "Break (min)"
+pomodoro_sesiones = "Sessions"
+pomodoro_iniciado = "Pomodoro started"
+pomodoro_sesion_de = "Session {session} of {total}"
+pomodoro_descanso_titulo = "Break"
+pomodoro_sesion_terminada = "Session {session} of {total} finished"
+pomodoro_a_concentrarse = "Time to focus"
+pomodoro_completado = "Pomodoro completed 🎉"
+pomodoro_terminaste = "You finished all {total} sessions"
+pomodoro_detenido = "Pomodoro stopped"
+pomodoro_ya_activo = "Already running"
+pomodoro_prueba = "Pomodoro (test)"
+pomodoro_prueba_cuerpo = "6 s of focus and then 20 s of break"
+idioma_titulo = "菜单语言"
+borrar_todo = "🧹 Wipe all"
+confirmar_borrar = "Sure? Press again"
+welcome_titulo = "欢迎使用 MinimalistDots"
+welcome_idioma = "选择语言"
+welcome_atajos = "查看快捷键"
+welcome_novedades = "新功能"
+welcome_github = "GitHub 项目"
+welcome_desactivar = "禁用此欢迎"
+welcome_salir = "退出"
+ai_titulo = "本地 LLM"
+ai_ninguno = "— None —"
+ai_volver = "← Back to categories"
+ai_todos = "All models"
+ai_descargados = "Already downloaded"
+ai_repetir = "↻ Repeat: {chat} + {fim} (ctx {ctx})"
+ai_manual = "⚙ Choose manually"
+ai_sin_chat = "no chat"
+ai_sin_fim = "no autocomplete"
+ai_chat_titulo = "CHAT / EDITING model (:{puerto})"
+ai_fim_titulo = "AUTOCOMPLETE model (:{puerto})"
+ai_contexto_titulo = "Chat context"
+ai_ctx_16k = "16K — balanced"
+ai_ctx_8k = "8K — less RAM, faster"
+ai_ctx_4k = "4K — minimal RAM"
+ai_ctx_32k = "32K — more context, more RAM"
+ai_ram_titulo = "You need ~{necesito} GB and there are {libre} GB free"
+ai_continuar = "Continue anyway"
+ai_cancelar = "Cancel"
+ai_ya_activo = "Already running."
+ai_sin_modelos = "You didn't pick any model."
+ai_iniciando = "Local LLM starting..."
+ai_cargando = "Loading models into memory."
+ai_listo = "Local LLM ready"
+ai_problemas = "Local LLM: problems"
+ai_apagado = "Local LLM stopped"
+ai_apagado_cuerpo = "Servers stopped and RAM freed."
+ai_descarga_cancelada = "Download cancelled"
+ai_descarga_cancelada_cuerpo = "What was downloaded is kept; it will resume where it left off."
+ai_descargando = "Downloading {modelo}"
+ai_descarga_aviso = "{} GB from Hugging Face ({{}}). Press the shortcut again to cancel."
+ai_descargado = "Model downloaded"
+ai_descarga_fallo = "Download of {archivo} failed"
+ai_sin_espacio = "Not enough space to download {archivo}"
+ai_sin_espacio_cuerpo = "You need ~{necesito} GB and there are {libre} GB free in {dir}."
+ai_descarga_incompleta = "Incomplete download of {archivo}"
+ai_descarga_incompleta_cuerpo = "It has {actual} of ~{total} GB. Try again: it resumes where it left off."
+ai_sin_crear_dir = "Cannot create {dir}"
+ai_sin_crear_dir_cuerpo = "Check the permissions of your home folder."
+ai_faltan_programas = "Local LLM: missing programs"
+ai_faltan_programas_cuerpo = "Install: {programas}"
