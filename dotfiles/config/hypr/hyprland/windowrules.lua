@@ -17,7 +17,7 @@ Rules.forClass("^md%..*$"):custom({
 -- Ambos se muestran centrados por ahora; anclarlos (arriba-centro el OSD,
 -- arriba-derecha las notificaciones) se afina en el spike de H8 con `move`
 -- (requiere verificación real en sesión Wayland).
-Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%.process|md%.notify|md%.pomodoro%.ask|md%.ai%.ask)$"):custom({
+Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%.process|md%.notify|md%.pomodoro%.ask|md%.ai%.ask|md%.language)$"):custom({
     stay_focused = true,
 })
 

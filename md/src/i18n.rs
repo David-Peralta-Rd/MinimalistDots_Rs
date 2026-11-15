@@ -46,12 +46,12 @@ fn minimalistdots_dir() -> PathBuf {
 }
 
 /// Directorio de catálogos (`~/.config/minimalistdots/lang`).
-fn lang_dir() -> PathBuf {
+pub fn lang_dir() -> PathBuf {
     minimalistdots_dir().join("lang")
 }
 
 /// Archivo de ajustes (`~/.config/minimalistdots/settings.toml`).
-fn settings_path() -> PathBuf {
+pub fn settings_path() -> PathBuf {
     minimalistdots_dir().join("settings.toml")
 }
 

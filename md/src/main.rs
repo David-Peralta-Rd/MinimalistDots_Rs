@@ -7,6 +7,7 @@ mod binds;
 mod clip;
 mod clock;
 mod i18n;
+mod language;
 mod launcher;
 mod menu;
 mod notifd;
@@ -87,6 +88,9 @@ enum Command {
     /// Reloj de escritorio persistente.
     Clock,
 
+    /// Cambia el idioma de los menús y avisos.
+    Language,
+
     /// IA local: menú de modelos, servidores `llama-server`, diagnóstico.
     Ai {
         #[command(subcommand)]
@@ -133,6 +137,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             pomodoro::run(command.unwrap_or(pomodoro::PomodoroCommand::Toggle))?;
         }
         Command::Clock => clock::run()?,
+        Command::Language => language::run()?,
         Command::Ai { command } => ai::run(command)?,
         Command::Menu {
             name,
