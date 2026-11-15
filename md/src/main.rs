@@ -7,6 +7,9 @@ mod clip;
 mod launcher;
 mod menu;
 mod process;
+mod record;
+mod shot;
+mod util;
 mod volume;
 mod wallpaper;
 
@@ -40,6 +43,22 @@ enum Command {
 
     /// Selector de fondos de pantalla (hyprpaper).
     Wallpaper,
+
+    /// Captura de pantalla con `grimblast` (área, OCR, QR…).
+    Shot {
+        /// `printscreen`, `snip`, `snapfreeze`, `monitor`, `scan` (OCR) o `qr`.
+        mode: shot::Mode,
+    },
+
+    /// Graba la pantalla con `gpu-screen-recorder`.
+    Record {
+        /// `snip` graba un área, `monitor` la pantalla, `toggle` detiene.
+        mode: record::Mode,
+
+        /// Incluye el audio del sistema (por defecto no).
+        #[arg(short, long)]
+        audio: bool,
+    },
 
     /// Cambia el volumen con `wpctl` y muestra un OSD transitorio.
     Volume {
@@ -79,6 +98,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Binds => binds::run()?,
         Command::Process => process::run()?,
         Command::Wallpaper => wallpaper::run()?,
+        Command::Shot { mode } => shot::run(mode)?,
+        Command::Record { mode, audio } => record::run(mode, audio)?,
         Command::Volume { action } => volume::run(action)?,
         Command::Menu {
             name,
