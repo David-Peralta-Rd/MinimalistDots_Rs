@@ -7,6 +7,7 @@ use std::path::PathBuf;
 use md_core::Translator;
 
 /// Textos traducidos de la invocación actual.
+#[derive(Clone)]
 pub struct Texts {
     translator: Translator,
 }

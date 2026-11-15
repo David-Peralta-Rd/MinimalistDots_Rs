@@ -9,6 +9,7 @@ mod launcher;
 mod menu;
 mod notifd;
 mod notify;
+mod pomodoro;
 mod process;
 mod record;
 mod shot;
@@ -75,6 +76,12 @@ enum Command {
         action: volume::Action,
     },
 
+    /// Temporizador Pomodoro (concentración/descanso).
+    Pomodoro {
+        #[command(subcommand)]
+        command: Option<pomodoro::PomodoroCommand>,
+    },
+
     /// Menú dmenu genérico: lee líneas por stdin e imprime la elegida.
     Menu {
         /// Nombre del menú (define el app-id `md.menu.<nombre>`).
@@ -111,6 +118,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Shot { mode } => shot::run(mode)?,
         Command::Record { mode, audio } => record::run(mode, audio)?,
         Command::Volume { action } => volume::run(action)?,
+        Command::Pomodoro { command } => {
+            pomodoro::run(command.unwrap_or(pomodoro::PomodoroCommand::Toggle))?;
+        }
         Command::Menu {
             name,
             prompt,
