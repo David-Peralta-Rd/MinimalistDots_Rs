@@ -10,6 +10,7 @@ mod fuzzy;
 mod language;
 mod menu;
 mod palette;
+mod volume;
 
 pub use color::{Color, ColorError};
 pub use desktop::{DesktopEntry, IconIndex, data_dirs, discover_desktop_entries, exec_args};
@@ -21,6 +22,7 @@ pub use language::{
 };
 pub use menu::{MenuEntry, MenuMode, filter, parse_dmenu_line};
 pub use palette::{Palette, PaletteError};
+pub use volume::VolumeState;
 
 #[cfg(test)]
 mod test_util {

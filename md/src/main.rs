@@ -4,6 +4,7 @@ use clap::{Parser, Subcommand};
 
 mod launcher;
 mod menu;
+mod volume;
 
 #[derive(Parser)]
 #[command(
@@ -23,6 +24,12 @@ enum Command {
 
     /// Lanzador de aplicaciones (lista los `.desktop` instalados).
     Launcher,
+
+    /// Cambia el volumen con `wpctl` y muestra un OSD transitorio.
+    Volume {
+        /// `up` sube, `down` baja, `mute` alterna el silencio.
+        action: volume::Action,
+    },
 
     /// Menú dmenu genérico: lee líneas por stdin e imprime la elegida.
     Menu {
@@ -52,6 +59,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     match cli.command {
         Command::About => md_ui::about(&md_ui::SlintHost)?,
         Command::Launcher => launcher::run()?,
+        Command::Volume { action } => volume::run(action)?,
         Command::Menu {
             name,
             prompt,

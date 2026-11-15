@@ -304,3 +304,75 @@ export component MdMenu inherits Window {
         }
     }
 }
+
+// OSD transitorio (volumen, brillo, etc.): una tarjeta pequeña que se muestra
+// un instante y se cierra sola. El auto-cierre lo dispara el anfitrión con
+// `slint::Timer`; este widget solo pinta icono + etiqueta + barra opcional.
+export component MdOsd inherits Window {
+    in property <color> accent: #7ec7a2;
+    in property <color> card-color: #1e222a;
+    in property <length> md-radius: 10px;
+    in-out property <string> md-title: "md.osd";
+    in-out property <length> md-width: 220px;
+    in-out property <length> md-height: 56px;
+
+    title <=> root.md-title;
+    width <=> root.md-width;
+    height <=> root.md-height;
+    background: #00000000;
+
+    // ----- datos -----
+    in property <string> glyph: "";
+    in property <string> label: "";
+    // `-1` oculta la barra de progreso.
+    in property <int> level: -1;
+    in property <bool> muted: false;
+
+    card := Rectangle {
+        width: parent.width;
+        height: parent.height;
+        background: root.card-color;
+        border-radius: root.md-radius;
+        border-width: 1px;
+        border-color: root.muted ? #e06c75 : #00000000;
+    }
+
+    if (root.glyph != "") : Text {
+        x: 14px;
+        y: 0px;
+        width: 24px;
+        height: parent.height;
+        text: root.glyph;
+        color: root.accent;
+        font-size: 18px;
+        vertical-alignment: center;
+    }
+
+    Text {
+        x: root.glyph != "" ? 42px : 14px;
+        y: 0px;
+        width: parent.width - (root.glyph != "" ? 42px : 14px) - 14px;
+        height: parent.height;
+        text: root.label;
+        color: root.muted ? #e06c75 : #abb2bf;
+        font-weight: 600;
+        font-size: 14px;
+        vertical-alignment: center;
+    }
+
+    if (root.level >= 0) : Rectangle {
+        x: 14px;
+        y: parent.height - 6px;
+        width: parent.width - 28px;
+        height: 3px;
+        background: #3e4451;
+        border-radius: 1px;
+
+        Rectangle {
+            width: parent.width * root.level / 100;
+            height: 100%;
+            background: root.accent;
+            border-radius: 1px;
+        }
+    }
+}

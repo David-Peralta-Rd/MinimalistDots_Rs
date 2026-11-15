@@ -12,9 +12,11 @@ mod generated {
 }
 
 mod menu;
+mod osd;
 
 pub use generated::*;
 pub use menu::{MenuConfig, MenuEvent, run as run_menu};
+pub use osd::{OsdConfig, run as run_osd};
 
 /// Puerto por el que los widgets muestran sus ventanas.
 ///

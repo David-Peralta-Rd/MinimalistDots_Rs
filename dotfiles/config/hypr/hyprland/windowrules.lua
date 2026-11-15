@@ -12,8 +12,10 @@ Rules.forClass("^md%..*$"):custom({
 })
 
 -- El lanzador y los menús conservan el foco de teclado mientras están visibles.
--- (El OSD y las notificaciones de H5/H6 NO deben robar foco: irán en una regla
--- aparte, sin `stay_focused`, cuando se implementen.)
+-- El OSD (`md volume`) y las notificaciones (H6) NO deben robar foco: heredan la
+-- regla `md.*` de arriba, que no lleva `stay_focused`. El OSD se muestra centrado
+-- por ahora; anclarlo arriba-centrado se afina en el spike de H8 (posicionamiento
+-- con `move` requiere verificación real en sesión Wayland).
 Rules.forClass("^md%.launcher$"):custom({
     stay_focused = true,
 })
