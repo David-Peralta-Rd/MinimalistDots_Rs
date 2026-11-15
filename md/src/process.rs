@@ -30,8 +30,13 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     if let MenuEvent::Selected(index) = run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config)?
         && let Some(process) = processes.get(index)
     {
-        // La notificación de confirmación llegará con `md notify` (H6).
         kill(process.pid)?;
+        crate::util::notify_send(
+            "Process Manager",
+            2500,
+            "Proceso terminado",
+            &format!("Proceso cerrado con PID: {}", process.pid),
+        );
     }
     Ok(())
 }

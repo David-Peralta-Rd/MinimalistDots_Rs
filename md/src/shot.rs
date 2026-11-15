@@ -1,7 +1,7 @@
 //! Subcomando `shot`: capturas de pantalla con `grimblast`.
 //!
-//! Reemplaza a `screenshot.sh`. Las notificaciones de resultado llegarán con
-//! `md notify` (H6); por ahora el resultado es silencioso.
+//! Reemplaza a `screenshot.sh`. Los resultados se notifican con `notify-send`
+//! (los recibe el demonio `md notify serve`).
 
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -41,7 +41,15 @@ pub fn run(mode: Mode) -> Result<(), Box<dyn std::error::Error>> {
     match mode {
         Mode::Scan => ocr(&temp)?,
         Mode::Qr => qr(&temp)?,
-        _ => capture(mode, &temp, &save_file)?,
+        _ => {
+            capture(mode, &temp, &save_file)?;
+            crate::util::notify_send(
+                "Screenshot",
+                3000,
+                "Captura guardada",
+                &format!("Guardada en {}", save_file.display()),
+            );
+        }
     }
     Ok(())
 }
@@ -77,9 +85,22 @@ fn ocr(temp: &Path) -> Result<(), std::io::Error> {
         .output()?;
     let text = String::from_utf8_lossy(&output.stdout).trim().to_owned();
     if text.is_empty() {
+        crate::util::notify_send(
+            "Screenshot",
+            3000,
+            "OCR Error",
+            "No se pudo detectar texto en la imagen",
+        );
         return Ok(());
     }
-    crate::util::copy_to_clipboard(&text)
+    crate::util::copy_to_clipboard(&text)?;
+    crate::util::notify_send(
+        "Screenshot",
+        3000,
+        "OCR Exitoso",
+        "Texto copiado al portapapeles",
+    );
+    Ok(())
 }
 
 /// Captura un área (congelada) y copia el contenido del código QR.
@@ -91,9 +112,22 @@ fn qr(temp: &Path) -> Result<(), std::io::Error> {
         .output()?;
     let text = String::from_utf8_lossy(&output.stdout).trim().to_owned();
     if text.is_empty() {
+        crate::util::notify_send(
+            "Screenshot",
+            3000,
+            "QR Error",
+            "No se encontró ningún código QR",
+        );
         return Ok(());
     }
-    crate::util::copy_to_clipboard(&text)
+    crate::util::copy_to_clipboard(&text)?;
+    crate::util::notify_send(
+        "Screenshot",
+        3000,
+        "QR Detectado",
+        "Contenido copiado al portapapeles",
+    );
+    Ok(())
 }
 
 /// `grimblast [--freeze] copysave <modo> <destino>`.
