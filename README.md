@@ -58,7 +58,7 @@ MinimalistDots_Rs/
 - **Subcomando Rust:** un archivo en `md/src/commands/` y una línea en el `enum` de `clap`.
 
 ## Novedades
-- **Unreleased:** estructura base y esqueleto andante. Ver [CHANGELOG](CHANGELOG.md).
+- **Unreleased:** migración completa de bash/Quickshell a Rust. Ver [CHANGELOG](CHANGELOG.md).
 
 ## Documentación
 [ROADMAP](docs/ROADMAP.md) · [MIGRATION](docs/MIGRATION.md) · [SECURITY](SECURITY.md) · [DEPENDENCIES](docs/security/DEPENDENCIES.md)
