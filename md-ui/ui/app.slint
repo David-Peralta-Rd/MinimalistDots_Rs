@@ -376,3 +376,138 @@ export component MdOsd inherits Window {
         }
     }
 }
+
+// Una tarjeta de notificación (proyección de una entrada del demonio).
+export struct NotificationItem {
+    app: string,
+    summary: string,
+    body: string,
+    // "low" | "normal" | "critical" (cadena para no acoplar el .slint al enum Rust).
+    urgency: string,
+    // -1 oculta la barra de progreso; 0..100 pinta el nivel.
+    progress: int,
+}
+
+// Pila de notificaciones (arriba a la derecha). El demonio (Rust) rellena el
+// modelo y ajusta el alto de la ventana al contenido; este widget solo pinta las
+// tarjetas y emite `close-requested` al hacer clic (o en la ✕).
+//
+// v1: el clic en la tarjeta cierra la notificación (la acción por defecto se
+// añadirá cuando se implemente la invocación de acciones en el demonio).
+export component MdNotifications inherits Window {
+    in property <color> accent: #7aa2f7;
+    in property <length> md-radius: 10px;
+    in-out property <string> md-title: "md.notifications";
+    in-out property <length> md-width: 360px;
+    in-out property <length> md-height: 76px;
+
+    title <=> root.md-title;
+    width <=> root.md-width;
+    height <=> root.md-height;
+    background: #00000000;
+
+    // ----- datos -----
+    in property <[NotificationItem]> notifications;
+
+    // ----- callbacks hacia el anfitrión -----
+    callback close-requested(int);
+
+    VerticalLayout {
+        spacing: 8px;
+
+        for item[index] in root.notifications : Rectangle {
+            width: parent.width;
+            height: 76px;
+            background: #1e222a;
+            border-radius: root.md-radius;
+            border-width: 1px;
+            border-color: item.urgency == "critical" ? #e06c75 : #4b5263;
+
+            // clic en la tarjeta = cerrar (v1); se declara primero para que la ✕
+            // (más tarde en el z-order) gane en su zona.
+            card-area := TouchArea {
+                clicked => { root.close-requested(index); }
+            }
+
+            // nombre de la app (mayúsculas, pequeño)
+            Text {
+                x: 14px;
+                y: 10px;
+                height: 14px;
+                width: parent.width - 60px;
+                text: item.app;
+                color: item.urgency == "critical" ? #e06c75 : #5c6370;
+                font-size: 10px;
+                font-weight: 600;
+                overflow: elide;
+            }
+
+            // botón de cerrar
+            close-btn := Rectangle {
+                x: parent.width - 32px;
+                y: 6px;
+                width: 22px;
+                height: 22px;
+                border-radius: 4px;
+                background: close-area.has-hover ? #3e4451 : #00000000;
+
+                Text {
+                    text: "✕";
+                    color: #abb2bf;
+                    font-size: 12px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+
+                close-area := TouchArea {
+                    clicked => { root.close-requested(index); }
+                }
+            }
+
+            // resumen (negrita)
+            Text {
+                x: 14px;
+                y: 28px;
+                height: 18px;
+                width: parent.width - 28px;
+                text: item.summary;
+                color: #abb2bf;
+                font-size: 13px;
+                font-weight: 700;
+                overflow: elide;
+                vertical-alignment: center;
+            }
+
+            // cuerpo
+            Text {
+                x: 14px;
+                y: 46px;
+                height: 16px;
+                width: parent.width - 28px;
+                text: item.body;
+                color: #5c6370;
+                font-size: 12px;
+                overflow: elide;
+                vertical-alignment: center;
+                visible: item.body != "";
+            }
+
+            // barra de progreso (hint "value")
+            if (item.progress >= 0) : Rectangle {
+                x: 14px;
+                y: 66px;
+                width: parent.width - 28px;
+                height: 3px;
+                background: #3e4451;
+                border-radius: 1px;
+
+                Rectangle {
+                    width: parent.width * item.progress / 100;
+                    height: 100%;
+                    background: item.urgency == "critical" ? #e06c75 : root.accent;
+                    border-radius: 1px;
+                }
+            }
+        }
+    }
+}
