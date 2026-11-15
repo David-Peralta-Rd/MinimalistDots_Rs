@@ -5,6 +5,7 @@ use clap::{Parser, Subcommand};
 mod binds;
 mod launcher;
 mod menu;
+mod process;
 mod volume;
 
 #[derive(Parser)]
@@ -28,6 +29,9 @@ enum Command {
 
     /// Visor de atajos de teclado agrupados por categoría.
     Binds,
+
+    /// Gestor de procesos: lista y mata procesos del usuario.
+    Process,
 
     /// Cambia el volumen con `wpctl` y muestra un OSD transitorio.
     Volume {
@@ -64,6 +68,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::About => md_ui::about(&md_ui::SlintHost)?,
         Command::Launcher => launcher::run()?,
         Command::Binds => binds::run()?,
+        Command::Process => process::run()?,
         Command::Volume { action } => volume::run(action)?,
         Command::Menu {
             name,

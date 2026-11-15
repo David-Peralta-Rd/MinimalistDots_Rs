@@ -11,6 +11,7 @@ mod keybinds;
 mod language;
 mod menu;
 mod palette;
+mod process;
 mod volume;
 
 pub use color::{Color, ColorError};
@@ -24,6 +25,7 @@ pub use language::{
 };
 pub use menu::{MenuEntry, MenuMode, filter, parse_dmenu_line};
 pub use palette::{Palette, PaletteError};
+pub use process::{ProcessEntry, parse_ps};
 pub use volume::VolumeState;
 
 #[cfg(test)]
