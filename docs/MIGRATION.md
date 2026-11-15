@@ -93,6 +93,7 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 | | Tarea | Origen → Destino |
 |---|---|---|
 | ✅ | **md volume**: `wpctl` (up/down/mute) + OSD `MdOsd` (icono/nivel, auto-cierre ~1.2 s) | `volume.sh` + `osd-volume.qml` |
+| ✅ | **md binds**: visor de atajos agrupado por categoría (lee `keybinds.json`) | `show_binds` wrapper |
 | ⬜ | **md shot**: capturas (pantalla/área/congelado/OCR/QR) con notificación | `screenshot.sh` |
 | ⬜ | **md record**: grabación con `gpu-screen-recorder` (área/monitor/audio/toggle) | `screenrecord.sh` |
 | ⬜ | **md wallpaper**: selector con miniaturas + `hyprpaper` | `select_wallpaper.sh` |

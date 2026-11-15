@@ -7,6 +7,7 @@ mod color;
 mod desktop;
 mod digest;
 mod fuzzy;
+mod keybinds;
 mod language;
 mod menu;
 mod palette;
@@ -16,6 +17,7 @@ pub use color::{Color, ColorError};
 pub use desktop::{DesktopEntry, IconIndex, data_dirs, discover_desktop_entries, exec_args};
 pub use digest::{TreeDigestError, compute_tree_digest};
 pub use fuzzy::{fuzzy, score};
+pub use keybinds::{Keybind, parse_keybinds, to_menu_entries};
 pub use language::{
     Catalog, CatalogError, CatalogReport, Translator, available_languages, base_of, load_chain,
     validate_language_catalogs,

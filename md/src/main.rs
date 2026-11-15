@@ -2,6 +2,7 @@
 
 use clap::{Parser, Subcommand};
 
+mod binds;
 mod launcher;
 mod menu;
 mod volume;
@@ -24,6 +25,9 @@ enum Command {
 
     /// Lanzador de aplicaciones (lista los `.desktop` instalados).
     Launcher,
+
+    /// Visor de atajos de teclado agrupados por categoría.
+    Binds,
 
     /// Cambia el volumen con `wpctl` y muestra un OSD transitorio.
     Volume {
@@ -59,6 +63,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     match cli.command {
         Command::About => md_ui::about(&md_ui::SlintHost)?,
         Command::Launcher => launcher::run()?,
+        Command::Binds => binds::run()?,
         Command::Volume { action } => volume::run(action)?,
         Command::Menu {
             name,
