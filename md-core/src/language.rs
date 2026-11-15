@@ -396,6 +396,18 @@ bienvenido = \"Welcome to MinimalistDots\"
     }
 
     #[test]
+    fn shipped_catalogs_are_valid() -> Result<(), CatalogError> {
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lang");
+        let report = validate_language_catalogs(&dir)?;
+        assert!(
+            report.is_valid(),
+            "catálogos de `lang/` inválidos: {:?}",
+            report.errors
+        );
+        Ok(())
+    }
+
+    #[test]
     fn validates_catalogs() -> Result<(), CatalogError> {
         let dir = TempDir::new("validate")?;
         dir.write("es.toml", ES)?;
