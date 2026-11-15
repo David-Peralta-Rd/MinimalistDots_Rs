@@ -93,16 +93,16 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 | | Tarea | Origen → Destino |
 |---|---|---|
 | ✅ | **md volume**: `wpctl` (up/down/mute) + OSD `MdOsd` (icono/nivel, auto-cierre ~1.2 s) | `volume.sh` + `osd-volume.qml` |
-| ✅ | **md binds**: visor de atajos agrupado por categoría (lee `keybinds.json`) | `show_binds` wrapper |
-| ✅ | **md process**: gestor de procesos (lista `ps` y mata por PID) | `bk2_process_manager.sh` |
-| ✅ | **md clip**: historial de `cliphist` (elegir→`wl-copy`, borrar, wipe) | `md_cliphist_list` + `cliphist` |
-| ✅ | **md wallpaper**: selector con miniaturas + `hyprpaper` | `select_wallpaper.sh` |
 | ✅ | **md shot**: capturas con `grimblast` (pantalla/área/congelado/monitor/OCR/QR) | `screenshot.sh` |
 | ✅ | **md record**: grabación con `gpu-screen-recorder` (área/monitor/audio/toggle) | `screenrecord.sh` |
-| ⬜ | **md wallpaper**: selector con miniaturas + `hyprpaper` | `select_wallpaper.sh` |
-| ⬜ | **md process**: gestor de procesos | `bk2_process_manager.sh` |
-| ⬜ | **md binds**: visor de atajos agrupado por categoría (lee `keybinds.json`) | `show_binds` wrapper |
-| ⬜ | **md clip**: historial de `cliphist` con miniaturas + decode a `wl-copy` | `md_cliphist_list` + `cliphist` |
+| ✅ | **md wallpaper**: selector con miniaturas + `hyprpaper` | `select_wallpaper.sh` |
+| ✅ | **md process**: gestor de procesos (lista `ps` y mata por PID) | `bk2_process_manager.sh` |
+| ✅ | **md binds**: visor de atajos agrupado por categoría (lee `keybinds.json`) | `show_binds` wrapper |
+| ✅ | **md clip**: historial de `cliphist` (elegir→`wl-copy`, borrar, wipe) | `md_cliphist_list` + `cliphist` |
+
+> Notificaciones (shot/record/process/volume) y las miniaturas reales de `clip`/`wallpaper`
+> (hoy se carga la imagen completa) quedan para H6/H8. El OSD de volumen no roba foco
+> (regla `md.*` sin `stay_focused`); su anclado arriba-centrado se afina en H8.
 
 ## H6 · Notificaciones
 
