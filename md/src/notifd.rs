@@ -258,3 +258,63 @@ pub fn clear_history() -> Result<(), std::io::Error> {
     };
     std::fs::write(path, b"")
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn hint_u8(value: u8) -> OwnedValue {
+        OwnedValue::from(value)
+    }
+
+    fn hint_i32(value: i32) -> OwnedValue {
+        OwnedValue::from(value)
+    }
+
+    #[test]
+    fn maps_expire_timeout() {
+        // > 0: se respeta (ms).
+        assert_eq!(
+            timeout_for(Urgency::Normal, 3000, DEFAULT_TIMEOUT),
+            Some(Duration::from_millis(3000))
+        );
+        // críticas sin timeout explícito: no expiran solas.
+        assert_eq!(timeout_for(Urgency::Critical, -1, DEFAULT_TIMEOUT), None);
+        assert_eq!(timeout_for(Urgency::Critical, 0, DEFAULT_TIMEOUT), None);
+        // no críticas sin timeout: usan el por defecto.
+        assert_eq!(
+            timeout_for(Urgency::Normal, -1, DEFAULT_TIMEOUT),
+            Some(DEFAULT_TIMEOUT)
+        );
+    }
+
+    #[test]
+    fn reads_urgency_from_hints() {
+        let mut hints = HashMap::new();
+        hints.insert("urgency".to_owned(), hint_u8(2));
+        assert_eq!(urgency_from_hints(&hints), Urgency::Critical);
+
+        // tolera `i32` en vez de byte.
+        let mut hints = HashMap::new();
+        hints.insert("urgency".to_owned(), hint_i32(1));
+        assert_eq!(urgency_from_hints(&hints), Urgency::Normal);
+
+        // sin hint: normal.
+        assert_eq!(urgency_from_hints(&HashMap::new()), Urgency::Normal);
+    }
+
+    #[test]
+    fn reads_progress_from_hints() {
+        let mut hints = HashMap::new();
+        hints.insert("value".to_owned(), hint_i32(42));
+        assert_eq!(progress_from_hints(&hints), 42);
+
+        // se recorta a 0..100.
+        let mut hints = HashMap::new();
+        hints.insert("value".to_owned(), hint_i32(150));
+        assert_eq!(progress_from_hints(&hints), 100);
+
+        // sin hint: oculto.
+        assert_eq!(progress_from_hints(&HashMap::new()), -1);
+    }
+}
