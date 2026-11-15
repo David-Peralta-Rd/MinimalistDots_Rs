@@ -26,14 +26,25 @@ Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%
 -- el comportamiento "detrás de las ventanas" (que exigiría layer-shell) se
 -- verifican en H8.
 Rules.forClass("^(md%.clock)$"):custom({
-    name  = "move-md-clock",
-    move  = "0 monitor_h/2-20",
-    float = true,
+    name      = "move-md-clock",
+    move      = "0 monitor_h/2-20",
+    float     = true,
+    pin       = true,
+    below     = true,
+    no_move   = true,
+    no_resize = true,
+    no_focus  = true,
 })
 
 Rules.forClass("^(md%.notifications)$"):custom({
-    float = true,
-    move  = "monitor_w-window_w-20 20",
+    name      = "move-md-notifications",
+    float     = true,
+    center    = false,
+    move      = "monitor_w-window_w-20 20",
+    no_move   = true,
+    no_resize = true,
+    no_focus  = true,
+    pin       = true,
 })
 
 Rules.forClass(".*"):noBlur()
