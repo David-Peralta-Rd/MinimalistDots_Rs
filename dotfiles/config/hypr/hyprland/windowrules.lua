@@ -30,9 +30,6 @@ Rules.forClass("^(md%.clock)$"):custom({
     move      = "0 monitor_h/2-20",
     float     = true,
     pin       = true,
-    below     = true,
-    no_move   = true,
-    no_resize = true,
     no_focus  = true,
 })
 
@@ -41,8 +38,6 @@ Rules.forClass("^(md%.notifications)$"):custom({
     float     = true,
     center    = false,
     move      = "monitor_w-window_w-20 20",
-    no_move   = true,
-    no_resize = true,
     no_focus  = true,
     pin       = true,
 })
