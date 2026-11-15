@@ -4,11 +4,10 @@ local Rules = require("hyprland.lib.rules")
 -- pinadas (visibles en todos los workspaces) y sin borde ni animación, para que
 -- parezcan popups. `pin` solo afecta a ventanas flotantes, por eso va con `float`.
 Rules.forClass("^md%..*$"):custom({
-    float     = true,
-    center    = true,
-    pin       = true,
+    float       = true,
+    pin         = true,
     border_size = 0,
-    no_anim   = true,
+    no_anim     = true,
 })
 
 -- Los menús interactivos conservan el foco de teclado mientras están visibles.
@@ -19,6 +18,7 @@ Rules.forClass("^md%..*$"):custom({
 -- (requiere verificación real en sesión Wayland).
 Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%.process|md%.notify|md%.pomodoro%.ask|md%.ai%.ask|md%.language)$"):custom({
     stay_focused = true,
+    center       = true,
 })
 
 -- El reloj (`md clock`) va a la izquierda, centrado en vertical y 40px más abajo
