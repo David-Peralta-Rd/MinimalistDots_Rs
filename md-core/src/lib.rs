@@ -16,6 +16,7 @@ mod notify;
 mod palette;
 mod pomodoro;
 mod process;
+mod updates;
 mod volume;
 mod wallpaper;
 
@@ -42,6 +43,7 @@ pub use notify::{
 pub use palette::{Palette, PaletteError};
 pub use pomodoro::{Phase, Pomodoro, PomodoroError, TickEvent};
 pub use process::{ProcessEntry, parse_ps};
+pub use updates::{Update, load_updates};
 pub use volume::VolumeState;
 pub use wallpaper::{Wallpaper, discover_wallpapers};
 

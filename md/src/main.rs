@@ -19,6 +19,7 @@ mod shot;
 mod util;
 mod volume;
 mod wallpaper;
+mod welcome;
 
 #[derive(Parser)]
 #[command(
@@ -91,6 +92,9 @@ enum Command {
     /// Cambia el idioma de los menús y avisos.
     Language,
 
+    /// Pantalla de bienvenida (idioma, atajos, novedades, GitHub).
+    Welcome,
+
     /// IA local: menú de modelos, servidores `llama-server`, diagnóstico.
     Ai {
         #[command(subcommand)]
@@ -138,6 +142,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Command::Clock => clock::run()?,
         Command::Language => language::run()?,
+        Command::Welcome => welcome::run()?,
         Command::Ai { command } => ai::run(command)?,
         Command::Menu {
             name,

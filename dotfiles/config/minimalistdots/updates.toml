@@ -1,0 +1,11 @@
+[[novedad]]
+titulo = "Migración completa a Rust"
+descripcion = "Todos los menús y utilidades ahora viven en el binario `md` (Rust/Slint)."
+
+[[novedad]]
+titulo = "Idioma en runtime"
+descripcion = "Cambia el idioma de los menús con `md language` o desde esta bienvenida."
+
+[[novedad]]
+titulo = "IA local"
+descripcion = "Elige modelos, descarga .gguf y levanta llama-server con `md ai toggle`."

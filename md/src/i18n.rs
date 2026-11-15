@@ -36,7 +36,7 @@ impl Texts {
 /// Raíz de MinimalistDots (`~/.config/minimalistdots`), igual que escribe el
 /// instalador (`Paths.settings` usa `$HOME`, no `$XDG_CONFIG_HOME`). Override por
 /// entorno (`MINIMALISTDOTS_CONFIG`, útil en pruebas).
-fn minimalistdots_dir() -> PathBuf {
+pub fn minimalistdots_dir() -> PathBuf {
     std::env::var_os("MINIMALISTDOTS_CONFIG")
         .map(PathBuf::from)
         .or_else(|| {

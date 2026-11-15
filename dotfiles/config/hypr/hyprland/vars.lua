@@ -37,6 +37,7 @@ return {
     process_manager     = MD .. " process",
     pomodoro            = MD .. " pomodoro toggle",
     llm_menu            = MD .. " ai toggle",
+    language            = MD .. " language",
     notifications       = MD .. " notify history",
     notifications_dnd   = MD .. " notify dnd",
     notifications_close = MD .. " notify dismiss",
