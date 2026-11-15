@@ -2,6 +2,7 @@
 
 use clap::{Parser, Subcommand};
 
+mod ai;
 mod binds;
 mod clip;
 mod clock;
@@ -86,6 +87,12 @@ enum Command {
     /// Reloj de escritorio persistente.
     Clock,
 
+    /// IA local: menú de modelos, servidores `llama-server`, diagnóstico.
+    Ai {
+        #[command(subcommand)]
+        command: ai::AiCommand,
+    },
+
     /// Menú dmenu genérico: lee líneas por stdin e imprime la elegida.
     Menu {
         /// Nombre del menú (define el app-id `md.menu.<nombre>`).
@@ -126,6 +133,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             pomodoro::run(command.unwrap_or(pomodoro::PomodoroCommand::Toggle))?;
         }
         Command::Clock => clock::run()?,
+        Command::Ai { command } => ai::run(command)?,
         Command::Menu {
             name,
             prompt,

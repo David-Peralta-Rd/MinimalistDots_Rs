@@ -3,6 +3,7 @@
 //! Sin `unsafe`, sin E/S salvo lectura de archivos de datos, y sin `panic`:
 //! todo lo fallable devuelve `Result` o `Option`.
 
+mod ai;
 mod clip;
 mod color;
 mod desktop;
@@ -18,6 +19,11 @@ mod process;
 mod volume;
 mod wallpaper;
 
+pub use ai::{
+    CAT_CODE, CAT_FIM, CAT_GEN, CAT_LIGHT, CAT_LOCAL, CAT_THINK, CATEGORIES, GIB, ModelsEnv,
+    Preset, agent_tag, dl_file, dl_repo, expand_env_vars, friendly_name, gib, parse_models_env,
+    parse_preset, preset_bytes, presets, ram_warn,
+};
 pub use clip::{ClipEntry, parse_clip_line, parse_clip_list};
 pub use color::{Color, ColorError};
 pub use desktop::{DesktopEntry, IconIndex, data_dirs, discover_desktop_entries, exec_args};
