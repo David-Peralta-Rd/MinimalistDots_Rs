@@ -69,6 +69,27 @@ pub fn base_of(codigo: &str) -> &str {
     }
 }
 
+/// Lee el idioma guardado en un `settings.toml` (`idioma = "es"`), o `None` si
+/// falta la clave o el contenido no es un TOML válido. Lo usa `md` al arrancar
+/// para elegir el catálogo (ADR-0004: el cambio vale al reiniciar).
+pub fn read_settings_language(text: &str) -> Option<String> {
+    let value: toml::Value = toml::from_str(text).ok()?;
+    value
+        .get("idioma")
+        .and_then(toml::Value::as_str)
+        .map(str::to_owned)
+}
+
+/// Sustituye los marcadores `{nombre}` de `text` con sus valores (v1: sin
+/// plurales ni género; ADR-0004 los deja a Fluent si hicieran falta).
+pub fn fill(text: &str, values: &[(&str, &str)]) -> String {
+    let mut result = text.to_owned();
+    for (name, value) in values {
+        result = result.replace(&format!("{{{name}}}"), value);
+    }
+    result
+}
+
 /// Traduce claves aplicando la cadena de respaldo código → base → `es` → clave.
 #[derive(Debug, Clone, Default)]
 pub struct Translator {
@@ -346,6 +367,32 @@ bienvenido = \"Welcome to MinimalistDots\"
         assert!(set.contains("nombre"));
         assert!(set.contains("correo"));
         assert!(!set.contains("nombre}"));
+    }
+
+    #[test]
+    fn reads_language_from_settings() {
+        assert_eq!(
+            read_settings_language("idioma = \"es\"\n"),
+            Some("es".to_owned())
+        );
+        assert_eq!(
+            read_settings_language("# comentario\nidioma = \"en\"\n"),
+            Some("en".to_owned())
+        );
+        // Sin clave `idioma` o sin TOML válido: `None`.
+        assert_eq!(read_settings_language("otra = \"cosa\"\n"), None);
+        assert_eq!(read_settings_language("no es toml"), None);
+    }
+
+    #[test]
+    fn fills_markers() {
+        assert_eq!(fill("Hola {nombre}", &[("nombre", "Ana")]), "Hola Ana");
+        assert_eq!(
+            fill("Guardada en {ruta}", &[("ruta", "/tmp/a.png")]),
+            "Guardada en /tmp/a.png"
+        );
+        // Marcadores sin valor quedan tal cual; valores sin marcador se ignoran.
+        assert_eq!(fill("sin marcadores", &[("x", "y")]), "sin marcadores");
     }
 
     #[test]

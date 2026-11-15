@@ -24,8 +24,8 @@ pub use digest::{TreeDigestError, compute_tree_digest};
 pub use fuzzy::{fuzzy, score};
 pub use keybinds::{Keybind, parse_keybinds, to_menu_entries};
 pub use language::{
-    Catalog, CatalogError, CatalogReport, Translator, available_languages, base_of, load_chain,
-    validate_language_catalogs,
+    Catalog, CatalogError, CatalogReport, Translator, available_languages, base_of, fill,
+    load_chain, read_settings_language, validate_language_catalogs,
 };
 pub use menu::{MenuEntry, MenuMode, filter, parse_dmenu_line};
 pub use notify::{
