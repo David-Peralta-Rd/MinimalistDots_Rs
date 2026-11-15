@@ -280,6 +280,8 @@ fn ask(texts: &Texts, key: &str, options: &[u32]) -> Option<u32> {
         can_delete: false,
         can_wipe: false,
         submit_empty: true,
+        wipe_label: None,
+        confirm_wipe_label: None,
     };
 
     match run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config).ok()? {

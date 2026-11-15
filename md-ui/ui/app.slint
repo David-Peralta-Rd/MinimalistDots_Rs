@@ -61,6 +61,8 @@ export component MdMenu inherits Window {
     in property <length> row-height: 40px;
     in property <bool> can-delete: false;
     in property <bool> can-wipe: false;
+    in property <string> wipe-label: "🧹 Borrar todo";
+    in property <string> confirm-wipe-label: "¿Seguro? Pulsa otra vez";
     // Si es `true`, Enter con la lista vacía emite `activated(-1)` (usar el
     // texto tecleado); en caso contrario no hace nada.
     in property <bool> submit-empty: false;
@@ -173,7 +175,7 @@ export component MdMenu inherits Window {
         background: root.confirm-wipe ? #e06c75 : (wipe-area.has-hover ? #3e4451 : #00000000);
 
         Text {
-            text: root.confirm-wipe ? "¿Seguro? Pulsa otra vez" : "🧹 Borrar todo";
+            text: root.confirm-wipe ? root.confirm-wipe-label : root.wipe-label;
             color: root.confirm-wipe ? #1e222a : #abb2bf;
             font-size: 12px;
             vertical-alignment: center;

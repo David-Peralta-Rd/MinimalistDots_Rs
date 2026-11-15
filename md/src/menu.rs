@@ -34,6 +34,8 @@ pub fn run(args: &Args) -> Result<(), Box<dyn std::error::Error>> {
             can_delete: args.delete_cmd.is_some(),
             can_wipe: args.wipe_cmd.is_some(),
             submit_empty: !args.raw,
+            wipe_label: None,
+            confirm_wipe_label: None,
         };
 
         match run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config)? {

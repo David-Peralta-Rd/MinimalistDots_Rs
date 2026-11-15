@@ -28,6 +28,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         can_delete: false,
         can_wipe: false,
         submit_empty: false,
+        wipe_label: None,
+        confirm_wipe_label: None,
     };
 
     if let MenuEvent::Selected(index) = run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config)?

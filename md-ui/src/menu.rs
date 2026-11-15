@@ -28,6 +28,10 @@ pub struct MenuConfig {
     pub height: f32,
     pub can_delete: bool,
     pub can_wipe: bool,
+    /// Etiqueta del botón "borrar todo" (Slint). Si es `None`, usa el texto por defecto.
+    pub wipe_label: Option<String>,
+    /// Etiqueta de confirmación del borrado total. Si es `None`, usa el texto por defecto.
+    pub confirm_wipe_label: Option<String>,
     /// Si es `true`, Enter con la lista vacía devuelve el texto tecleado
     /// (`MenuEvent::Typed`). Útil para `dmenu` sin `--raw`.
     pub submit_empty: bool,
@@ -45,6 +49,8 @@ impl Default for MenuConfig {
             height: 400.0,
             can_delete: false,
             can_wipe: false,
+            wipe_label: None,
+            confirm_wipe_label: None,
             submit_empty: false,
         }
     }
@@ -122,6 +128,12 @@ pub fn run(
     component.set_md_height(config.height);
     component.set_can_delete(config.can_delete);
     component.set_can_wipe(config.can_wipe);
+    if let Some(label) = &config.wipe_label {
+        component.set_wipe_label(label.clone().into());
+    }
+    if let Some(label) = &config.confirm_wipe_label {
+        component.set_confirm_wipe_label(label.clone().into());
+    }
     component.set_submit_empty(config.submit_empty);
 
     let state = Rc::new(RefCell::new(State {

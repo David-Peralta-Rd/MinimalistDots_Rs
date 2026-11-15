@@ -38,6 +38,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         can_delete: false,
         can_wipe: false,
         submit_empty: false,
+        wipe_label: None,
+        confirm_wipe_label: None,
     };
 
     // Visor de solo lectura: la selección se ignora (cierra el menú).

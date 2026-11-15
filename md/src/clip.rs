@@ -35,6 +35,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             can_delete: true,
             can_wipe: true,
             submit_empty: false,
+            wipe_label: Some(texts.t("escritorio.borrar_todo")),
+            confirm_wipe_label: Some(texts.t("escritorio.confirmar_borrar")),
         };
 
         match run_menu(&SlintHost, &items, MenuMode::Dmenu, &config)? {
