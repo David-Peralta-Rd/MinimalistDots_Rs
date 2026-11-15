@@ -57,6 +57,28 @@ pub enum AiCommand {
     /// Lista los modelos ya descargados (para `md ai dev`).
     #[command(name = "list-local")]
     ListLocal,
+    /// (Re)genera el proveedor local en opencode.json (sin modelo por defecto).
+    Config,
+    /// Mide tokens/s reales con llama-bench.
+    Bench {
+        #[arg(value_enum, default_value = "chat")]
+        target: UpTarget,
+    },
+    /// Proyecto nuevo desde la plantilla (git + GitHub opcional).
+    New {
+        name: String,
+        #[arg(long)]
+        public: bool,
+        #[arg(long)]
+        local: bool,
+        #[arg(short = 'd', long)]
+        desc: Option<String>,
+    },
+    /// Pregunta qué modelo usar y abre OpenCode.
+    Code {
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        args: Vec<String>,
+    },
 }
 
 /// Qué servidor parar con `stop`.
@@ -102,6 +124,15 @@ pub fn run(command: AiCommand) -> Result<(), Box<dyn std::error::Error>> {
             Ok(())
         }
         AiCommand::ListLocal => list_local(),
+        AiCommand::Config => config(),
+        AiCommand::Bench { target } => bench(target),
+        AiCommand::New {
+            name,
+            public,
+            local,
+            desc,
+        } => new_project(&name, public, local, desc.as_deref()),
+        AiCommand::Code { args } => code(&args),
     }
 }
 
@@ -1661,6 +1692,423 @@ fn list_local() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     Ok(())
+}
+
+// ==============================================================================
+// CONFIG (OpenCode)
+// ==============================================================================
+
+fn opencode_config_path() -> PathBuf {
+    config_dir().join("opencode/opencode.json")
+}
+
+fn ai_home() -> PathBuf {
+    std::env::var_os("MD_AI_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            // .../scripts -> .../ai
+            // Fallback: ~/.config no; use installer's ai dir unknown; try common.
+            home_dir().join(".config/ai")
+        })
+}
+
+fn model_alias(reference: &str) -> String {
+    md_core::friendly_name(reference)
+}
+
+fn config() -> Result<(), Box<dyn std::error::Error>> {
+    let env = load_models_env();
+    if env.chat_model.is_empty() {
+        eprintln!("define CHAT_MODEL en {}", models_env_path().display());
+        return Ok(());
+    }
+    let id = model_alias(&env.chat_model);
+    let path = opencode_config_path();
+    if let Some(parent) = path.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    if !path.exists() {
+        let content = format!(
+            r#"{{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {{
+    "llamacpp": {{
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (local)",
+      "options": {{ "baseURL": "http://127.0.0.1:{}/v1" }},
+      "models": {{
+        "{}": {{
+          "name": "{}",
+          "limit": {{ "context": {}, "output": 4096 }}
+        }}
+      }}
+    }}
+  }}
+}}"#,
+            env.chat_port, id, id, env.chat_ctx
+        );
+        std::fs::write(&path, content)?;
+        println!("creado {}", path.display());
+        return Ok(());
+    }
+    // If jq available, update; else print hint.
+    if command_exists("jq") {
+        // Use oc_set_local logic via jq
+        let ctx = env.chat_ctx;
+        let url = format!("http://127.0.0.1:{}/v1", env.chat_port);
+        let filter = r#".["$schema"] //= "https://opencode.ai/config.json" | if ((.model // "") | startswith("llamacpp/")) then del(.model) else . end | .provider.llamacpp = {npm:"@ai-sdk/openai-compatible",name:"llama.cpp (local)",options:{baseURL:$url},models:{($id):{name:$id,limit:{context:$ctx,output:4096}}}}"#;
+        let tmp = std::env::temp_dir().join("opencode.json.tmp");
+        let status = Command::new("jq")
+            .args([
+                "--arg",
+                "id",
+                &id,
+                "--arg",
+                "url",
+                &url,
+                "--argjson",
+                "ctx",
+                &ctx.to_string(),
+                filter,
+                path.to_str().unwrap_or(""),
+            ])
+            .output()?;
+        if status.status.success() {
+            std::fs::write(&tmp, &status.stdout)?;
+            let _ = std::fs::rename(&tmp, &path);
+            println!("actualizado el proveedor 'llamacpp' en {}", path.display());
+        } else {
+            eprintln!("jq falló; {} quedó intacto.", path.display());
+        }
+    } else {
+        eprintln!("{} ya existe y falta jq para actualizarlo.", path.display());
+    }
+    Ok(())
+}
+
+// ==============================================================================
+// BENCH
+// ==============================================================================
+fn bench(target: UpTarget) -> Result<(), Box<dyn std::error::Error>> {
+    let env = load_models_env();
+    let model = match target {
+        UpTarget::Chat => env.chat_model.clone(),
+        UpTarget::Fim => env.fim_model.clone(),
+        UpTarget::All => env.chat_model.clone(),
+    };
+    if !command_exists("llama-bench") {
+        eprintln!("no encuentro llama-bench (revisa el paquete llama-cpp).");
+        return Ok(());
+    }
+    if !Path::new(&model).is_file() {
+        eprintln!(
+            "modelo no encontrado: '{}' (edita {})",
+            model,
+            models_env_path().display()
+        );
+        return Ok(());
+    }
+    // check servers running via status
+    if is_running(&big_pid_file()) || is_running(&small_pid_file()) {
+        eprintln!("hay servidores encendidos; ejecuta primero: md ai stop");
+        return Ok(());
+    }
+    let _ = std::fs::create_dir_all(log_dir());
+    let stamp = crate::util::now_stamp();
+    let out = log_dir().join(format!("bench-{stamp}.md"));
+    let threads = if target == UpTarget::Fim {
+        env.fim_threads
+    } else {
+        env.threads
+    };
+    println!(
+        "Midiendo {} con -t {},{} (CPU pura). Puede tardar varios minutos...",
+        model,
+        threads,
+        threads * 2
+    );
+    let mut cmd = Command::new("llama-bench");
+    cmd.args([
+        "-m",
+        &model,
+        "-ngl",
+        "0",
+        "-t",
+        &format!("{},{}", threads, threads * 2),
+        "-p",
+        "512",
+        "-n",
+        "128",
+        "-o",
+        "md",
+    ]);
+    if supports_device_flag() {
+        cmd.args(["--device", "none"]);
+    }
+    let output = cmd.output()?;
+    let _ = std::fs::write(&out, &output.stdout);
+    let _ = std::io::Write::write_all(&mut std::io::stdout(), &output.stdout);
+    println!();
+    println!(
+        "Guardado en {}  (pp = lectura del prompt, tg = generación; anota los tokens/s de tg).",
+        out.display()
+    );
+    Ok(())
+}
+
+// ==============================================================================
+// NEW (proyecto nuevo)
+// ==============================================================================
+fn new_project(
+    name: &str,
+    public: bool,
+    local: bool,
+    desc: Option<&str>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    if !name
+        .chars()
+        .all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '-' || c == '_')
+    {
+        eprintln!("el nombre solo puede llevar letras, números, punto, guion y guion bajo.");
+        return Ok(());
+    }
+    let tpl = ai_home().join("templates/project");
+    // fallback to installer ai dir
+    let tpl = if tpl.is_dir() {
+        tpl
+    } else {
+        home_dir().join(".config/ai/templates/project")
+    };
+    if !tpl.is_dir() {
+        eprintln!(
+            "no encuentro la plantilla en {} (ejecuta el instalador).",
+            tpl.display()
+        );
+        return Ok(());
+    }
+    let dir = std::env::current_dir()?.join(name);
+    if dir.exists() {
+        eprintln!("{} ya existe.", name);
+        return Ok(());
+    }
+    std::fs::create_dir_all(&dir)?;
+    // copy template
+    copy_dir_all(&tpl, &dir)?;
+    // replace __PROJECT__
+    replace_in_md(&dir, "__PROJECT__", name);
+    // git init
+    let _ = Command::new("git")
+        .args(["init", "-q", "-b", "main"])
+        .arg(&dir)
+        .status();
+    let _ = Command::new("git")
+        .args(["-C"])
+        .arg(&dir)
+        .args(["add", "-A"])
+        .status();
+    let commit = Command::new("git")
+        .args(["-C"])
+        .arg(&dir)
+        .args(["commit", "-q", "-m", "chore: estructura inicial (ai-new)"])
+        .status();
+    if !commit.is_ok_and(|s| s.success()) {
+        eprintln!(
+            "el proyecto quedó en ./{} pero el primer commit falló.",
+            name
+        );
+        return Ok(());
+    }
+    println!("creado ./{}/ (rama main, primer commit hecho)", name);
+
+    if local {
+        println!("modo --local: sin repo en GitHub.");
+    } else if !command_exists("gh") {
+        eprintln!("aviso: gh no está instalado; el proyecto queda solo local.");
+    } else {
+        let auth = Command::new("gh")
+            .args(["auth", "status", "--hostname", "github.com"])
+            .status();
+        if !auth.is_ok_and(|s| s.success()) {
+            eprintln!(
+                "aviso: gh no tiene sesión; el proyecto queda solo local. Entra con: gh auth login"
+            );
+        } else {
+            let visibility = if public { "--public" } else { "--private" };
+            let source = format!("./{}", name);
+            let mut args = vec![
+                "repo",
+                "create",
+                name,
+                visibility,
+                "--source",
+                &source,
+                "--remote=origin",
+                "--push",
+            ];
+            if let Some(d) = desc {
+                args.push("--description");
+                args.push(d);
+            }
+            let status = Command::new("gh").args(&args).status();
+            if status.is_ok_and(|s| s.success()) {
+                println!("repo creado en GitHub.");
+            } else {
+                eprintln!(
+                    "aviso: no se pudo crear el repo en GitHub (¿ya existe '{}' en tu cuenta?); queda local.",
+                    name
+                );
+            }
+        }
+    }
+    println!();
+    println!("siguiente:");
+    println!("  1) llévalo a tu Project de Claude (modo PLANEAR) y pega aquí SPEC.md y tasks.md");
+    println!("  2) cd {} && md ai code", name);
+    Ok(())
+}
+
+fn copy_dir_all(src: &Path, dst: &Path) -> std::io::Result<()> {
+    std::fs::create_dir_all(dst)?;
+    for entry in std::fs::read_dir(src)? {
+        let entry = entry?;
+        let src_path = entry.path();
+        let dst_path = dst.join(entry.file_name());
+        if entry.file_type()?.is_dir() {
+            copy_dir_all(&src_path, &dst_path)?;
+        } else {
+            std::fs::copy(&src_path, &dst_path)?;
+        }
+    }
+    Ok(())
+}
+
+fn replace_in_md(dir: &Path, from: &str, to: &str) {
+    if let Ok(entries) = std::fs::read_dir(dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                replace_in_md(&path, from, to);
+            } else if path.extension().and_then(|e| e.to_str()) == Some("md")
+                && let Ok(text) = std::fs::read_to_string(&path)
+            {
+                let _ = std::fs::write(&path, text.replace(from, to));
+            }
+        }
+    }
+}
+
+// ==============================================================================
+// CODE (abre OpenCode con el modelo elegido)
+// ==============================================================================
+fn code(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
+    if !command_exists("opencode") {
+        eprintln!("opencode no está instalado (sudo pacman -S opencode).");
+        return Ok(());
+    }
+    let env = load_models_env();
+    let chat_port = env.chat_port;
+    let chat_ctx = env.chat_ctx;
+    // List local models
+    let entries = scan_models();
+    // Build labels for local models
+    let mut labels: Vec<String> = Vec::new();
+    let mut refs: Vec<String> = Vec::new();
+    for entry in entries.iter().filter(|e| e.local) {
+        labels.push(entry.label.clone());
+        refs.push(entry.reference.clone());
+    }
+    // "free" option
+    labels.push("☁ Otro proveedor…  (elegir dentro de OpenCode con /models)".to_owned());
+    refs.push(String::new());
+
+    if labels.len() <= 1 {
+        // only free option? actually if no local models, labels has free only
+    }
+
+    let choice = match choose("OpenCode: ¿qué modelo usar?", &labels) {
+        Some(c) => c,
+        None => {
+            println!("cancelado.");
+            return Ok(());
+        }
+    };
+    let idx = labels
+        .iter()
+        .position(|l| *l == choice)
+        .unwrap_or(usize::MAX);
+    if idx == usize::MAX || idx >= refs.len() {
+        eprintln!("opción no reconocida.");
+        return Ok(());
+    }
+    let reference = &refs[idx];
+    if reference.is_empty() {
+        // free
+        // remove model if points to llamacpp
+        let path = opencode_config_path();
+        if path.exists() && command_exists("jq") {
+            let filter =
+                r#"if ((.model // "") | startswith("llamacpp/")) then del(.model) else . end"#;
+            let out = Command::new("jq").arg(filter).arg(&path).output()?;
+            if out.status.success() {
+                let tmp = std::env::temp_dir().join("oc.json.tmp");
+                let _ = std::fs::write(&tmp, &out.stdout);
+                let _ = std::fs::rename(&tmp, &path);
+            }
+        }
+        // reload
+        let _ = Command::new("opencode").arg("reload").status();
+        // exec opencode with args
+        let status = Command::new("opencode").args(args).status()?;
+        std::process::exit(status.code().unwrap_or(0));
+    }
+
+    // local model
+    let name = model_alias(reference);
+    // ensure server running
+    if !is_running(&big_pid_file()) {
+        let log = big_log();
+        start_server(&ServerSpec {
+            pid_file: &big_pid_file(),
+            model: reference,
+            port: chat_port,
+            ctx: chat_ctx,
+            threads: env.threads,
+            log: &log,
+            ngl: &env.ngl,
+            jinja: true,
+        })?;
+        // wait
+        let _ = wait_ready(chat_port, &big_pid_file());
+    }
+    // set local model in opencode (select=1)
+    if command_exists("jq") {
+        let path = opencode_config_path();
+        let url = format!("http://127.0.0.1:{}/v1", chat_port);
+        let filter = r#".["$schema"] //= "https://opencode.ai/config.json" | .model = ("llamacpp/" + $id) | .provider.llamacpp = {npm:"@ai-sdk/openai-compatible",name:"llama.cpp (local)",options:{baseURL:$url},models:{($id):{name:$id,limit:{context:$ctx,output:4096}}}}"#;
+        let out = Command::new("jq")
+            .args([
+                "--arg",
+                "id",
+                &name,
+                "--arg",
+                "url",
+                &url,
+                "--argjson",
+                "ctx",
+                &chat_ctx.to_string(),
+                filter,
+                path.to_str().unwrap_or(""),
+            ])
+            .output()?;
+        if out.status.success() {
+            let tmp = std::env::temp_dir().join("oc.json.tmp");
+            let _ = std::fs::write(&tmp, &out.stdout);
+            let _ = std::fs::rename(&tmp, &path);
+        }
+    }
+    let _ = Command::new("opencode").arg("reload").status();
+    let status = Command::new("opencode").args(args).status()?;
+    std::process::exit(status.code().unwrap_or(0));
 }
 
 #[cfg(test)]

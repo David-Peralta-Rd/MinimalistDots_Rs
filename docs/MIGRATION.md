@@ -123,7 +123,7 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 | ✅ | **md pomodoro**: preguntas (foco/descanso/sesiones), temporizador en widget, fases, sonido (descarga/conversión), toggle | `pomodoro.qml` + `pomodoro.sh` |
 | ✅ | **md clock**: reloj de escritorio persistente | `clock.qml` |
 | ✅ | **md ai menu**: elegir modelos, levantar/apagar `llama-server` (:8080/:8081), descarga de `.gguf`, RAM, `doctor` | `llm_menu.sh` |
-| ⬜ | **md ai dev**: `ai-up/down/doctor/bench/code/new`, `models.env`, config OpenCode | `ai.sh` |
+| ✅ | **md ai dev**: `ai-up/down/doctor/bench/code/new`, `models.env`, config OpenCode | `ai.sh` |
 | ✅ | **Idioma conmutable en runtime**: `md` lee `settings.toml` al arrancar (cambio aplica al reiniciar, sin proceso residente) | ADR-0004 |
 
 > Idioma runtime: `md/i18n.rs` lee `~/.config/minimalistdots/settings.toml` (clave
