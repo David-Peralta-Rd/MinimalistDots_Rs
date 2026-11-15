@@ -1,5 +1,6 @@
 """Paso: compilación e instalación del binario `md` (Rust)."""
 
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -49,7 +50,11 @@ def run(ctx: Context) -> None:
 
     if src.is_file():
         dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, dest)
+        # Copia a un archivo temporal y renombra: evita "Text file busy" cuando
+        # `md` está en ejecución (el proceso conserva el inodo antiguo).
+        tmp = dest.with_suffix(".new")
+        shutil.copy2(src, tmp)
+        os.replace(tmp, dest)
         print(f"  `md` instalado en {dest}")
     else:
         print("  aviso: no se generó el binario `md`.")
