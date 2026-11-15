@@ -9,8 +9,11 @@ use std::process::Command;
 use md_core::{MenuEntry, MenuMode, discover_wallpapers};
 use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
 
+use crate::i18n::Texts;
+
 /// Ejecuta el selector de fondos de pantalla.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     let dir = wallpaper_dir();
     std::fs::create_dir_all(&dir)?;
 
@@ -26,7 +29,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let config = MenuConfig {
         app_id: "md.wallpaper".to_owned(),
-        title: "Fondo de pantalla".to_owned(),
+        title: texts.t("escritorio.fondo_pantalla"),
         prompt: "🖼".to_owned(),
         accent: md_core::Color::new(0x7a, 0xa2, 0xf7), // azul
         row_height: 56.0,                              // filas altas para la miniatura

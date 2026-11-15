@@ -8,6 +8,8 @@ use clap::Subcommand;
 use md_core::{MenuEntry, MenuMode, Notification};
 use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
 
+use crate::i18n::Texts;
+
 /// Acciones del subcomando `notify`.
 #[derive(Debug, Clone, Subcommand)]
 pub enum NotifyCommand {
@@ -64,9 +66,12 @@ fn is_dnd() -> bool {
 
 /// Alterna el modo "no molestar".
 fn dnd() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     let result: String = control_call("ToggleDnd")?;
     if result == "on" {
         // Crítica: se muestra aunque el modo no-molestar quede activo.
+        let summary = texts.t("escritorio.no_molestar_activado");
+        let body = texts.t("escritorio.no_molestar_activado_cuerpo");
         let _ = std::process::Command::new("notify-send")
             .args([
                 "-a",
@@ -75,12 +80,17 @@ fn dnd() -> Result<(), Box<dyn std::error::Error>> {
                 "critical",
                 "-t",
                 "2500",
-                "No molestar activado",
-                "Se guardan en el historial sin mostrarse.",
+                &summary,
+                &body,
             ])
             .status();
     } else {
-        crate::util::notify_send("Historial", 2500, "No molestar desactivado", "");
+        crate::util::notify_send(
+            "Historial",
+            2500,
+            &texts.t("escritorio.no_molestar_desactivado"),
+            "",
+        );
     }
     Ok(())
 }
@@ -93,8 +103,14 @@ fn dismiss() -> Result<(), Box<dyn std::error::Error>> {
 
 /// Borra el historial y avisa.
 fn clear() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     crate::notifd::clear_history()?;
-    crate::util::notify_send("Historial", 2500, "Historial borrado", "");
+    crate::util::notify_send(
+        "Historial",
+        2500,
+        &texts.t("escritorio.historial_borrado"),
+        "",
+    );
     Ok(())
 }
 
@@ -123,18 +139,19 @@ fn read_history() -> Vec<Notification> {
 /// Historial interactivo: elegir una entrada la copia; las dos primeras filas
 /// alternan "no molestar" y borran el historial.
 fn history() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     let notifications = read_history();
     let offset = crate::util::utc_offset_seconds();
 
     let dnd_label = if is_dnd() {
-        "🔔 Desactivar No molestar"
+        texts.t("escritorio.desactivar_no_molestar")
     } else {
-        "🔕 Activar No molestar"
+        texts.t("escritorio.activar_no_molestar")
     };
 
     let mut entries = vec![
         MenuEntry::new(dnd_label),
-        MenuEntry::new("🗑️ Borrar historial"),
+        MenuEntry::new(texts.t("escritorio.borrar_historial")),
     ];
     // Orden de visualización: más reciente primero. `order` mapea la posición del
     // menú a su índice en el archivo (para copiar la entrada correcta).
@@ -148,8 +165,8 @@ fn history() -> Result<(), Box<dyn std::error::Error>> {
 
     let config = MenuConfig {
         app_id: "md.notify".to_owned(),
-        title: "Notificaciones".to_owned(),
-        prompt: "Notificaciones — Enter copia".to_owned(),
+        title: texts.t("escritorio.notificaciones"),
+        prompt: texts.t("escritorio.notificaciones_prompt"),
         accent: md_core::Color::new(0x7a, 0xa2, 0xf7),
         row_height: 36.0,
         width: 720.0,
@@ -175,7 +192,12 @@ fn history() -> Result<(), Box<dyn std::error::Error>> {
             };
             crate::util::copy_to_clipboard(&text)?;
             let preview: String = text.replace('\n', " ").chars().take(80).collect();
-            crate::util::notify_send("Historial", 2500, "Copiado al portapapeles", &preview);
+            crate::util::notify_send(
+                "Historial",
+                2500,
+                &texts.t("escritorio.copiado_portapapeles"),
+                &preview,
+            );
         }
     }
     Ok(())

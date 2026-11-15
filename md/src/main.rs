@@ -4,6 +4,7 @@ use clap::{Parser, Subcommand};
 
 mod binds;
 mod clip;
+mod i18n;
 mod launcher;
 mod menu;
 mod notifd;

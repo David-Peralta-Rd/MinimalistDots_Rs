@@ -5,8 +5,11 @@
 use md_core::{DesktopEntry, IconIndex, MenuEntry, MenuMode};
 use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
 
+use crate::i18n::Texts;
+
 /// Ejecuta el lanzador de aplicaciones.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     let apps = md_core::discover_desktop_entries();
     let icons = IconIndex::discover();
 
@@ -25,7 +28,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let config = MenuConfig {
         app_id: "md.launcher".to_owned(),
-        title: "Lanzador".to_owned(),
+        title: texts.t("escritorio.lanzador"),
         prompt: "🚀".to_owned(),
         accent: md_core::Color::new(0x7e, 0xc7, 0xa2), // acento verde
         row_height: 36.0,

@@ -9,8 +9,11 @@ use std::process::{Command, Stdio};
 use md_core::{MenuEntry, MenuMode, parse_clip_list};
 use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
 
+use crate::i18n::Texts;
+
 /// Ejecuta el historial de portapapeles.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     let mut entries = list()?;
 
     loop {
@@ -23,7 +26,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
         let config = MenuConfig {
             app_id: "md.clip".to_owned(),
-            title: "Portapapeles".to_owned(),
+            title: texts.t("escritorio.portapapeles"),
             prompt: "📋".to_owned(),
             accent: md_core::Color::new(0x7a, 0xa2, 0xf7), // azul
             row_height: 36.0,

@@ -6,8 +6,11 @@
 use md_core::{MenuEntry, MenuMode, parse_ps};
 use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
 
+use crate::i18n::Texts;
+
 /// Ejecuta el gestor de procesos.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     let processes = list_processes()?;
     let entries: Vec<MenuEntry> = processes
         .iter()
@@ -16,7 +19,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let config = MenuConfig {
         app_id: "md.process".to_owned(),
-        title: "Gestor de procesos".to_owned(),
+        title: texts.t("escritorio.gestor_procesos"),
         prompt: "⚙️".to_owned(),
         accent: md_core::Color::new(0xe0, 0x6c, 0x75), // rojo
         row_height: 36.0,
@@ -31,11 +34,15 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         && let Some(process) = processes.get(index)
     {
         kill(process.pid)?;
+        let body = texts.t_fill(
+            "escritorio.proceso_terminado_cuerpo",
+            &[("pid", &process.pid.to_string())],
+        );
         crate::util::notify_send(
             "Process Manager",
             2500,
-            "Proceso terminado",
-            &format!("Proceso cerrado con PID: {}", process.pid),
+            &texts.t("escritorio.proceso_terminado"),
+            &body,
         );
     }
     Ok(())

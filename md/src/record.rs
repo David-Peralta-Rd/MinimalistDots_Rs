@@ -8,6 +8,8 @@ use std::process::Command;
 
 use clap::ValueEnum;
 
+use crate::i18n::Texts;
+
 /// Modo de grabación.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 pub enum Mode {
@@ -21,11 +23,15 @@ pub enum Mode {
 
 /// Ejecuta la grabación o la detiene.
 pub fn run(mode: Mode, audio: bool) -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     if mode == Mode::Toggle {
         if stop_active_recording()? {
-            notify("Grabación Detenida", "Procesando y guardando el video...");
+            notify(
+                &texts.t("escritorio.grabacion_detenida"),
+                &texts.t("escritorio.grabacion_procesando"),
+            );
         } else {
-            notify("Screen Recorder", "No había ninguna grabación en curso.");
+            notify("Screen Recorder", &texts.t("escritorio.no_grabacion"));
         }
         return Ok(());
     }
@@ -33,7 +39,10 @@ pub fn run(mode: Mode, audio: bool) -> Result<(), Box<dyn std::error::Error>> {
     // Si ya hay una grabación en curso, se detiene y se sale (igual que el
     // script original: pulsa de nuevo para empezar otra).
     if stop_active_recording()? {
-        notify("Grabación Detenida", "Procesando y guardando el video...");
+        notify(
+            &texts.t("escritorio.grabacion_detenida"),
+            &texts.t("escritorio.grabacion_procesando"),
+        );
         return Ok(());
     }
 
@@ -55,7 +64,10 @@ pub fn run(mode: Mode, audio: bool) -> Result<(), Box<dyn std::error::Error>> {
     match mode {
         Mode::Snip => {
             let Some(geometry) = select_area()? else {
-                notify("Grabación Cancelada", "No se seleccionó ninguna área.");
+                notify(
+                    &texts.t("escritorio.grabacion_cancelada"),
+                    &texts.t("escritorio.no_area"),
+                );
                 return Ok(());
             };
             args.push("-w".into());
@@ -74,8 +86,8 @@ pub fn run(mode: Mode, audio: bool) -> Result<(), Box<dyn std::error::Error>> {
     }
 
     notify(
-        "Grabación Iniciada",
-        "Presiona el atajo de nuevo para detener.",
+        &texts.t("escritorio.grabacion_iniciada"),
+        &texts.t("escritorio.grabacion_iniciada_cuerpo"),
     );
 
     // En primer plano: al recibir SIGINT (desde `md record toggle`) la
@@ -88,10 +100,9 @@ pub fn run(mode: Mode, audio: bool) -> Result<(), Box<dyn std::error::Error>> {
 
     if status.success() {
         if save_path.exists() {
-            notify(
-                "Grabación Guardada",
-                &format!("Guardada en: {}", save_path.display()),
-            );
+            let ruta = save_path.display().to_string();
+            let body = texts.t_fill("escritorio.grabacion_guardada_cuerpo", &[("ruta", &ruta)]);
+            notify(&texts.t("escritorio.grabacion_guardada"), &body);
         }
         Ok(())
     } else {

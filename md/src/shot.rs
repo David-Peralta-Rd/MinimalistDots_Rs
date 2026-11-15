@@ -8,6 +8,8 @@ use std::process::Command;
 
 use clap::ValueEnum;
 
+use crate::i18n::Texts;
+
 /// Modo de captura.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 pub enum Mode {
@@ -33,21 +35,24 @@ pub enum Mode {
 
 /// Ejecuta la captura.
 pub fn run(mode: Mode) -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     let save_dir = screenshots_dir();
     std::fs::create_dir_all(&save_dir)?;
     let save_file = save_dir.join(format!("{}_screenshot.png", crate::util::now_stamp()));
     let temp = temp_file();
 
     match mode {
-        Mode::Scan => ocr(&temp)?,
-        Mode::Qr => qr(&temp)?,
+        Mode::Scan => ocr(&temp, &texts)?,
+        Mode::Qr => qr(&temp, &texts)?,
         _ => {
             capture(mode, &temp, &save_file)?;
+            let ruta = save_file.display().to_string();
+            let body = texts.t_fill("escritorio.captura_guardada_cuerpo", &[("ruta", &ruta)]);
             crate::util::notify_send(
                 "Screenshot",
                 3000,
-                "Captura guardada",
-                &format!("Guardada en {}", save_file.display()),
+                &texts.t("escritorio.captura_guardada"),
+                &body,
             );
         }
     }
@@ -74,7 +79,7 @@ fn capture(mode: Mode, temp: &Path, save_file: &Path) -> Result<(), std::io::Err
 }
 
 /// Captura un área (congelada) y copia el texto extraído con OCR.
-fn ocr(temp: &Path) -> Result<(), std::io::Error> {
+fn ocr(temp: &Path, texts: &Texts) -> Result<(), std::io::Error> {
     grimblast_copysave("area", true, temp)?;
     let lang = std::env::var("SCREENSHOT_OCR_LANG").unwrap_or_else(|_| "eng".to_owned());
     let output = Command::new("tesseract")
@@ -88,8 +93,8 @@ fn ocr(temp: &Path) -> Result<(), std::io::Error> {
         crate::util::notify_send(
             "Screenshot",
             3000,
-            "OCR Error",
-            "No se pudo detectar texto en la imagen",
+            &texts.t("escritorio.ocr_error"),
+            &texts.t("escritorio.ocr_error_cuerpo"),
         );
         return Ok(());
     }
@@ -97,14 +102,14 @@ fn ocr(temp: &Path) -> Result<(), std::io::Error> {
     crate::util::notify_send(
         "Screenshot",
         3000,
-        "OCR Exitoso",
-        "Texto copiado al portapapeles",
+        &texts.t("escritorio.ocr_exitoso"),
+        &texts.t("escritorio.texto_copiado"),
     );
     Ok(())
 }
 
 /// Captura un área (congelada) y copia el contenido del código QR.
-fn qr(temp: &Path) -> Result<(), std::io::Error> {
+fn qr(temp: &Path, texts: &Texts) -> Result<(), std::io::Error> {
     grimblast_copysave("area", true, temp)?;
     let output = Command::new("zbarimg")
         .args(["--raw", "-q"])
@@ -115,8 +120,8 @@ fn qr(temp: &Path) -> Result<(), std::io::Error> {
         crate::util::notify_send(
             "Screenshot",
             3000,
-            "QR Error",
-            "No se encontró ningún código QR",
+            &texts.t("escritorio.qr_error"),
+            &texts.t("escritorio.qr_error_cuerpo"),
         );
         return Ok(());
     }
@@ -124,8 +129,8 @@ fn qr(temp: &Path) -> Result<(), std::io::Error> {
     crate::util::notify_send(
         "Screenshot",
         3000,
-        "QR Detectado",
-        "Contenido copiado al portapapeles",
+        &texts.t("escritorio.qr_detectado"),
+        &texts.t("escritorio.contenido_copiado"),
     );
     Ok(())
 }

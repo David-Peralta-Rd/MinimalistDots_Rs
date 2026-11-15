@@ -8,8 +8,11 @@ use std::path::PathBuf;
 use md_core::{MenuMode, parse_keybinds, to_menu_entries};
 use md_ui::{MenuConfig, SlintHost, run_menu};
 
+use crate::i18n::Texts;
+
 /// Ejecuta el visor de atajos.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     let path = keybinds_path().ok_or_else(|| {
         std::io::Error::other("no se pudo determinar $HOME para localizar keybinds.json")
     })?;
@@ -26,7 +29,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let config = MenuConfig {
         app_id: "md.binds".to_owned(),
-        title: "Atajos de teclado".to_owned(),
+        title: texts.t("escritorio.atajos"),
         prompt: "⌨️".to_owned(),
         accent: md_core::Color::new(0x7e, 0xc7, 0xa2),
         row_height: 36.0,
