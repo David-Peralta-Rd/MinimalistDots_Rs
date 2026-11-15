@@ -1,5 +1,96 @@
+# packages.toml — paquetes por grupo (migrado de c2_install_packages.sh).
+#
+#   nombre      : identificador del grupo (lo usa `mdots install --only <grupo>`)
+#   origen      : "repo" si todo el grupo está en repos oficiales; "aur" si
+#                 incluye paquetes del AUR (el instalador usa `paru`, que cubre ambos)
+#   obligatorio : true si es imprescindible para un escritorio mínimo
+#                 (perfil mínimo futuro; la v1 instala todos los grupos)
+#
+# Nota: se eliminaron `quickshell` y `qt6-declarative` del antiguo grupo
+# "quickshell" (ahora "ui"): Quickshell queda reemplazado por las herramientas
+# Rust/Slint. Los duplicados entre grupos (git, jq, libnotify, slurp…) son
+# intencionales (cada grupo es autocontenido) y se deduplican al instalar.
+
+[[grupo]]
+nombre = "zsh"
+origen = "aur"
+obligatorio = true
+paquetes = ["zsh", "git", "zsh-completions", "zsh-autocomplete", "zsh-autosuggestions", "zsh-syntax-highlighting"]
+
 [[grupo]]
 nombre = "core"
 origen = "repo"
 obligatorio = true
-paquetes = ["git", "hyprland", "hypridle", "hyprlock", "hyprpaper", "cliphist"]
+paquetes = ["mpv", "git", "sddm", "qt6ct", "flatpak", "udisks2", "cliphist", "hypridle", "hyprland", "hyprlock", "hyprpaper", "reflector", "fastfetch", "hyprpolkitagent", "xdg-desktop-portal-hyprland"]
+
+[[grupo]]
+nombre = "apps"
+origen = "aur"
+obligatorio = false
+paquetes = ["ark", "foot", "unrar", "brave-bin", "libreoffice-fresh"]
+
+[[grupo]]
+nombre = "cursor"
+origen = "aur"
+obligatorio = false
+paquetes = ["rose-pine-hyprcursor", "bibata-cursor-theme-bin"]
+
+[[grupo]]
+nombre = "dolphin"
+origen = "repo"
+obligatorio = false
+paquetes = ["dolphin", "kde-cli-tools", "plasma-integration", "breeze-icons", "kio-extras", "kio-admin", "ffmpegthumbs", "kdegraphics-thumbnailers", "kimageformats", "qt6-imageformats", "kvantum", "archlinux-xdg-menu", "qqc2-desktop-style"]
+
+[[grupo]]
+nombre = "sddm_theme"
+origen = "repo"
+obligatorio = false
+paquetes = ["jq", "curl", "unzip", "qt6-svg", "qt6-declarative"]
+
+[[grupo]]
+nombre = "screenshot"
+origen = "aur"
+obligatorio = false
+paquetes = ["zbar", "grim", "slurp", "swappy", "libnotify", "tesseract", "wl-clipboard", "grimblast-git", "tesseract-data-eng", "tesseract-data-spa"]
+
+[[grupo]]
+nombre = "programming"
+origen = "aur"
+obligatorio = false
+paquetes = ["uv", "docker", "github-cli", "docker-buildx", "drawio-desktop", "docker-compose", "visual-studio-code-bin"]
+
+[[grupo]]
+nombre = "screenrecord"
+origen = "aur"
+obligatorio = false
+paquetes = ["slurp", "ffmpeg", "libnotify", "gpu-screen-recorder"]
+
+[[grupo]]
+nombre = "process"
+origen = "repo"
+obligatorio = false
+paquetes = ["jq", "libnotify"]
+
+[[grupo]]
+nombre = "partitionmanager"
+origen = "repo"
+obligatorio = false
+paquetes = ["parted", "mtools", "kpmcore", "ntfs-3g", "jfsutils", "xfsprogs", "e2fsprogs", "dosfstools", "f2fs-tools", "exfatprogs", "util-linux", "btrfs-progs", "partitionmanager", "polkit-kde-agent"]
+
+[[grupo]]
+nombre = "ui"
+origen = "aur"
+obligatorio = false
+paquetes = ["ttf-jetbrains-mono-nerd", "noto-fonts-emoji", "libnotify", "wl-clipboard", "jq", "mpg123"]
+
+[[grupo]]
+nombre = "network"
+origen = "repo"
+obligatorio = false
+paquetes = ["ethtool"]
+
+[[grupo]]
+nombre = "llm"
+origen = "aur"
+obligatorio = false
+paquetes = ["llama-cpp", "ggml-vulkan", "curl", "ca-certificates", "aria2"]

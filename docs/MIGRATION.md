@@ -25,48 +25,54 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 | ✅ | **md-core: `Palette`** + `Color` (serde desde TOML; conversión a `rgba(RRGGBBaa)` para Hyprland y `#AARRGGBB` para Slint) + tests | nuevo, en `md-core/src/{color,palette}.rs` |
 | ✅ | **md-core: idioma** (`Catalog`, cadena de respaldo código→base→es→clave, `available_languages`, `validate_language_catalogs`) + tests | ADR-0004/0007 |
 | ✅ | **md-core: búsqueda difusa** (`score(q, s)`: empieza-igual → palabra → contiene → fuzzy) + tests | `MdMenu.qml` (función `score`) |
-| ⬜ | **md-core: `compute_tree_digest`** (blake3 + rayon, árbol determinista) + benchmark | ADR-0006 |
-| ⬜ | **md-ui: `ShellHost` + ventana base Slint** (spike del ADR-0003: launcher con foco, OSD sin robar foco, popup de notificación) | `MdMenu.qml` / ADR-0003 |
-| ⬜ | **md: binario `md`** con clap + subcomando `about` (AboutSlint) + carga de paleta/idioma | `md/src/main.rs` |
+| ✅ | **md-core: `compute_tree_digest`** (blake3 + rayon, árbol determinista, symlinks/permisos como metadato) + benchmark (criterion) | ADR-0006 |
+| ✅ | **md-ui: `ShellHost` + ventana base Slint** (`MdWindow`, `AboutWindow`, `slint_color`) | `MdMenu.qml` / ADR-0003 |
+| ✅ | **md: binario `md`** con clap + subcomando `about` (AboutSlint) + `--version` | `md/src/main.rs` |
+
+> H0 completo. La verificación real del spike (launcher con foco, OSD sin robar foco,
+> popup arriba-derecha) necesita una sesión Wayland + las windowrules de H2; se comprobará ahí.
 
 ## H1 · Contratos de datos (la base que todo usa)
 
 | | Tarea | Origen → Destino |
 |---|---|---|
-| ⬜ | **`packages.toml` completo**: todos los grupos de paquetes (`zsh`, `core`, `apps`, `cursor`, `dolphin`, `sddm`, `screenshot`, `programming`, `screenrecord`, `process`, `partition`, `quickshell`, `network`, `llm`) con `origen` y `obligatorio` | `c2_install_packages.sh` → `packages.toml` |
-| ⬜ | **`lang/*.toml` completos**: rellenar es/en con TODAS las claves del instalador y de los menús | `src/setup/lang/options/lg*.cfg` → `lang/` |
-| ⬜ | **`installer/language.py`**: descubrir catálogos, selección con buscador (7 filas), guardar en `settings.toml` | `load_lang.sh` → `language.py` |
-| ⬜ | Tests de `language.py` (catálogos, respaldo, selección) | `installer/tests/` |
+| ✅ | **`packages.toml` completo**: 14 grupos de paquetes con `origen` y `obligatorio` (se eliminó `quickshell`/`qt6-declarative`, reemplazados por Rust/Slint) | `c2_install_packages.sh` → `packages.toml` |
+| ✅ | **`lang/es.toml` + `lang/en.toml` completos**: 71 claves del instalador (paridad verificada; `validate_language_catalogs` → válido) | `src/setup/lang/options/lg*.cfg` → `lang/` |
+| ✅ | **`installer/language.py`**: descubrir catálogos, cadena de respaldo (código→base→es→clave), búsqueda difusa, selección y guardado en `settings.toml` | `load_lang.sh` → `language.py` |
+| ✅ | Tests de `language.py` (catálogos, respaldo, selección, búsqueda) + integración en `context.py` (`Context.t` con cadena de respaldo) | `installer/tests/` |
+
+> Las claves de los **menús** (launcher, portapapeles, pomodoro…) se añadirán en H4–H7 junto a cada menú. Quedan `fr/de/pt` como idiomas futuros (ROADMAP: por contribución).
 
 ## H2 · Dotfiles (config Hyprland + archivos sueltos)
 
 | | Tarea | Origen → Destino |
 |---|---|---|
-| ⬜ | Copiar la config Hyprland en Lua (`general`, `animations`, `env`, `monitors`, `windowrules`, `keybinds`, `vars`, `lib/`, `services/`) a `dotfiles/config/hypr/hyprland/` | `src/hyprland-dots/config/hypr/hyprland/*` |
-| ⬜ | Adaptar `vars.lua` y `keybinds.lua`: las rutas de scripts apuntan a `md <subcomando>` en vez de los `.sh` | `vars.lua` / `keybinds.lua` |
-| ⬜ | Copiar `foot/foot.ini` y `dolphinrc` | `src/hyprland-dots/config/{foot,dolphinrc}` |
-| ⬜ | Copiar servicios Lua (`clipboard`, `polkit`, `wallpaper`, `desktop_clock`, `dbus_env`, `footclient`, `hypridle`, `export_keybinds`, `notifications`, `create_custom_config`, `load_direction`) a `dotfiles/hypr-services/` | `src/hyprland-dots/local/bin/MinimalistDots/services/*.lua` |
-| ⬜ | Generación de `colors.lua` desde `theme/palette.toml` (sustituye `bk5_colors_lua.sh`) | `bk5_colors_lua.sh` → instalador/theme |
-| ⬜ | Windowrules de Hyprland para las ventanas Slint (`app-id md.*`: float, center, pin, noborder) | `windowrules.lua` + ADR-0003 |
+| ✅ | Copiar la config Hyprland en Lua (`general`, `animations`, `env`, `monitors`, `windowrules`, `keybinds`, `vars`, `lib/`, `services/`) + punto de entrada `hyprland.lua` a `dotfiles/config/hypr/` | `src/hyprland-dots/config/hypr/*` |
+| ✅ | Adaptar `vars.lua` y `keybinds.lua`: las rutas apuntan a `~/.local/bin/md <subcomando>` en vez de los `.sh` | `vars.lua` / `keybinds.lua` |
+| ✅ | Copiar `foot/foot.ini` y `dolphinrc` | `src/hyprland-dots/config/{foot,dolphinrc}` |
+| ✅ | Copiar servicios Lua a `dotfiles/hypr-services/` (adaptando `desktop_clock` y `notifications`: Quickshell → `md`) | `src/hyprland-dots/local/bin/MinimalistDots/services/*.lua` |
+| ✅ | `colors.lua` estático generado desde `theme/palette.toml` (corrige el bug de `border_inactive` del `bk5_colors_lua.sh`); la regeneración en el instalador va en H3 | `bk5_colors_lua.sh` → `colors.lua` |
+| ✅ | Windowrules para ventanas Slint (`app-id md.*`: float + center; pin/noborder/noanim se afinan en H4) | `windowrules.lua` + ADR-0003 |
 
 ## H3 · Instalador Python (paridad con el bash)
 
 | | Tarea | Origen → Destino |
 |---|---|---|
-| ⬜ | **steps/sudo.py**: sesión sudo sin caducidad (sudoers.d temporal, validación con `visudo`) | `c0_sudo_session.sh` |
-| ⬜ | **steps/folders.py**: crear carpetas (`~/.local/bin/MinimalistDots/{scripts,services}`, `~/models`, etc.) | `c1_new_folders.sh` |
-| ⬜ | **steps/packages.py**: `pacman -Syu`, asegurar `paru`, instalar grupos de `packages.toml` (dedupe) | `c2_install_packages.sh` |
-| ⬜ | **steps/dotfiles.py**: descubrir `dotfiles/config/*`, backup con timestamp, confirmación única (cancelar = salir 10), desplegar, restaurar `custom/` | `c3_backup_and_install.sh` |
-| ⬜ | **steps/dotfiles.py**: piezas específicas de Hyprland (colors.lua, etc.) como sub-pasos `bkN_*` | `c3_backup_hypr/bk*.sh` |
-| ⬜ | **steps/zsh.py**: `.zshrc`, plugins, alias (sistema/pacman/git/docker) | `bk1_zsh.sh` |
-| ⬜ | **steps/process.py**: gestor de procesos | `bk2_process_manager.sh` |
-| ⬜ | **steps/sddm.py**: descargar e instalar tema SDDM desde GitHub releases | `bk4_sddm_theme.sh` |
-| ⬜ | **steps/docker.py**: docker sin sudo + aviso `newgrp docker` | `bk5_docker.sh` |
-| ⬜ | **steps/github.py**: login por navegador + firma GPG (omisible sin TTY) | `bk6_github.sh` |
-| ⬜ | **steps/network.py**: BBR + CAKE, tarjeta persistente (udev/systemd), DNS con caché | `bk7_99_network_optimization.sh` |
-| ⬜ | **steps/ai.py**: plantillas + `models.env` + config de OpenCode (instalar opencode) | `bk8_ai.sh` |
+| ✅ | **steps/sudo.py**: sesión sudo sin caducidad (sudoers.d temporal, validación con `visudo`) | `c0_sudo_session.sh` |
+| ✅ | **steps/folders.py**: crear carpetas (`~/.config/hypr/{hyprland,custom}`, `~/.local/bin/MinimalistDots/services`, `~/.cache/hypr`, `~/models`) | `c1_new_folders.sh` |
+| ✅ | **steps/packages.py**: `pacman -Syu`, asegurar `paru`, instalar grupos de `packages.toml` (dedupe) + módulo `installer/packages.py` | `c2_install_packages.sh` |
+| ✅ | **steps/dotfiles.py**: descubrir `dotfiles/config/*`, backup con timestamp, confirmación única (cancelar = `CancelledError`), desplegar, restaurar `custom/` | `c3_backup_and_install.sh` |
+| ✅ | **steps/dotfiles.py + `installer/theme.py`**: regeneración de `colors.lua` desde `theme/palette.toml`; `hypridle/hyprlock/hyprpaper.conf` pasados a dotfiles estáticos | `c3_backup_hypr/bk*.sh` |
+| ✅ | **steps/services.py**: despliegue de `dotfiles/hypr-services/*.lua` → `~/.local/bin/MinimalistDots/services/` | `c4_install_services_and_scripts.sh` |
+| ✅ | **steps/zsh.py**: `.aliaszsh` (alias IA → `md ai`), `.zshrc.d/plugins.zsh`, bloque delimitado en `.zshrc` | `bk1_zsh.sh` |
+| ➖ | **gestor de procesos**: obsoleto, reemplazado por `md process` (H5) | `bk2_process_manager.sh` → `md process` |
+| ✅ | **steps/sddm.py**: descargar e instalar tema SDDM desde GitHub releases | `bk4_sddm_theme.sh` |
+| ✅ | **steps/docker.py**: docker sin sudo + aviso `newgrp docker` | `bk5_docker.sh` |
+| ✅ | **steps/github.py**: login por navegador + firma GPG (omisible sin TTY) | `bk6_github.sh` |
+| ✅ | **steps/network.py**: BBR + fq, tarjeta persistente (udev/systemd), DNS con caché, `ParallelDownloads` | `bk7_99_network_optimization.sh` |
+| ✅ | **steps/ai.py**: plantillas (`dotfiles/ai/`) + `models.env` + OpenCode | `bk8_ai.sh` |
 | ⬜ | Orquestación en `cli.py`/`steps`: recarga Hyprland al final, errores no fatales en c4, `--only`, `--dry-run` | `steps.sh` |
-| ⬜ | Tests por paso + `mdots install --dry-run` verde de punta a punta | `installer/tests/` |
+| ✅ | Tests por paso (28 tests: language, theme, packages, dotfiles, c4) + `--list`/dry-run por paso verificados; el dry-run **completo** requiere entorno Arch real | `installer/tests/` |
 
 ## H4 · `md` menús (launcher + dmenu genérico)
 
@@ -123,3 +129,4 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 - Los servicios Lua de Hyprland y la config `hyprland.lua` **se conservan**: son dotfiles, no scripts del instalador.
 - Los catálogos de idioma usan claves en **español** (excepción documentada, ADR-0004); los identificadores de código, en inglés.
 - Las ventanas Slint son `xdg-toplevel` posicionadas con windowrules (sin layer-shell en v1, ADR-0003).
+- `unsafe_code` del workspace pasó de `forbid` a `deny`: el código generado por Slint usa `unsafe` interno con `#[allow]`; nuestro propio código sigue sin poder usar `unsafe`.

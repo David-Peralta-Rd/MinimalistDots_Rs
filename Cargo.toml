@@ -3,7 +3,10 @@ resolver = "3"
 members = ["md","md-core", "md-ui"]
 
 [workspace.lints.rust]
-unsafe_code = "forbid"
+# `deny` (y no `forbid`) porque el código generado por Slint usa `unsafe` interno
+# protegido con `#[allow(unsafe_code)]`; `forbid` lo anularía y rompería la build.
+# Nuestro propio código sigue sin poder usar `unsafe` sin un `allow` explícito.
+unsafe_code = "deny"
 
 [workspace.lints.clippy]
 unwrap_used = "deny"

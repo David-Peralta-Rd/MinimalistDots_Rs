@@ -1,0 +1,23 @@
+import { AboutSlint } from "std-widgets.slint";
+
+// Ventana base de la que heredarán los menús, OSD y widgets de MinimalistDots.
+// La v1 usa ventanas xdg-toplevel posicionadas con windowrules de Hyprland
+// (ADR-0003). `accent` y `md-radius` permiten estilizar cada instancia.
+export component MdWindow inherits Window {
+    in property <color> accent: #7ec7a2;
+    in property <length> md-radius: 10px;
+
+    width: 600px;
+    height: 400px;
+    background: #1e222a;
+}
+
+// Diálogo "Acerca de". Usa AboutSlint: requisito de la licencia Royalty-free
+// de Slint (ADR-0008).
+export component AboutWindow inherits Window {
+    title: "Acerca de MinimalistDots";
+    width: 460px;
+    height: 520px;
+
+    AboutSlint { }
+}

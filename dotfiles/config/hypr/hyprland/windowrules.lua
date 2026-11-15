@@ -1,0 +1,38 @@
+local Rules = require("hyprland.lib.rules")
+
+-- Ventanas Slint de MinimalistDots (app-id "md.<nombre>"): flotantes y centradas.
+-- Se afinará en H4 (pin, noborder, noanim, stayfocused) al verificar el app-id real.
+Rules.forClass("^md%..*$"):custom({
+    float  = true,
+    center = true,
+})
+
+Rules.forClass(".*"):noBlur()
+Rules.forClass("^(pavucontrol)$"):float()
+Rules.forClass("^(blueman%-manager)$"):float()
+
+Rules.forClass("hyprland-run"):custom({
+    name  = "move-hyprland-run",
+    move  = "20 monitor_h-120",
+    float = true,
+})
+
+-- Reglas para imv y mpv (imágenes y videos)
+Rules.forClass("imv"):custom({ float = true, size = "70% 70%", center = true })
+Rules.forClass("mpv"):custom({ float = true, size = "60% 60%", center = true })
+
+-- Reglas para terminal flotante
+Rules.forClass("programing-terminal"):custom({
+    name = "move-programing-terminal",
+    size = "monitor_w/4.1 monitor_h/7.9",
+    move = "monitor_w/1.33 monitor_h/1.16",
+    float = true,
+})
+
+-- Reglas para terminal flotante de open code
+Rules.forClass("programing-terminal-opencode"):custom({
+    name = "move-programing-terminal-opencode",
+    size = "monitor_w/3.45 monitor_h/2.52",
+    move = "monitor_w*0.004 monitor_h/1.69",
+    float = true,
+})

@@ -11,6 +11,8 @@ Estado: propuesto · Fecha: 2026-11-09
 ## Línea base
 Estimación (no medida): `hashlib.sha256` + `os.walk` sobre 2 000 archivos pequeños ≈ 150-400 ms. Objetivo: ≥ 5x menos. El primer benchmark real (pytest-benchmark + criterion, release) sustituye esta estimación.
 
+Medición real (criterion, release): ~2.03 ms sobre 1 000 archivos pequeños (blake3 + rayon). Cumple de sobra el objetivo.
+
 ## Riesgos
 Symlinks y permisos (se hashean como metadato); archivos que cambian durante el recorrido; rutas no UTF-8 (error tipado, sin panic).
 

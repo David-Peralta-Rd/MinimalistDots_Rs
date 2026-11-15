@@ -26,6 +26,14 @@ class Paths:
     def packages(self) -> Path:
         return self.repo / "packages.toml"
 
+    @property
+    def hypr_services(self) -> Path:
+        return self.repo / "dotfiles" / "hypr-services"
+
+    @property
+    def ai_src(self) -> Path:
+        return self.repo / "dotfiles" / "ai"
+
     # --- En el sistema del usuario ---
     @property
     def config(self) -> Path:
@@ -42,3 +50,23 @@ class Paths:
     @property
     def settings(self) -> Path:
         return self.config / "minimalistdots" / "settings.toml"
+
+    @property
+    def services(self) -> Path:
+        return self.home / ".local" / "bin" / "MinimalistDots" / "services"
+
+    @property
+    def cache_hypr(self) -> Path:
+        return self.home / ".cache" / "hypr"
+
+    @property
+    def models(self) -> Path:
+        return self.home / "models"
+
+    @property
+    def ai_dir(self) -> Path:
+        return self.home / ".local" / "bin" / "MinimalistDots" / "ai"
+
+    @property
+    def ai_conf(self) -> Path:
+        return self.home / ".config" / "ai"

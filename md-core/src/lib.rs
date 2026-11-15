@@ -4,11 +4,13 @@
 //! todo lo fallable devuelve `Result` o `Option`.
 
 mod color;
+mod digest;
 mod fuzzy;
 mod language;
 mod palette;
 
 pub use color::{Color, ColorError};
+pub use digest::{TreeDigestError, compute_tree_digest};
 pub use fuzzy::{fuzzy, score};
 pub use language::{
     Catalog, CatalogError, CatalogReport, Translator, available_languages, base_of, load_chain,

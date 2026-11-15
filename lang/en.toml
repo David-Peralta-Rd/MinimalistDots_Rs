@@ -2,5 +2,115 @@
 codigo = "en"
 nombre = "English"
 
+# Shared messages across steps (transversal errors and notices).
 [comun]
-bienvenido = "Welcome to MinimalistDots"
+configuracion_no_encontrada = "CONFIGURATION NOT FOUND"
+paso_fallido = "❌ STEP FAILED:"
+instalacion_con_errores = "⚠️ THE INSTALLATION FINISHED WITH ERRORS. CHECK THE ❌ MESSAGES ABOVE."
+
+# General orchestration (steps.sh).
+[instalador]
+bienvenido = "WELCOME TO THE MINIMALISTDOTS INSTALLATION"
+recarga = "🔄 RELOADING HYPRLAND"
+recarga_error = "❌ ERROR RELOADING THE SYSTEM"
+recarga_exito = "✅ RELOADED SUCCESSFULLY"
+no_sesion = "ℹ️ NO ACTIVE HYPRLAND SESSION FOUND"
+configuraciones_listas = "✨ BACKUP FINISHED AND CONFIGURATIONS ADAPTED"
+
+# Step 0: sudo session.
+[sudo]
+configurando_sudo = "CONFIGURING THE SUDO SESSION FOR THE INSTALLATION"
+no_root = "❌ ERROR: THIS INSTALLER MUST BE RUN AS A NORMAL USER (WITH SUDO), NOT AS ROOT."
+invalido = "❌ ERROR: COULD NOT VALIDATE THE SUDOERS CONFIGURATION."
+
+# Step 1: folder creation.
+[carpetas]
+nuevas_carpetas = "CREATING FOLDERS TO BE USED IN DOTFILES"
+nombre_de_carpeta = "NEW FOLDER CREATED == "
+
+# Step 2: package installation.
+[paquetes]
+instalando_paquetes = "INSTALLING DOCUMENTED PACKAGE LISTS"
+instalando_paru = "==> 'paru' is not in the repositories, building it from the AUR..."
+
+# Step 3: backup and installation of configs.
+[dotfiles]
+comenzando_backup = "CREATING BACKUP FOR CONFIGURATIONS INSIDE '~/.config'"
+encabezado = "INSTALLING ADDITIONAL CONFIGURATIONS"
+confirmacion = "THIS WILL REPLACE EXISTING CONFIGURATIONS (WITH PREVIOUS BACKUP). CONTINUE?"
+letra_confirmacion = "Y"
+cancelado = "CANCELLED. NO CHANGES WERE MADE."
+backup_si_existe = "🔄 BACKUP OF"
+limpiando_destino = "🗑️ CLEANING PREVIOUS DESTINATION:"
+paquete_detectado = "✨ NEW PACKAGE DETECTED:"
+copiando_paquete = "📂 COPYING"
+configurando_especificos = "⚙️ CONFIGURING HYPRLAND SPECIFIC FILES..."
+custom_restaurado = "♻️ CUSTOM OVERRIDES RESTORED IN"
+
+# Step 4: services and scripts.
+[servicios]
+instalando = "STARTING INSTALLATION OF SERVICES AND SCRIPTS"
+listando_servicios_antiguos = "THIS IS THE LIST OF OLD SERVICES TO BE DELETED IN '~/.local/bin/MinimalistDots/services':"
+borrando_servicios_antiguos = "DELETING OLD SERVICES INSIDE '~/.local/bin/MinimalistDots/services'"
+copiando_servicios_nuevos = "COPYING NEW SERVICES INSIDE '~/.local/bin/MinimalistDots/services'"
+listando_scripts_antiguos = "THIS IS THE LIST OF OLD SCRIPTS TO BE DELETED IN '~/.local/bin/MinimalistDots/scripts':"
+borrando_scripts_antiguos = "DELETING OLD SCRIPTS INSIDE '~/.local/bin/MinimalistDots/scripts'"
+copiando_scripts_nuevos = "COPYING NEW SCRIPTS INSIDE '~/.local/bin/MinimalistDots/scripts'"
+
+# Sub-step: Zsh.
+[zsh]
+instalado = "==> Zsh configuration completed."
+
+# Sub-step: process manager.
+[procesos]
+instalado = "==> Process Manager successfully installed in"
+
+# Sub-step: SDDM theme.
+[sddm]
+version_reciente = "==> Checking the latest theme version..."
+descarga = "==> Downloading and installing"
+instalado = "==> SDDM theme configured correctly."
+
+# Sub-step: Docker.
+[docker]
+funciona = "✅ DOCKER WORKS WITHOUT SUDO FOR USER"
+sin_respuesta = "⚠️ DOCKER IS CONFIGURED BUT DOES NOT RESPOND YET. LOG OUT AND IN AGAIN, THEN TRY: docker info"
+reiniciar_sesion = "ℹ️ TO USE IT IN ALREADY OPEN TERMINALS: LOG OUT (OR REBOOT) OR RUN 'newgrp docker'."
+
+# Sub-step: Git and GitHub.
+[github]
+sin_terminal = "No interactive terminal: GitHub setup skipped."
+pregunta = "Set up Git and GitHub now?"
+omitido = "Skipped. You can do it later with:"
+pedir_nombre = "Full name"
+pedir_correo = "GitHub email"
+datos_obligatorios = "❌ Name and email are required."
+sesion_activa = "A GitHub session is already active."
+abriendo_navegador = "The browser will open. Paste the one-time code shown here."
+generando_gpg = "Generating GPG key (ed25519, expires in 2 years). You will be asked for a passphrase to protect it."
+gpg_error = "❌ Could not get the GPG key."
+gpg_subida_error = "⚠️ Could not upload the GPG key (already on GitHub?). Check: gh gpg-key list"
+listo = "✅ Git and GitHub ready for"
+
+# Sub-step: network optimization.
+[red]
+iniciando = "⚡ STARTING NETWORK OPTIMIZATION..."
+sin_interfaz = "❌ ERROR: COULD NOT DETECT AN ACTIVE NETWORK INTERFACE."
+interfaz_detectada = "🌐 ACTIVE INTERFACE DETECTED:"
+aplicando_sysctl = "📦 APPLYING KERNEL SETTINGS (SYSCTL)..."
+sysctl_aviso = "⚠️ SOME SYSCTL PARAMETERS COULD NOT BE APPLIED (THE KERNEL MAY NOT SUPPORT THEM)."
+optimizando_nic = "🔌 OPTIMIZING THE NETWORK CARD:"
+sin_ethtool = "⚠️ 'ethtool' IS NOT INSTALLED: NETWORK CARD OPTIMIZATION SKIPPED."
+persistencia = "💾 MAKING THE NETWORK CARD OPTIMIZATION PERSISTENT (UDEV + SYSTEMD)..."
+configurando_dns = "🌐 CONFIGURING DNS (CLOUDFLARE, QUAD9, GOOGLE) WITH LOCAL CACHE..."
+listo = "🔥 DONE! NETWORK OPTIMIZATION APPLIED. YOU CAN CHECK DNS WITH: resolvectl status"
+
+# Sub-step: AI for development.
+[ai]
+instalado = "AI FOR DEVELOPMENT: TEMPLATES INSTALLED IN"
+models_creado = "MODELS.ENV CREATED (EDIT THE PATHS OF YOUR .GGUF FILES):"
+models_existe = "MODELS.ENV ALREADY EXISTS: LEFT UNTOUCHED."
+api_creado = "API_MODELS.CONF CREATED (APIS FOR AI-CODE):"
+opencode_fallo = "COULD NOT INSTALL OPENCODE. TRY MANUALLY: paru -S opencode-bin"
+opencode_config_fallo = "COULD NOT GENERATE THE OPENCODE CONFIG. CHECK models.env AND RUN: ai-config"
+siguiente = "NEXT (IN A NEW TERMINAL): ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MY-PROJECT"

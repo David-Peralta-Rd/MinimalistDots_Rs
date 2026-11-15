@@ -4,9 +4,18 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+blake3 = "1.8.7"
+rayon = "1.12.0"
 serde = { version = "1.0.229", features = ["derive"] }
 thiserror = "2.0.21"
 toml = "1.2.1"
 
+[dev-dependencies]
+criterion = "0.8.2"
+
 [lints]
 workspace = true
+
+[[bench]]
+name = "digest"
+harness = false

@@ -2,5 +2,115 @@
 codigo = "es"
 nombre = "Español"
 
+# Mensajes compartidos entre pasos (errores y avisos transversales).
 [comun]
-bienvenido = "Bienvenido a MinimalistDots"
+configuracion_no_encontrada = "NO SE ENCONTRO LA CONFIGURACION"
+paso_fallido = "❌ PASO FALLIDO:"
+instalacion_con_errores = "⚠️ LA INSTALACIÓN TERMINÓ CON ERRORES. REVISA LOS MENSAJES ❌ ANTERIORES."
+
+# Orquestación general (steps.sh).
+[instalador]
+bienvenido = "BIENVENIDO A LA INSTALACION DE MINIMALISTDOTS"
+recarga = "🔄 RECARGANDO HYPRLAND"
+recarga_error = "❌ ERROR AL RECARGAR EL SISTEMA"
+recarga_exito = "✅ RECARGADO CORRECTAMENTE"
+no_sesion = "ℹ️ NO HAY UNA SESION DE HYPRLAND ACTIVA"
+configuraciones_listas = "✨ BACKUP TERMINADO Y CONFIGURACIONES ADAPTADAS"
+
+# Paso 0: sesión de sudo.
+[sudo]
+configurando_sudo = "CONFIGURANDO LA SESIÓN DE SUDO PARA LA INSTALACIÓN"
+no_root = "❌ ERROR: ESTE INSTALADOR DEBE EJECUTARSE COMO USUARIO NORMAL (CON SUDO), NO COMO ROOT."
+invalido = "❌ ERROR: NO SE PUDO VALIDAR LA CONFIGURACIÓN DE SUDOERS."
+
+# Paso 1: creación de carpetas.
+[carpetas]
+nuevas_carpetas = "CREANDO CARPETAS QUE SE USARAN EN EL DOTFILES"
+nombre_de_carpeta = "NUEVA CARPETA CREADA == "
+
+# Paso 2: instalación de paquetes.
+[paquetes]
+instalando_paquetes = "INSTALANDO LISTAS DE PAQUETES DOCUMENTADOS"
+instalando_paru = "==> 'paru' no está en los repositorios, compilándolo desde el AUR..."
+
+# Paso 3: backup e instalación de configuraciones.
+[dotfiles]
+comenzando_backup = "CREANDO BACKUP PARA CONFIGURACIONES DENTRO DE '~/.CONFIG'"
+encabezado = "INSTALANDO CONFIGURACIONES ADICIONALES"
+confirmacion = "ESTO REEMPLAZARÁ LAS CONFIGURACIONES EXISTENTES (CON BACKUP PREVIO). ¿CONTINUAR?"
+letra_confirmacion = "Y"
+cancelado = "CANCELADO. NO SE HIZO NINGÚN CAMBIO."
+backup_si_existe = "🔄 BACKUP DE"
+limpiando_destino = "🗑️ LIMPIANDO DESTINO ANTERIOR:"
+paquete_detectado = "✨ NUEVO PAQUETE DETECTADO:"
+copiando_paquete = "📂 COPIANDO"
+configurando_especificos = "⚙️ CONFIGURANDO ARCHIVOS ESPECÍFICOS DE HYPRLAND..."
+custom_restaurado = "♻️ PERSONALIZACIONES RESTAURADAS EN"
+
+# Paso 4: servicios y scripts.
+[servicios]
+instalando = "EMPEZAMOS LA INSTALACION DE SERVICIOS Y SCRIPTS"
+listando_servicios_antiguos = "ESTA ES LA LISTA DE SERVICIOS ANTIGUOS QUE SE VA BORRAR EN '~/.local/bin/MinimalistDots/services':"
+borrando_servicios_antiguos = "BORRANDO SERVICIOS ANTIGUOS DENTRO DE '~/.local/bin/MinimalistDots/services'"
+copiando_servicios_nuevos = "COPIANDO SERVICIOS NUEVOS DENTRO DE '~/.local/bin/MinimalistDots/services'"
+listando_scripts_antiguos = "ESTA ES LA LISTA DE SCRIPTS ANTIGUOS QUE SE VA BORRAR EN '~/.local/bin/MinimalistDots/scripts':"
+borrando_scripts_antiguos = "BORRANDO SCRIPTS ANTIGUOS DENTRO DE '~/.local/bin/MinimalistDots/scripts'"
+copiando_scripts_nuevos = "COPIANDO SCRIPTS NUEVOS DENTRO DE '~/.local/bin/MinimalistDots/scripts'"
+
+# Sub-paso: Zsh.
+[zsh]
+instalado = "==> Configuración de Zsh completada."
+
+# Sub-paso: gestor de procesos.
+[procesos]
+instalado = "==> Process Manager instalado exitosamente en"
+
+# Sub-paso: tema de SDDM.
+[sddm]
+version_reciente = "==> Consultando la versión más reciente del tema..."
+descarga = "==> Descargando e instalando"
+instalado = "==> Tema de SDDM configurado correctamente."
+
+# Sub-paso: Docker.
+[docker]
+funciona = "✅ DOCKER FUNCIONA SIN SUDO PARA EL USUARIO"
+sin_respuesta = "⚠️ DOCKER QUEDÓ CONFIGURADO, PERO AÚN NO RESPONDE. REINICIA SESIÓN Y PRUEBA: docker info"
+reiniciar_sesion = "ℹ️ PARA USARLO EN LAS TERMINALES YA ABIERTAS: CIERRA SESIÓN (O REINICIA) O EJECUTA 'newgrp docker'."
+
+# Sub-paso: Git y GitHub.
+[github]
+sin_terminal = "Sin terminal interactiva: se omite la configuración de GitHub."
+pregunta = "¿Configurar Git y GitHub ahora?"
+omitido = "Omitido. Puedes hacerlo luego con:"
+pedir_nombre = "Nombre completo"
+pedir_correo = "Correo de GitHub"
+datos_obligatorios = "❌ Nombre y correo son obligatorios."
+sesion_activa = "Ya hay una sesión de GitHub activa."
+abriendo_navegador = "Se abrirá el navegador. Pega el código de un solo uso que aparece aquí."
+generando_gpg = "Generando clave GPG (ed25519, vence en 2 años). Te pedirá una contraseña para protegerla."
+gpg_error = "❌ No se pudo obtener la clave GPG."
+gpg_subida_error = "⚠️ No se pudo subir la clave GPG (¿ya estaba en GitHub?). Revisa: gh gpg-key list"
+listo = "✅ Git y GitHub listos para"
+
+# Sub-paso: optimización de red.
+[red]
+iniciando = "⚡ INICIANDO OPTIMIZACIÓN DE RED..."
+sin_interfaz = "❌ ERROR: NO SE PUDO DETECTAR UNA INTERFAZ DE RED ACTIVA."
+interfaz_detectada = "🌐 INTERFAZ ACTIVA DETECTADA:"
+aplicando_sysctl = "📦 APLICANDO CONFIGURACIONES DEL KERNEL (SYSCTL)..."
+sysctl_aviso = "⚠️ ALGUNOS PARÁMETROS SYSCTL NO SE PUDIERON APLICAR (EL KERNEL PUEDE NO SOPORTARLOS)."
+optimizando_nic = "🔌 OPTIMIZANDO LA TARJETA DE RED:"
+sin_ethtool = "⚠️ 'ethtool' NO ESTÁ INSTALADO: SE OMITE LA OPTIMIZACIÓN DE LA TARJETA DE RED."
+persistencia = "💾 HACIENDO PERSISTENTE LA OPTIMIZACIÓN DE LA TARJETA (UDEV + SYSTEMD)..."
+configurando_dns = "🌐 CONFIGURANDO DNS (CLOUDFLARE, QUAD9, GOOGLE) CON CACHÉ LOCAL..."
+listo = "🔥 ¡LISTO! OPTIMIZACIÓN DE RED APLICADA. PUEDES REVISAR EL DNS CON: resolvectl status"
+
+# Sub-paso: IA para desarrollo.
+[ai]
+instalado = "IA PARA DESARROLLO: PLANTILLAS INSTALADAS EN"
+models_creado = "MODELS.ENV CREADO (EDITA LAS RUTAS DE TUS .GGUF):"
+models_existe = "MODELS.ENV YA EXISTE: NO SE TOCA."
+api_creado = "API_MODELS.CONF CREADO (APIS PARA AI-CODE):"
+opencode_fallo = "NO SE PUDO INSTALAR OPENCODE. PRUEBA A MANO: paru -S opencode-bin"
+opencode_config_fallo = "NO SE PUDO GENERAR LA CONFIG DE OPENCODE. REVISA models.env Y EJECUTA: ai-config"
+siguiente = "SIGUIENTE (EN UNA TERMINAL NUEVA): ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MI-PROYECTO"
