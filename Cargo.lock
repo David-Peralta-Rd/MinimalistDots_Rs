@@ -2801,6 +2801,7 @@ dependencies = [
  "clap",
  "md-core",
  "md-ui",
+ "zbus",
 ]
 
 [[package]]

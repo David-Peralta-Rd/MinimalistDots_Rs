@@ -6,6 +6,8 @@ mod binds;
 mod clip;
 mod launcher;
 mod menu;
+mod notifd;
+mod notify;
 mod process;
 mod record;
 mod shot;
@@ -43,6 +45,12 @@ enum Command {
 
     /// Selector de fondos de pantalla (hyprpaper).
     Wallpaper,
+
+    /// Notificaciones: servidor residente, historial y control.
+    Notify {
+        #[command(subcommand)]
+        command: notify::NotifyCommand,
+    },
 
     /// Captura de pantalla con `grimblast` (área, OCR, QR…).
     Shot {
@@ -98,6 +106,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Binds => binds::run()?,
         Command::Process => process::run()?,
         Command::Wallpaper => wallpaper::run()?,
+        Command::Notify { command } => notify::run(command)?,
         Command::Shot { mode } => shot::run(mode)?,
         Command::Record { mode, audio } => record::run(mode, audio)?,
         Command::Volume { action } => volume::run(action)?,

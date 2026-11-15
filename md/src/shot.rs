@@ -3,9 +3,8 @@
 //! Reemplaza a `screenshot.sh`. Las notificaciones de resultado llegarán con
 //! `md notify` (H6); por ahora el resultado es silencioso.
 
-use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::Command;
 
 use clap::ValueEnum;
 
@@ -80,7 +79,7 @@ fn ocr(temp: &Path) -> Result<(), std::io::Error> {
     if text.is_empty() {
         return Ok(());
     }
-    copy_to_clipboard(&text)
+    crate::util::copy_to_clipboard(&text)
 }
 
 /// Captura un área (congelada) y copia el contenido del código QR.
@@ -94,7 +93,7 @@ fn qr(temp: &Path) -> Result<(), std::io::Error> {
     if text.is_empty() {
         return Ok(());
     }
-    copy_to_clipboard(&text)
+    crate::util::copy_to_clipboard(&text)
 }
 
 /// `grimblast [--freeze] copysave <modo> <destino>`.
@@ -149,20 +148,6 @@ fn run_annotation(tool: &str, temp: &Path, save_file: &Path) -> Result<(), std::
         Ok(())
     } else {
         Err(std::io::Error::other("la edición no terminó correctamente"))
-    }
-}
-
-/// Copia `text` al portapapeles con `wl-copy`.
-fn copy_to_clipboard(text: &str) -> Result<(), std::io::Error> {
-    let mut wl = Command::new("wl-copy").stdin(Stdio::piped()).spawn()?;
-    if let Some(mut stdin) = wl.stdin.take() {
-        stdin.write_all(text.as_bytes())?;
-    }
-    let status = wl.wait()?;
-    if status.success() {
-        Ok(())
-    } else {
-        Err(std::io::Error::other("wl-copy terminó con error"))
     }
 }
 

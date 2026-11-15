@@ -108,8 +108,13 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 
 | | Tarea | Origen → Destino |
 |---|---|---|
-| ⬜ | **md notify** (servidor notifd): tarjetas arriba-derecha, urgencia, progreso, acciones, historial `notifications.jsonl` | `notifd.qml` |
-| ⬜ | **md notify history/dnd/dismiss/clear**: historial + copiar + no-molestar + cerrar | `notifications_menu.sh` |
+| ✅ | **md notify serve** (servidor notifd, zbus): tarjetas (urgencia, progreso, no-molestar), historial `notifications.jsonl` | `notifd.qml` |
+| ✅ | **md notify history/dnd/dismiss/clear/status**: historial + copiar + no-molestar + cerrar | `notifications_menu.sh` |
+
+> Diferido a H8: invocación de acciones (`ActionInvoked`) y anclado arriba-derecha del
+> popup (hoy se muestra centrado, como el OSD). Ambas requieren verificación en sesión
+> Wayland. El demonio es residente (`md notify serve`, lanzado por el servicio
+> `notifications.lua`) y el popup no roba foco (regla `md.*` sin `stay_focused`).
 
 ## H7 · Pomodoro, reloj, IA e idioma
 

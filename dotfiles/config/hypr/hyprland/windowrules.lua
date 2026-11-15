@@ -12,11 +12,12 @@ Rules.forClass("^md%..*$"):custom({
 })
 
 -- Los menús interactivos conservan el foco de teclado mientras están visibles.
--- El OSD (`md volume`) y las notificaciones (H6) NO deben robar foco: heredan la
--- regla `md.*` de arriba, que no lleva `stay_focused`. El OSD se muestra centrado
--- por ahora; anclarlo arriba-centrado se afina en el spike de H8 (posicionamiento
--- con `move` requiere verificación real en sesión Wayland).
-Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%.process)$"):custom({
+-- El OSD (`md volume`) y el popup de notificaciones (`md.notifications`) NO deben
+-- robar foco: heredan la regla `md.*` de arriba, que no lleva `stay_focused`.
+-- Ambos se muestran centrados por ahora; anclarlos (arriba-centro el OSD,
+-- arriba-derecha las notificaciones) se afina en el spike de H8 con `move`
+-- (requiere verificación real en sesión Wayland).
+Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%.process|md%.notify)$"):custom({
     stay_focused = true,
 })
 

@@ -49,13 +49,17 @@ pub struct Notifications {
     weak: slint::Weak<MdNotifications>,
     active: Arc<Mutex<Vec<Active>>>,
     next_id: Arc<AtomicU64>,
+    max_popups: usize,
 }
 
 impl Notifications {
     /// Crea la ventana, conecta la expiración y devuelve el manejador junto con
     /// el componente (que luego se pasa a [`Self::run`]). Debe llamarse en el
     /// hilo principal, antes de arrancar el bucle de eventos.
-    pub fn create() -> Result<(Self, MdNotifications), slint::PlatformError> {
+    ///
+    /// `max_popups` limita cuántas tarjetas se muestran a la vez (la más antigua
+    /// se descarta al superarlo).
+    pub fn create(max_popups: usize) -> Result<(Self, MdNotifications), slint::PlatformError> {
         let component = MdNotifications::new()?;
         // `MdNotifications::new()` inicializa el backend: el app-id ya se puede
         // fijar antes de mostrar la ventana (lo necesitan las windowrules).
@@ -109,8 +113,15 @@ impl Notifications {
             weak,
             active,
             next_id,
+            max_popups,
         };
         Ok((handle, component))
+    }
+
+    /// Reserva un id sin mostrar ninguna notificación (para el modo no-molestar,
+    /// donde el demonio devuelve un id pero no muestra la tarjeta).
+    pub fn reserve_id(&self) -> u64 {
+        self.next_id.fetch_add(1, Ordering::Relaxed)
     }
 
     /// Añade una notificación y la muestra. Devuelve el id asignado.
@@ -128,6 +139,9 @@ impl Notifications {
                     expires_at,
                 },
             );
+            if guard.len() > self.max_popups {
+                guard.truncate(self.max_popups);
+            }
         }
         self.request_refresh();
         id
