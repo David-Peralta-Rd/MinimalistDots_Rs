@@ -53,3 +53,11 @@ def run(ctx: Context) -> None:
         print(f"  `md` instalado en {dest}")
     else:
         print("  aviso: no se generó el binario `md`.")
+
+    # Asegura los catálogos de idioma para que `md` los encuentre en runtime.
+    lang_src = ctx.paths.lang
+    lang_dest = ctx.paths.lang_dest
+    if lang_src.is_dir() and not ctx.dry_run:
+        lang_dest.mkdir(parents=True, exist_ok=True)
+        for catalog in lang_src.glob("*.toml"):
+            shutil.copy2(catalog, lang_dest / catalog.name)

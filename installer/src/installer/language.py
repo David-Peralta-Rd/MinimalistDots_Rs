@@ -165,7 +165,10 @@ def choose_language(lang_dir: Path, saved: str | None = None) -> str:
         print(f"  {index}) {nombre} ({codigo})")
 
     while True:
-        answer = input(f"Opción / Option (1-{len(languages)} o búsqueda): ").strip()
+        try:
+            answer = input(f"Opción / Option (1-{len(languages)} o búsqueda): ").strip()
+        except EOFError:
+            return FALLBACK
         if answer.isdigit():
             index = int(answer)
             if 1 <= index <= len(languages):
