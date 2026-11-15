@@ -11,6 +11,7 @@ mod fuzzy;
 mod keybinds;
 mod language;
 mod menu;
+mod notify;
 mod palette;
 mod process;
 mod volume;
@@ -27,6 +28,10 @@ pub use language::{
     validate_language_catalogs,
 };
 pub use menu::{MenuEntry, MenuMode, filter, parse_dmenu_line};
+pub use notify::{
+    Action, Notification, Urgency, format_menu_line, format_timestamp, parse_actions,
+    parse_utc_offset,
+};
 pub use palette::{Palette, PaletteError};
 pub use process::{ProcessEntry, parse_ps};
 pub use volume::VolumeState;
