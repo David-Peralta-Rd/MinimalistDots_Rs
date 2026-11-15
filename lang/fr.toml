@@ -1,0 +1,224 @@
+[meta]
+codigo = "fr"
+nombre = "Français"
+
+# Mensajes compartidos entre pasos (errores y avisos transversales).
+[comun]
+configuracion_no_encontrada = "NO SE ENCONTRO LA CONFIGURACION"
+paso_fallido = "❌ PASO FALLIDO:"
+instalacion_con_errores = "⚠️ LA INSTALACIÓN TERMINÓ CON ERRORES. REVISA LOS MENSAJES ❌ ANTERIORES."
+
+# Orquestación general (steps.sh).
+[instalador]
+bienvenido = "BIENVENIDO A LA INSTALACION DE MINIMALISTDOTS"
+recarga = "🔄 RECARGANDO HYPRLAND"
+recarga_error = "❌ ERROR AL RECARGAR EL SISTEMA"
+recarga_exito = "✅ RECARGADO CORRECTAMENTE"
+no_sesion = "ℹ️ NO HAY UNA SESION DE HYPRLAND ACTIVA"
+configuraciones_listas = "✨ BACKUP TERMINADO Y CONFIGURACIONES ADAPTADAS"
+
+# Paso 0: sesión de sudo.
+[sudo]
+configurando_sudo = "CONFIGURANDO LA SESIÓN DE SUDO PARA LA INSTALACIÓN"
+no_root = "❌ ERROR: ESTE INSTALADOR DEBE EJECUTARSE COMO USUARIO NORMAL (CON SUDO), NO COMO ROOT."
+invalido = "❌ ERROR: NO SE PUDO VALIDAR LA CONFIGURACIÓN DE SUDOERS."
+
+# Paso 1: creación de carpetas.
+[carpetas]
+nuevas_carpetas = "CREANDO CARPETAS QUE SE USARAN EN EL DOTFILES"
+nombre_de_carpeta = "NUEVA CARPETA CREADA == "
+
+# Paso 1b: despliegue de catálogos de idioma (para `md` en runtime).
+[idioma]
+desplegando = "COPIANDO CATÁLOGOS DE IDIOMA"
+
+# Paso 2: instalación de paquetes.
+[paquetes]
+instalando_paquetes = "INSTALANDO LISTAS DE PAQUETES DOCUMENTADOS"
+instalando_paru = "==> 'paru' no está en los repositorios, compilándolo desde el AUR..."
+
+# Paso 3: backup e instalación de configuraciones.
+[dotfiles]
+comenzando_backup = "CREANDO BACKUP PARA CONFIGURACIONES DENTRO DE '~/.CONFIG'"
+encabezado = "INSTALANDO CONFIGURACIONES ADICIONALES"
+confirmacion = "ESTO REEMPLAZARÁ LAS CONFIGURACIONES EXISTENTES (CON BACKUP PREVIO). ¿CONTINUAR?"
+letra_confirmacion = "Y"
+cancelado = "CANCELADO. NO SE HIZO NINGÚN CAMBIO."
+backup_si_existe = "🔄 BACKUP DE"
+limpiando_destino = "🗑️ LIMPIANDO DESTINO ANTERIOR:"
+paquete_detectado = "✨ NUEVO PAQUETE DETECTADO:"
+copiando_paquete = "📂 COPIANDO"
+configurando_especificos = "⚙️ CONFIGURANDO ARCHIVOS ESPECÍFICOS DE HYPRLAND..."
+custom_restaurado = "♻️ PERSONALIZACIONES RESTAURADAS EN"
+
+# Paso 4: servicios y scripts.
+[servicios]
+instalando = "EMPEZAMOS LA INSTALACION DE SERVICIOS Y SCRIPTS"
+listando_servicios_antiguos = "ESTA ES LA LISTA DE SERVICIOS ANTIGUOS QUE SE VA BORRAR EN '~/.local/bin/MinimalistDots/services':"
+borrando_servicios_antiguos = "BORRANDO SERVICIOS ANTIGUOS DENTRO DE '~/.local/bin/MinimalistDots/services'"
+copiando_servicios_nuevos = "COPIANDO SERVICIOS NUEVOS DENTRO DE '~/.local/bin/MinimalistDots/services'"
+listando_scripts_antiguos = "ESTA ES LA LISTA DE SCRIPTS ANTIGUOS QUE SE VA BORRAR EN '~/.local/bin/MinimalistDots/scripts':"
+borrando_scripts_antiguos = "BORRANDO SCRIPTS ANTIGUOS DENTRO DE '~/.local/bin/MinimalistDots/scripts'"
+copiando_scripts_nuevos = "COPIANDO SCRIPTS NUEVOS DENTRO DE '~/.local/bin/MinimalistDots/scripts'"
+
+# Sub-paso: Zsh.
+[zsh]
+instalado = "==> Configuración de Zsh completada."
+
+# Sub-paso: gestor de procesos.
+[procesos]
+instalado = "==> Process Manager instalado exitosamente en"
+
+# Sub-paso: tema de SDDM.
+[sddm]
+version_reciente = "==> Consultando la versión más reciente del tema..."
+descarga = "==> Descargando e instalando"
+instalado = "==> Tema de SDDM configurado correctamente."
+
+# Sub-paso: Docker.
+[docker]
+funciona = "✅ DOCKER FUNCIONA SIN SUDO PARA EL USUARIO"
+sin_respuesta = "⚠️ DOCKER QUEDÓ CONFIGURADO, PERO AÚN NO RESPONDE. REINICIA SESIÓN Y PRUEBA: docker info"
+reiniciar_sesion = "ℹ️ PARA USARLO EN LAS TERMINALES YA ABIERTAS: CIERRA SESIÓN (O REINICIA) O EJECUTA 'newgrp docker'."
+
+# Sub-paso: Git y GitHub.
+[github]
+sin_terminal = "Sin terminal interactiva: se omite la configuración de GitHub."
+pregunta = "¿Configurar Git y GitHub ahora?"
+omitido = "Omitido. Puedes hacerlo luego con:"
+pedir_nombre = "Nombre completo"
+pedir_correo = "Correo de GitHub"
+datos_obligatorios = "❌ Nombre y correo son obligatorios."
+sesion_activa = "Ya hay una sesión de GitHub activa."
+abriendo_navegador = "Se abrirá el navegador. Pega el código de un solo uso que aparece aquí."
+generando_gpg = "Generando clave GPG (ed25519, vence en 2 años). Te pedirá una contraseña para protegerla."
+gpg_error = "❌ No se pudo obtener la clave GPG."
+gpg_subida_error = "⚠️ No se pudo subir la clave GPG (¿ya estaba en GitHub?). Revisa: gh gpg-key list"
+listo = "✅ Git y GitHub listos para"
+
+# Sub-paso: optimización de red.
+[red]
+iniciando = "⚡ INICIANDO OPTIMIZACIÓN DE RED..."
+sin_interfaz = "❌ ERROR: NO SE PUDO DETECTAR UNA INTERFAZ DE RED ACTIVA."
+interfaz_detectada = "🌐 INTERFAZ ACTIVA DETECTADA:"
+aplicando_sysctl = "📦 APLICANDO CONFIGURACIONES DEL KERNEL (SYSCTL)..."
+sysctl_aviso = "⚠️ ALGUNOS PARÁMETROS SYSCTL NO SE PUDIERON APLICAR (EL KERNEL PUEDE NO SOPORTARLOS)."
+optimizando_nic = "🔌 OPTIMIZANDO LA TARJETA DE RED:"
+sin_ethtool = "⚠️ 'ethtool' NO ESTÁ INSTALADO: SE OMITE LA OPTIMIZACIÓN DE LA TARJETA DE RED."
+persistencia = "💾 HACIENDO PERSISTENTE LA OPTIMIZACIÓN DE LA TARJETA (UDEV + SYSTEMD)..."
+configurando_dns = "🌐 CONFIGURANDO DNS (CLOUDFLARE, QUAD9, GOOGLE) CON CACHÉ LOCAL..."
+listo = "🔥 ¡LISTO! OPTIMIZACIÓN DE RED APLICADA. PUEDES REVISAR EL DNS CON: resolvectl status"
+
+# Sub-paso: IA para desarrollo.
+[ai]
+instalado = "IA PARA DESARROLLO: PLANTILLAS INSTALADAS EN"
+models_creado = "MODELS.ENV CREADO (EDITA LAS RUTAS DE TUS .GGUF):"
+models_existe = "MODELS.ENV YA EXISTE: NO SE TOCA."
+api_creado = "API_MODELS.CONF CREADO (APIS PARA AI-CODE):"
+opencode_fallo = "NO SE PUDO INSTALAR OPENCODE. PRUEBA A MANO: paru -S opencode-bin"
+opencode_config_fallo = "NO SE PUDO GENERAR LA CONFIG DE OPENCODE. REVISA models.env Y EJECUTA: ai-config"
+siguiente = "SIGUIENTE (EN UNA TERMINAL NUEVA): ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MI-PROYECTO"
+
+# Herramientas de escritorio (`md`): menús, OSD y notificaciones (H7).
+[escritorio]
+lanzador = "Lanceur"
+portapapeles = "Presse-papiers"
+atajos = "Raccourcis"
+gestor_procesos = "Gestionnaire de processus"
+fondo_pantalla = "Fond d'écran"
+notificaciones = "Notifications"
+notificaciones_prompt = "Notificaciones — Enter copia"
+activar_no_molestar = "🔕 Activar No molestar"
+desactivar_no_molestar = "🔔 Desactivar No molestar"
+borrar_historial = "🗑️ Borrar historial"
+no_molestar_activado = "No molestar activado"
+no_molestar_activado_cuerpo = "Se guardan en el historial sin mostrarse."
+no_molestar_desactivado = "No molestar desactivado"
+historial_borrado = "Historial borrado"
+copiado_portapapeles = "Copiado al portapapeles"
+captura_guardada = "Captura guardada"
+captura_guardada_cuerpo = "Guardada en {ruta}"
+ocr_exitoso = "OCR Exitoso"
+ocr_error = "OCR Error"
+ocr_error_cuerpo = "No se pudo detectar texto en la imagen"
+qr_detectado = "QR Detectado"
+qr_error = "QR Error"
+qr_error_cuerpo = "No se encontró ningún código QR"
+texto_copiado = "Texto copiado al portapapeles"
+contenido_copiado = "Contenido copiado al portapapeles"
+grabacion_detenida = "Grabación Detenida"
+grabacion_procesando = "Procesando y guardando el video..."
+no_grabacion = "No había ninguna grabación en curso."
+grabacion_cancelada = "Grabación Cancelada"
+no_area = "No se seleccionó ninguna área."
+grabacion_iniciada = "Grabación Iniciada"
+grabacion_iniciada_cuerpo = "Presiona el atajo de nuevo para detener."
+grabacion_guardada = "Grabación Guardada"
+grabacion_guardada_cuerpo = "Guardada en: {ruta}"
+proceso_terminado = "Proceso terminado"
+proceso_terminado_cuerpo = "Proceso cerrado con PID: {pid}"
+pomodoro_concentracion = "Concentración (min)"
+pomodoro_descanso = "Descanso (min)"
+pomodoro_sesiones = "Sesiones"
+pomodoro_iniciado = "Pomodoro iniciado"
+pomodoro_sesion_de = "Sesión {session} de {total}"
+pomodoro_descanso_titulo = "Descanso"
+pomodoro_sesion_terminada = "Sesión {session} de {total} terminada"
+pomodoro_a_concentrarse = "A concentrarse"
+pomodoro_completado = "Pomodoro completado 🎉"
+pomodoro_terminaste = "Terminaste las {total} sesiones"
+pomodoro_detenido = "Pomodoro detenido"
+pomodoro_ya_activo = "Ya está activo"
+pomodoro_prueba = "Pomodoro (prueba)"
+pomodoro_prueba_cuerpo = "6 s de concentración y luego 20 s de descanso"
+idioma_titulo = "Langue des menus"
+borrar_todo = "🧹 Borrar todo"
+confirmar_borrar = "¿Seguro? Pulsa otra vez"
+welcome_titulo = "Bienvenue sur MinimalistDots"
+welcome_idioma = "Choisir la langue"
+welcome_atajos = "Voir les raccourcis"
+welcome_novedades = "Nouveautés"
+welcome_github = "Projet sur GitHub"
+welcome_desactivar = "Désactiver cet accueil"
+welcome_salir = "Quitter"
+ai_titulo = "LLM local"
+ai_ninguno = "— Ninguno —"
+ai_volver = "← Volver a categorías"
+ai_todos = "Todos los modelos"
+ai_descargados = "Ya descargados"
+ai_repetir = "↻ Repetir: {chat} + {fim} (ctx {ctx})"
+ai_manual = "⚙ Elegir manualmente"
+ai_sin_chat = "sin chat"
+ai_sin_fim = "sin autocompletado"
+ai_chat_titulo = "Modelo de CHAT / EDICIÓN (:{puerto})"
+ai_fim_titulo = "Modelo de AUTOCOMPLETADO (:{puerto})"
+ai_contexto_titulo = "Contexto del chat"
+ai_ctx_16k = "16K — equilibrado"
+ai_ctx_8k = "8K — menos RAM, más rápido"
+ai_ctx_4k = "4K — mínima RAM"
+ai_ctx_32k = "32K — más contexto, más RAM"
+ai_ram_titulo = "Necesitas ~{necesito} GB y hay {libre} GB libres"
+ai_continuar = "Continuar de todos modos"
+ai_cancelar = "Cancelar"
+ai_ya_activo = "Ya está activo."
+ai_sin_modelos = "No elegiste ningún modelo."
+ai_iniciando = "LLM local iniciando..."
+ai_cargando = "Cargando modelos en memoria."
+ai_listo = "LLM local listo"
+ai_problemas = "LLM local: problemas"
+ai_apagado = "LLM local apagado"
+ai_apagado_cuerpo = "Servidores detenidos y RAM liberada."
+ai_descarga_cancelada = "Descarga cancelada"
+ai_descarga_cancelada_cuerpo = "Lo ya descargado se conserva; continuará donde quedó."
+ai_descargando = "Descargando {modelo}"
+ai_descarga_aviso = "{} GB desde Hugging Face ({{}}). Pulsa el atajo otra vez para cancelar."
+ai_descargado = "Modelo descargado"
+ai_descarga_fallo = "Falló la descarga de {archivo}"
+ai_sin_espacio = "Sin espacio para descargar {archivo}"
+ai_sin_espacio_cuerpo = "Hacen falta ~{necesito} GB y hay {libre} GB libres en {dir}."
+ai_descarga_incompleta = "Descarga incompleta de {archivo}"
+ai_descarga_incompleta_cuerpo = "Tiene {actual} de ~{total} GB. Vuelve a intentarlo: continúa donde quedó."
+ai_sin_crear_dir = "No se puede crear {dir}"
+ai_sin_crear_dir_cuerpo = "Revisa los permisos de tu carpeta personal."
+ai_faltan_programas = "LLM local: faltan programas"
+ai_faltan_programas_cuerpo = "Instala: {programas}"
