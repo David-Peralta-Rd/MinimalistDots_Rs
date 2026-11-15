@@ -39,7 +39,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         confirm_wipe_label: None,
     };
 
-    let choice = match run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config) {
+    let choice = match run_menu(&SlintHost, &entries, MenuMode::Launcher, &config) {
         Ok(MenuEvent::Selected(index)) => languages.get(index).map(|(code, _)| code.clone()),
         _ => None,
     };
