@@ -1,14 +1,52 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+//! Núcleo puro de MinimalistDots: paleta, idioma y búsqueda difusa.
+//!
+//! Sin `unsafe`, sin E/S salvo lectura de archivos de datos, y sin `panic`:
+//! todo lo fallable devuelve `Result` o `Option`.
+
+mod color;
+mod fuzzy;
+mod language;
+mod palette;
+
+pub use color::{Color, ColorError};
+pub use fuzzy::{fuzzy, score};
+pub use language::{
+    Catalog, CatalogError, CatalogReport, Translator, available_languages, base_of, load_chain,
+    validate_language_catalogs,
+};
+pub use palette::{Palette, PaletteError};
 
 #[cfg(test)]
-mod tests {
-    use super::*;
+mod test_util {
+    use std::path::{Path, PathBuf};
+    use std::sync::atomic::{AtomicU64, Ordering};
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    static COUNTER: AtomicU64 = AtomicU64::new(0);
+
+    /// Directorio temporal único por prueba; se borra al soltarlo.
+    pub struct TempDir(PathBuf);
+
+    impl TempDir {
+        pub fn new(name: &str) -> std::io::Result<Self> {
+            let n = COUNTER.fetch_add(1, Ordering::Relaxed);
+            let dir =
+                std::env::temp_dir().join(format!("md_core_{name}_{}_{n}", std::process::id()));
+            std::fs::create_dir_all(&dir)?;
+            Ok(Self(dir))
+        }
+
+        pub fn path(&self) -> &Path {
+            &self.0
+        }
+
+        pub fn write(&self, name: &str, contents: &str) -> std::io::Result<()> {
+            std::fs::write(self.0.join(name), contents)
+        }
+    }
+
+    impl Drop for TempDir {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
     }
 }

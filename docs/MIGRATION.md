@@ -22,9 +22,9 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 |---|---|---|
 | ✅ | Workspace Cargo + uv, ADRs 0001-0008, `install.sh`, CI base | ya hecho |
 | ✅ | `theme/palette.toml` completo | `u2_palette.sh` → `theme/palette.toml` |
-| ⬜ | **md-core: `Palette`** (serde desde TOML) + generador de colores (`0xRRGGBBAA` para Hyprland, `#AARRGGBB` para Slint) + tests | nuevo, en `md-core/src/` |
-| ⬜ | **md-core: `LanguageCatalog`** (leer `<BCP47>.toml`, cadena de respaldo código→base→es→clave) + `validate_language_catalogs` + tests | ADR-0004/0007 |
-| ⬜ | **md-core: búsqueda difusa** (`score(q, s)`: empieza-igual → palabra → contiene → fuzzy) + tests | `MdMenu.qml` (función `score`) |
+| ✅ | **md-core: `Palette`** + `Color` (serde desde TOML; conversión a `rgba(RRGGBBaa)` para Hyprland y `#AARRGGBB` para Slint) + tests | nuevo, en `md-core/src/{color,palette}.rs` |
+| ✅ | **md-core: idioma** (`Catalog`, cadena de respaldo código→base→es→clave, `available_languages`, `validate_language_catalogs`) + tests | ADR-0004/0007 |
+| ✅ | **md-core: búsqueda difusa** (`score(q, s)`: empieza-igual → palabra → contiene → fuzzy) + tests | `MdMenu.qml` (función `score`) |
 | ⬜ | **md-core: `compute_tree_digest`** (blake3 + rayon, árbol determinista) + benchmark | ADR-0006 |
 | ⬜ | **md-ui: `ShellHost` + ventana base Slint** (spike del ADR-0003: launcher con foco, OSD sin robar foco, popup de notificación) | `MdMenu.qml` / ADR-0003 |
 | ⬜ | **md: binario `md`** con clap + subcomando `about` (AboutSlint) + carga de paleta/idioma | `md/src/main.rs` |
