@@ -71,6 +71,8 @@ pub fn run(mode: Mode, audio: bool) -> Result<(), Box<dyn std::error::Error>> {
                 return Ok(());
             };
             args.push("-w".into());
+            args.push("region".into());
+            args.push("-region".into());
             args.push(geometry);
         }
         Mode::Monitor => {
