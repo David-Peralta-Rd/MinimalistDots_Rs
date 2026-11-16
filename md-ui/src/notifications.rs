@@ -193,7 +193,10 @@ fn refresh(component: &MdNotifications, active: &Arc<Mutex<Vec<Active>>>) {
     let count = items.len();
     component.set_notifications(slint::VecModel::from_slice(&items));
     if count == 0 {
-        let _ = component.hide();
+        // Mantener la ventana mapeada (evita que `show()` no la recupere en
+        // Wayland tras un `hide()`); altura 0 la hace invisible.
+        component.set_md_height(0.0);
+        let _ = component.show();
     } else {
         let height = count as f32 * CARD_HEIGHT + (count as f32 - 1.0) * SPACING;
         component.set_md_height(height);

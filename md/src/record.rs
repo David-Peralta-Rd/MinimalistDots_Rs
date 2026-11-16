@@ -70,9 +70,9 @@ pub fn run(mode: Mode, audio: bool) -> Result<(), Box<dyn std::error::Error>> {
                 );
                 return Ok(());
             };
+            // En esta versión de gpu-screen-recorder `-region` está obsoleto;
+            // la geometría se pasa directamente a `-w`.
             args.push("-w".into());
-            args.push("region".into());
-            args.push("-region".into());
             args.push(geometry);
         }
         Mode::Monitor => {
