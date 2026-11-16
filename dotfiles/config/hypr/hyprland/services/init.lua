@@ -19,6 +19,7 @@ require("create_custom_config")
 require("hypridle")
 require("wallpaper")
 require("desktop_clock")
+require("welcome")
 
 
 -- Custom
