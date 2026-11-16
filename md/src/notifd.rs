@@ -18,8 +18,8 @@ use zbus::interface;
 use zbus::zvariant::OwnedValue;
 
 /// Tiempo visible por defecto (ms) para notificaciones no críticas sin `timeout`.
-const DEFAULT_TIMEOUT: Duration = Duration::from_millis(6000);
-const CRITICAL_TIMEOUT: Duration = Duration::from_millis(15000);
+const DEFAULT_TIMEOUT: Duration = Duration::from_millis(10000);
+const CRITICAL_TIMEOUT: Duration = Duration::from_millis(30000);
 /// Número máximo de tarjetas visibles a la vez.
 const MAX_POPUPS: usize = 5;
 /// Líneas de historial que se conservan al arrancar.
