@@ -1,66 +1,69 @@
-# README.md
 # MinimalistDots_Rs
 
-Dotfiles minimalistas de Hyprland para Arch/CachyOS. El instalador es Python (uv) y las herramientas de escritorio son Rust (Slint). Los pasos del instalador son archivos sueltos, y el idioma se elige desde un archivo `.toml` por idioma.
+Dotfiles para Hyprland sobre CachyOS/Arch con una capa de desarrollo asistido por IA que corre en mi propia CPU (Ryzen 5 5600G, 32 GB de RAM). Migrado a Rust para máxima velocidad y un solo binario.
 
-## Instalar
-```bash
-git clone https://github.com/David-Peralta-Rd/MinimalistDots_Rs.git
-cd MinimalistDots_Rs
-bash install.sh            # primera vez: compila Rust, puede tardar
-```
-Probar sin tocar nada: `uv run mdots install --dry-run`.
+## Características
 
-## Estructura
-| Carpeta | Qué es |
+- **Entorno de escritorio**: Hyprland + Slint (Rust) para menús, notificaciones, reloj y OSD. Waybar/Quickshell sustituidos por `md` (un único binario).
+- **IA local**: `md ai` levanta modelos con llama.cpp (`llama-server`) y los expone con una API compatible con OpenAI + tool calling. Mide rendimiento real con `llama-bench` y conecta OpenCode al modelo local.
+- **Plantillas**: `AGENTS.md`, `SPEC.md` y `tasks.md` que separan lo que escribo yo de lo que delego al agente, con revisión humana de cada cambio.
+- **Instalador modular** en Python (uv) con pasos ordenados, menús fuzzy y 7 idiomas (es, en, fr, pt, de, it, zh). Catálogos TOML en `lang/`.
+- **Servicios en Lua** para Hyprland (reloj, notificaciones, bienvenida, etc.) y windowrules con `hyprland.lib.rules`.
+- **Herramientas incluidas**: grabador de pantalla (gpu-screen-recorder), capturas con grimblast, OCR/QR, portapapeles, pomodoro, gestión de procesos, cambio de idioma en vivo, bienvenida en el primer arranque.
+
+## Comandos (`md`)
+
+| Comando | Descripción |
 |---|---|
-| `installer/` | Python: `mdots`; un archivo por paso en `src/installer/steps/` |
-| `md/` · `md-core/` · `md-ui/` | Rust: binario `md`, lógica pura, interfaz Slint |
-| `dotfiles/` | Lo que se instala (`config/`, `hypr-services/`) |
-| `lang/` | Un `.toml` por idioma |
-| `theme/palette.toml` | La única paleta |
-| `packages.toml` | Paquetes por grupo |
-| `docs/` | ROADMAP, ADRs, MIGRATION, seguridad |
+| `md language` | Selector de idioma con búsqueda fuzzy |
+| `md welcome` | Pantalla de bienvenida (idioma, atajos, novedades, GitHub) |
+| `md notify …` | Servidor de notificaciones, historial, no-molestar |
+| `md record snip/monitor/toggle` | Grabación de pantalla (área o completa) |
+| `md shot …` | Capturas (pantalla, área, congelado, OCR, QR) |
+| `md ai …` | IA local: modelos, servidores, diagnóstico, OpenCode |
+| `md pomodoro …` | Temporizador de concentración/descanso |
+| `md clip` / `md volume` / `md process` | Portapapeles, OSD de volumen, gestor de procesos |
+| `md clock` | Reloj de escritorio persistente |
 
-# Estructura de carpetas:
-```xml
-MinimalistDots_Rs/
-├── install.sh              # ~10 líneas: instala uv y ejecuta `uv run mdots`
-├── pyproject.toml          # workspace de uv (lo genera uv)
-├── Cargo.toml              # workspace de Cargo
-├── installer/              # Python: el instalador (comando `mdots`)
-│   └── src/installer/
-│       ├── cli.py          # ≤25 líneas
-│       ├── context.py      # rutas, idioma, paleta (reemplaza u3_env.sh)
-│       ├── path.py         # carga de rutas generales del dotfiles
-│       ├── language.py     # selección de lenguaje para la instalación de dotfiles(aun en desarrollo)
-│       └── steps/          # UN archivo por paso (los antiguos bk*.sh)
-│           ├── sudo.py  packages.py  dotfiles.py  zsh.py
-│           ├── docker.py  github.py  network.py  sddm.py  ai.py
-│       └── test/           # Carpeta de test de pasos, lenguajes y rutas.
-│           ├── test_steps.py
-│           ├── test_path.py
-│           ├── test_language.py
-├── md/                     # Rust: binario `md` (md menu, md volume, md shot…)
-│   └── src/commands/       # un archivo por subcomando
-├── md-core/                # Rust lib pura: paleta, idioma, búsqueda difusa
-├── md-ui/                  # Slint: ui/*.slint (menú, OSD, notificaciones)
-├── dotfiles/               # lo que se instala: config/, hypr-services/
-├── lang/                   # es.toml, en.toml, fr.toml… (uno por idioma)
-├── theme/palette.toml      # la única paleta
-├── packages.toml           # paquetes por grupo
-└── docs/                   # ROADMAP, ADRs, MIGRATION (lo que ya te di)
+## Arquitectura
+
+- `md-core/` — lógica pura (sin I/O).
+- `md/` — orquestación y subcomandos.
+- `md-ui/` — componentes Slint + wrappers Rust.
+- `lang/` — catálogos i18n (175 keys, mismas en todos los idiomas).
+- `dotfiles/` — configuraciones de Hyprland, servicios Lua, quickshell.
+- `installer/` — instalador Python (pasos en `steps/`, rutas en `paths.py`).
+
+## Requisitos
+
+- CachyOS/Arch Linux, Hyprland 0.57+
+- Rust (rustup), Python 3.12+ (uv), base-devel
+- Paquetes: ver `packages.toml`
+
+## Instalación
+
+```bash
+git clone https://github.com/David-Peralta-Rd/MinimalistDots_Rs
+cd MinimalistDots_Rs
+bash install.sh
 ```
 
-## Cómo agregar
-- **Paso nuevo:** crea `installer/src/installer/steps/<nombre>.py` con `ORDER` y `run(ctx)`. Prueba con `uv run mdots install --only <nombre>`.
-- **Idioma nuevo:** copia `lang/es.toml` a `lang/xx-YY.toml` y tradúcelo.
-- **Subcomando Rust:** un archivo en `md/src/commands/` y una línea en el `enum` de `clap`.
+## Desarrollo
 
-## Novedades
-- **Unreleased:** migración completa de bash/Quickshell a Rust. Ver [CHANGELOG](CHANGELOG.md).
+```bash
+# Compilar
+cargo build --release -p md
 
-## Documentación
-[ROADMAP](docs/ROADMAP.md) · [MIGRATION](docs/MIGRATION.md) · [SECURITY](SECURITY.md) · [DEPENDENCIES](docs/security/DEPENDENCIES.md)
+# Instalar binario (evita "Text file busy")
+cp target/release/md /tmp/opencode/md.new && mv -f /tmp/opencode/md.new ~/.local/bin/md
 
-Licencia MIT.
+# Lints y tests
+cargo clippy --workspace --all-targets -- -D warnings
+cargo fmt --all --check
+cargo test --workspace
+uv run pytest installer/tests
+```
+
+## Licencia
+
+MIT
