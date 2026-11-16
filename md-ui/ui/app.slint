@@ -913,31 +913,51 @@ export component MdWelcome inherits Window {
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
                 background: lang-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: "🌐 " + root.label-language; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                HorizontalLayout {
+                    alignment: center; spacing: 6px;
+                    Text { text: "🌐"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.label-language; color: #abb2bf; font-size: 13px; vertical-alignment: center; }
+                }
                 lang-area := TouchArea { clicked => { root.language(); } }
             }
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
                 background: binds-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: "⌨️ " + root.label-binds; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                HorizontalLayout {
+                    alignment: center; spacing: 6px;
+                    Text { text: "⌨️"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.label-binds; color: #abb2bf; font-size: 13px; vertical-alignment: center; }
+                }
                 binds-area := TouchArea { clicked => { root.binds(); } }
             }
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
                 background: gh-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: "🐙 " + root.label-github; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                HorizontalLayout {
+                    alignment: center; spacing: 6px;
+                    Text { text: "🐙"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.label-github; color: #abb2bf; font-size: 13px; vertical-alignment: center; }
+                }
                 gh-area := TouchArea { clicked => { root.github(); } }
             }
             Rectangle {
                 width: 140px; height: 40px; border-radius: 8px;
                 background: toggle-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: root.bienvenida-on ? "🔁 " + root.label-toggle-on : "🔁 " + root.label-toggle-off; color: #abb2bf; font-size: 12px; horizontal-alignment: center; vertical-alignment: center; }
+                HorizontalLayout {
+                    alignment: center; spacing: 6px;
+                    Text { text: "🔁"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.bienvenida-on ? root.label-toggle-on : root.label-toggle-off; color: #abb2bf; font-size: 12px; vertical-alignment: center; }
+                }
                 toggle-area := TouchArea { clicked => { root.toggle(); } }
             }
             Rectangle {
                 width: 100px; height: 40px; border-radius: 8px;
                 background: exit-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: "🚪 " + root.label-exit; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                HorizontalLayout {
+                    alignment: center; spacing: 6px;
+                    Text { text: "🚪"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.label-exit; color: #abb2bf; font-size: 13px; vertical-alignment: center; }
+                }
                 exit-area := TouchArea { clicked => { root.exit-app(); } }
             }
         }
