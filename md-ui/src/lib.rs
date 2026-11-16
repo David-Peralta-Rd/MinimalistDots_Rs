@@ -16,6 +16,7 @@ mod menu;
 mod notifications;
 mod osd;
 mod pomodoro;
+mod welcome_ui;
 
 pub use clock::{ClockConfig, ClockText, run as run_clock};
 pub use generated::*;
@@ -23,6 +24,7 @@ pub use menu::{MenuConfig, MenuEvent, run as run_menu};
 pub use notifications::{NotificationData, Notifications};
 pub use osd::{OsdConfig, run as run_osd};
 pub use pomodoro::{PomodoroConfig, PomodoroEvents, run as run_pomodoro};
+pub use welcome_ui::{WelcomeConfig, run as run_welcome};
 
 /// Puerto por el que los widgets muestran sus ventanas.
 ///

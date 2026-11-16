@@ -3,8 +3,8 @@
 use std::fs;
 use std::process::Command;
 
-use md_core::{MenuEntry, MenuMode, Update};
-use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
+use md_core::Update;
+
 
 use crate::i18n::{Texts, minimalistdots_dir, settings_path};
 
@@ -51,70 +51,50 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let github_url = "https://github.com/David-Peralta-Rd/MinimalistDots_Rs";
 
     loop {
-        // Novedades leídas dentro del mismo menú.
         let updates_path = minimalistdots_dir().join("updates.toml");
         let updates: Vec<Update> = md_core::load_updates(&updates_path);
-
-        let mut options: Vec<String> = vec![
-            texts.t("escritorio.welcome_idioma"),
-            texts.t("escritorio.welcome_atajos"),
-            texts.t("escritorio.welcome_github"),
-            texts.t("escritorio.welcome_desactivar"),
-            texts.t("escritorio.welcome_salir"),
-        ];
-        // Añade las novedades al final, extendiendo su texto en varias líneas
-        // para que quepa toda la información; el menú hace scroll con el mouse.
-        let update_offset = options.len();
+        let mut changelog: Vec<String> = Vec::new();
         for update in &updates {
-            options.push(format!("📦 {}", update.titulo));
+            changelog.push(format!("📦 {}", update.titulo));
             if !update.descripcion.is_empty() {
                 for line in update.descripcion.lines() {
-                    options.push(format!("   {}", line));
+                    changelog.push(format!("   {}", line));
                 }
             }
         }
+        if changelog.is_empty() {
+            changelog.push("Sin novedades registradas.".to_owned());
+        }
 
-        let entries: Vec<MenuEntry> = options.iter().map(|o| MenuEntry::new(o.clone())).collect();
-        let config = MenuConfig {
-            app_id: "md.welcome".to_owned(),
+        let bienvenida_on = read_bool("bienvenida", true);
+        let config = md_ui::WelcomeConfig {
             title: texts.t("escritorio.welcome_titulo"),
-            prompt: "✨".to_owned(),
-            accent: md_core::Color::new(0x7e, 0xc7, 0xa2),
-            row_height: 44.0,
-            width: 720.0,
-            height: 560.0,
-            can_delete: false,
-            can_wipe: false,
-            submit_empty: false,
-            wipe_label: None,
-            confirm_wipe_label: None,
+            changelog,
+            bienvenida_on,
         };
 
-        let choice = match run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config) {
-            Ok(MenuEvent::Selected(i)) => i,
-            _ => break,
-        };
-
-        match choice {
-            0 => {
+        let result = md_ui::run_welcome(
+            &md_ui::SlintHost,
+            config,
+            move || {
                 let _ = crate::language::run();
-            }
-            1 => {
+            },
+            move || {
                 let _ = crate::binds::run();
-            }
-            2 => {
+            },
+            move || {
                 let _ = Command::new("xdg-open").arg(github_url).spawn();
-            }
-            3 => {
+            },
+            move || {
                 let new_val = !read_bool("bienvenida", true);
                 write_bool("bienvenida", new_val);
-            }
-            4 => break,
-            i if i >= update_offset => {
-                // Las novedades son informativas; no hace nada al seleccionar.
-            }
-            _ => break,
+            },
+        );
+        if result.is_err() {
+            break;
         }
+        // The window's exit-app callback closes it; loop ends.
+        break;
     }
     Ok(())
 }

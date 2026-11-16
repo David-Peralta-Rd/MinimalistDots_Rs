@@ -836,3 +836,102 @@ export component MdClock inherits Window {
         }
     }
 }
+
+import { ScrollView } from "std-widgets.slint";
+
+// =============================================================================
+// MdWelcome: pantalla de bienvenida con identidad visual
+// =============================================================================
+export component MdWelcome inherits Window {
+    in property <string> md-title: "Bienvenido a MinimalistDots";
+    in property <[string]> changelog;
+    in property <bool> bienvenida-on: true;
+
+    title <=> root.md-title;
+    width: 760px;
+    height: 600px;
+    background: #1e222a;
+
+    callback language();
+    callback binds();
+    callback github();
+    callback toggle();
+    callback exit-app();
+
+    VerticalLayout {
+        padding: 24px;
+        spacing: 16px;
+
+        // --- Cabecera con identidad visual ---
+        Text {
+            text: "MinimalistDots_Rs";
+            color: #7ec7a2;
+            font-size: 32px;
+            font-weight: 800;
+            horizontal-alignment: center;
+        }
+        Text {
+            text: "⚡ Velocidad  ·  🛠️ Utilidad  ·  🦀 Rust";
+            color: #abb2bf;
+            font-size: 14px;
+            horizontal-alignment: center;
+        }
+
+        // --- Novedades (scroll) ---
+        Text {
+            text: "📦 Novedades";
+            color: #7aa2f7;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        ScrollView {
+            height: 260px;
+            VerticalLayout {
+                spacing: 6px;
+                for entry in root.changelog : Text {
+                    text: entry;
+                    color: #abb2bf;
+                    font-size: 13px;
+                    wrap: word-wrap;
+                }
+            }
+        }
+
+        // --- Opciones ---
+        HorizontalLayout {
+            spacing: 12px;
+            alignment: center;
+
+            Rectangle {
+                width: 120px; height: 40px; border-radius: 8px;
+                background: lang-area.has-hover ? #3e4451 : #2c313a;
+                Text { text: "🌐 Idioma"; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                lang-area := TouchArea { clicked => { root.language(); } }
+            }
+            Rectangle {
+                width: 120px; height: 40px; border-radius: 8px;
+                background: binds-area.has-hover ? #3e4451 : #2c313a;
+                Text { text: "⌨️ Atajos"; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                binds-area := TouchArea { clicked => { root.binds(); } }
+            }
+            Rectangle {
+                width: 120px; height: 40px; border-radius: 8px;
+                background: gh-area.has-hover ? #3e4451 : #2c313a;
+                Text { text: "🐙 GitHub"; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                gh-area := TouchArea { clicked => { root.github(); } }
+            }
+            Rectangle {
+                width: 140px; height: 40px; border-radius: 8px;
+                background: toggle-area.has-hover ? #3e4451 : #2c313a;
+                Text { text: root.bienvenida-on ? "🔁 Bienvenida: ON" : "🔁 Bienvenida: OFF"; color: #abb2bf; font-size: 12px; horizontal-alignment: center; vertical-alignment: center; }
+                toggle-area := TouchArea { clicked => { root.toggle(); } }
+            }
+            Rectangle {
+                width: 100px; height: 40px; border-radius: 8px;
+                background: exit-area.has-hover ? #3e4451 : #2c313a;
+                Text { text: "🚪 Salir"; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                exit-area := TouchArea { clicked => { root.exit-app(); } }
+            }
+        }
+    }
+}
