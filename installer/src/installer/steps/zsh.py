@@ -12,6 +12,9 @@ ZSHRC_MARKER_START = "# >>> MinimalistDots zsh >>>"
 ZSHRC_MARKER_END = "# <<< MinimalistDots zsh <<<"
 
 ALIASES = """\
+# Evita que el alias md='mkdir -p' de oh-my-zsh eclipse el binario md.
+unalias md 2>/dev/null || true
+
 # ============================================================
 # SISTEMA
 # ============================================================
@@ -64,14 +67,14 @@ alias dk-run="docker compose run --entrypoint bash"
 # IA PARA DESARROLLO (md ai; ver md ai --help)
 # ============================================================
 
-alias ai-up="md ai up"
-alias ai-down="md ai down"
-alias ai-status="md ai status"
-alias ai-doctor="md ai doctor"
-alias ai-bench="md ai bench"
-alias ai-new="md ai new"
-alias ai-code="md ai code"
-alias ai-config="md ai config"
+alias ai-up="$HOME/.local/bin/md ai up"
+alias ai-down="$HOME/.local/bin/md ai stop"
+alias ai-status="$HOME/.local/bin/md ai status"
+alias ai-doctor="$HOME/.local/bin/md ai doctor"
+alias ai-bench="$HOME/.local/bin/md ai bench"
+alias ai-new="$HOME/.local/bin/md ai new"
+alias ai-code="$HOME/.local/bin/md ai code"
+alias ai-config="$HOME/.local/bin/md ai config"
 """
 
 ZSHRC_BLOCK = f"""
