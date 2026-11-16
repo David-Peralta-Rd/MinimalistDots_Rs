@@ -63,7 +63,7 @@ pub fn run(mode: Mode) -> Result<(), Box<dyn std::error::Error>> {
 fn capture(mode: Mode, temp: &Path, save_file: &Path) -> Result<(), std::io::Error> {
     let (grimblast_mode, freeze) = match mode {
         Mode::Printscreen => ("screen", false),
-        Mode::Snip => ("area", false),
+        Mode::Snip => ("area", true),
         Mode::Snapfreeze => ("area", true),
         Mode::Monitor => ("output", false),
         Mode::Scan | Mode::Qr => unreachable!(),
