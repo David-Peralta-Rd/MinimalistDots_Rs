@@ -844,6 +844,14 @@ import { ScrollView } from "std-widgets.slint";
 // =============================================================================
 export component MdWelcome inherits Window {
     in property <string> md-title: "Bienvenido a MinimalistDots";
+    in property <string> subtitle: "";
+    in property <string> label-changelog: "Novedades";
+    in property <string> label-language: "Idioma";
+    in property <string> label-binds: "Atajos";
+    in property <string> label-github: "GitHub";
+    in property <string> label-toggle-on: "Bienvenida: ON";
+    in property <string> label-toggle-off: "Bienvenida: OFF";
+    in property <string> label-exit: "Salir";
     in property <[string]> changelog;
     in property <bool> bienvenida-on: true;
 
@@ -871,7 +879,7 @@ export component MdWelcome inherits Window {
             horizontal-alignment: center;
         }
         Text {
-            text: "⚡ Velocidad  ·  🛠️ Utilidad  ·  🦀 Rust";
+            text: root.subtitle;
             color: #abb2bf;
             font-size: 14px;
             horizontal-alignment: center;
@@ -879,7 +887,7 @@ export component MdWelcome inherits Window {
 
         // --- Novedades (scroll) ---
         Text {
-            text: "📦 Novedades";
+            text: "📦 " + root.label-changelog;
             color: #7aa2f7;
             font-size: 16px;
             font-weight: 700;
@@ -905,31 +913,31 @@ export component MdWelcome inherits Window {
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
                 background: lang-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: "🌐 Idioma"; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                Text { text: "🌐 " + root.label-language; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
                 lang-area := TouchArea { clicked => { root.language(); } }
             }
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
                 background: binds-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: "⌨️ Atajos"; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                Text { text: "⌨️ " + root.label-binds; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
                 binds-area := TouchArea { clicked => { root.binds(); } }
             }
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
                 background: gh-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: "🐙 GitHub"; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                Text { text: "🐙 " + root.label-github; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
                 gh-area := TouchArea { clicked => { root.github(); } }
             }
             Rectangle {
                 width: 140px; height: 40px; border-radius: 8px;
                 background: toggle-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: root.bienvenida-on ? "🔁 Bienvenida: ON" : "🔁 Bienvenida: OFF"; color: #abb2bf; font-size: 12px; horizontal-alignment: center; vertical-alignment: center; }
+                Text { text: root.bienvenida-on ? "🔁 " + root.label-toggle-on : "🔁 " + root.label-toggle-off; color: #abb2bf; font-size: 12px; horizontal-alignment: center; vertical-alignment: center; }
                 toggle-area := TouchArea { clicked => { root.toggle(); } }
             }
             Rectangle {
                 width: 100px; height: 40px; border-radius: 8px;
                 background: exit-area.has-hover ? #3e4451 : #2c313a;
-                Text { text: "🚪 Salir"; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+                Text { text: "🚪 " + root.label-exit; color: #abb2bf; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
                 exit-area := TouchArea { clicked => { root.exit-app(); } }
             }
         }

@@ -7,6 +7,14 @@ use crate::generated::MdWelcome;
 
 pub struct WelcomeConfig {
     pub title: String,
+    pub subtitle: String,
+    pub label_changelog: String,
+    pub label_language: String,
+    pub label_binds: String,
+    pub label_github: String,
+    pub label_toggle_on: String,
+    pub label_toggle_off: String,
+    pub label_exit: String,
     pub changelog: Vec<String>,
     pub bienvenida_on: bool,
 }
@@ -22,6 +30,14 @@ pub fn run(
     let component = MdWelcome::new()?;
     slint::set_xdg_app_id("md.welcome".to_owned())?;
     component.set_md_title(config.title.into());
+    component.set_subtitle(config.subtitle.into());
+    component.set_label_changelog(config.label_changelog.into());
+    component.set_label_language(config.label_language.into());
+    component.set_label_binds(config.label_binds.into());
+    component.set_label_github(config.label_github.into());
+    component.set_label_toggle_on(config.label_toggle_on.into());
+    component.set_label_toggle_off(config.label_toggle_off.into());
+    component.set_label_exit(config.label_exit.into());
     component.set_changelog(slint::VecModel::from_slice(
         &config
             .changelog

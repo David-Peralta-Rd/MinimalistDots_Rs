@@ -69,6 +69,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         let bienvenida_on = read_bool("bienvenida", true);
         let config = md_ui::WelcomeConfig {
             title: texts.t("escritorio.welcome_titulo"),
+            subtitle: "⚡ Velocidad  ·  🛠️ Utilidad  ·  🦀 Rust".to_owned(),
+            label_changelog: texts.t("escritorio.welcome_novedades"),
+            label_language: texts.t("escritorio.welcome_idioma"),
+            label_binds: texts.t("escritorio.welcome_atajos"),
+            label_github: texts.t("escritorio.welcome_github"),
+            label_toggle_on: texts.t("escritorio.welcome_desactivar"),
+            label_toggle_off: texts.t("escritorio.welcome_desactivar"),
+            label_exit: texts.t("escritorio.welcome_salir"),
             changelog,
             bienvenida_on,
         };
