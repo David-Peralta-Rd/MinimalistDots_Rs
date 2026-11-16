@@ -84,7 +84,7 @@ pub fn run(mode: Mode, audio: bool) -> Result<(), Box<dyn std::error::Error>> {
 
     if audio {
         args.push("-a".into());
-        args.push("default".into());
+        args.push("default_output".into());
     }
 
     notify(
