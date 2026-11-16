@@ -21,7 +21,7 @@ paquetes = ["zsh", "git", "zsh-completions", "zsh-autocomplete", "zsh-autosugges
 nombre = "core"
 origen = "repo"
 obligatorio = true
-paquetes = ["mpv", "git", "sddm", "qt6ct", "flatpak", "udisks2", "cliphist", "hypridle", "hyprland", "hyprlock", "hyprpaper", "reflector", "fastfetch", "hyprpolkitagent", "xdg-desktop-portal-hyprland"]
+paquetes = ["mpv", "git", "sddm", "qt6ct", "flatpak", "udisks2", "cliphist", "hypridle", "hyprland", "hyprlock", "hyprpaper", "reflector", "fastfetch", "hyprpolkitagent", "xdg-desktop-portal-hyprland", "quickshell"]
 
 [[grupo]]
 nombre = "apps"
@@ -57,7 +57,7 @@ paquetes = ["zbar", "grim", "slurp", "swappy", "libnotify", "tesseract", "wl-cli
 nombre = "programming"
 origen = "aur"
 obligatorio = false
-paquetes = ["uv", "docker", "github-cli", "docker-buildx", "drawio-desktop", "docker-compose", "visual-studio-code-bin"]
+paquetes = ["uv", "docker", "github-cli", "docker-buildx", "drawio-desktop", "docker-compose", "visual-studio-code-bin", "opencode"]
 
 [[grupo]]
 nombre = "screenrecord"
