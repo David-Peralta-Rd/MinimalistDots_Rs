@@ -36,7 +36,6 @@ Rules.forClass("^(md%.clock)$"):custom({
 Rules.forClass("^(md%.notifications)$"):custom({
     name      = "move-md-notifications",
     float     = true,
-    center    = false,
     move      = "monitor_w-window_w-20 20",
     no_focus  = true,
     pin       = true,
