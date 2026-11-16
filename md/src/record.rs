@@ -122,14 +122,36 @@ fn notify(summary: &str, body: &str) {
 /// Detiene cualquier grabación en curso (SIGINT para guardar bien el vídeo).
 /// Devuelve `true` si había algún proceso que detener.
 fn stop_active_recording() -> Result<bool, std::io::Error> {
-    let output = Command::new("pgrep")
-        .args(["gpu-screen-recorder"])
-        .output()?;
-    let pids = String::from_utf8_lossy(&output.stdout);
+    // `pgrep` por nombre falla con nombres >15 chars (límite del kernel), así que
+    // recorremos /proc y filtramos por el ejecutable real (argv[0]).
     let mut stopped = false;
-    for pid in pids.split_whitespace() {
-        let _ = Command::new("kill").args(["-INT", pid]).status();
-        stopped = true;
+    for entry in std::fs::read_dir("/proc")? {
+        let entry = match entry {
+            Ok(e) => e,
+            Err(_) => continue,
+        };
+        let name = entry.file_name();
+        let name = match name.to_str() {
+            Some(n) => n,
+            None => continue,
+        };
+        if !name.chars().all(|c| c.is_ascii_digit()) {
+            continue;
+        }
+        let cmdline = match std::fs::read(format!("/proc/{name}/cmdline")) {
+            Ok(b) => b,
+            Err(_) => continue,
+        };
+        if cmdline.is_empty() {
+            continue;
+        }
+        let argv0 = cmdline.split(|&b| b == 0).next().unwrap_or(&[]);
+        let argv0 = String::from_utf8_lossy(argv0);
+        let base = argv0.rsplit('/').next().unwrap_or(&argv0);
+        if base == "gpu-screen-recorder" {
+            let _ = Command::new("kill").args(["-INT", name]).status();
+            stopped = true;
+        }
     }
     Ok(stopped)
 }
