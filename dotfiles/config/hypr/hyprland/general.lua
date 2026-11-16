@@ -23,7 +23,11 @@ hl.config({
             enabled = false,       -- fuera: menos carga visual y de GPU
         },
         blur = {
-            enabled = false,       -- fuera: mismo criterio, prioriza velocidad sobre efectos
+            enabled = true,       -- necesario para el efecto glassmorphism de las ventanas Slint (md.*)
+            size = 6,
+            passes = 2,
+            new_optimizations = true,
+            xray = false,
         },
     },
     dwindle = {
