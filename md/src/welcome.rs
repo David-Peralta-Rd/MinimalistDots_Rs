@@ -70,13 +70,13 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         let config = md_ui::WelcomeConfig {
             title: texts.t("escritorio.welcome_titulo"),
             subtitle: "⚡ Velocidad  ·  🛠️ Utilidad  ·  🦀 Rust".to_owned(),
-            label_changelog: "Novedades".to_owned(),
-            label_language: "Idioma".to_owned(),
-            label_binds: "Atajos".to_owned(),
-            label_github: "GitHub".to_owned(),
+            label_changelog: texts.t("escritorio.welcome_novedades"),
+            label_language: texts.t("escritorio.welcome_idioma"),
+            label_binds: texts.t("escritorio.welcome_atajos"),
+            label_github: texts.t("escritorio.welcome_github"),
             label_toggle_on: texts.t("escritorio.welcome_desactivar"),
             label_toggle_off: texts.t("escritorio.welcome_desactivar"),
-            label_exit: "Salir".to_owned(),
+            label_exit: texts.t("escritorio.welcome_salir"),
             changelog,
             bienvenida_on,
         };
