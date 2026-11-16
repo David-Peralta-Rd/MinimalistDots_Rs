@@ -168,6 +168,7 @@ def run(ctx: Context) -> None:
     ctx.run(["sudo", "udevadm", "control", "--reload"])
 
     print(ctx.t("red.configurando_dns"))
+    ctx.run(["sudo", "mkdir", "-p", "/etc/systemd/resolved.conf.d"])
     ctx.write_sudo("/etc/systemd/resolved.conf.d/dns_latency.conf", _DNS)
     ctx.run(["sudo", "ln", "-sf", "/run/systemd/resolve/stub-resolv.conf", "/etc/resolv.conf"])
     ctx.run(["sudo", "systemctl", "enable", "--now", "systemd-resolved"])

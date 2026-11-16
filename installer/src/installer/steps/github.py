@@ -35,7 +35,11 @@ def _prompt(label: str, default: str) -> str:
 
 
 def _find_key_id(ctx: Context, email: str) -> str | None:
-    output = ctx.capture(["gpg", "--list-secret-keys", "--with-colons", email])
+    try:
+        output = ctx.capture(["gpg", "--list-secret-keys", "--with-colons", email])
+    except subprocess.CalledProcessError:
+        # gpg devuelve código != 0 cuando no hay clave secreta para ese correo.
+        return None
     for line in output.splitlines():
         parts = line.split(":")
         if len(parts) > 4 and parts[0] == "sec":
