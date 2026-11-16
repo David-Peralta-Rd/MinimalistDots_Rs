@@ -80,6 +80,5 @@ Rules.forClass("^md%..*$"):custom({
     float       = true,
     pin         = true,
     border_size = 0,
-    rounding    = 12,
     no_anim     = true,
 })
