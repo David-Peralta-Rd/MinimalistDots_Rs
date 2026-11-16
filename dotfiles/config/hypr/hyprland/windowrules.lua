@@ -25,18 +25,27 @@ Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%
 -- (como el eww/QML original). El `move` es una aproximación: su anclado exacto y
 -- el comportamiento "detrás de las ventanas" (que exigiría layer-shell) se
 -- verifican en H8.
-Rules.forClass("^(md%.clock)$"):custom({
-    name      = "move-md-clock",
-    float     = true,
-    pin       = true,
-    no_focus  = true,
-})
 
-Rules.forClass("^(md%.notifications)$"):custom({
-    name      = "move-md-notifications",
-    float     = true,
-    no_focus  = true,
-    pin       = true,
+
+
+
+-- Anclaje explícito (la lib `Rules` no aplica `move` de forma fiable a
+-- ventanas Wayland/xfg-toplevel; se usa la API directa como hyprland-run).
+hl.window_rule({
+    name  = "move-md-clock",
+    match = { class = "md.clock" },
+    float = true,
+    pin   = true,
+    move  = "20 monitor_h/2+20",
+    no_focus = true,
+})
+hl.window_rule({
+    name  = "move-md-notifications",
+    match = { class = "md.notifications" },
+    float = true,
+    pin   = true,
+    move  = "monitor_w-380 20",
+    no_focus = true,
 })
 
 Rules.forClass(".*"):noBlur()

@@ -6,11 +6,23 @@
 //! localización del sistema (`LC_TIME`/`LANG`) para los nombres de día y mes.
 
 use std::process::Command;
+use std::thread;
+use std::time::Duration;
 
 use md_ui::{ClockConfig, ClockText, SlintHost, run_clock};
 
 /// Ejecuta el reloj (bloquea hasta que se cierra la ventana).
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    // Baja el reloj por debajo de las demás ventanas (best-effort): Hyprland no
+    // permite layer-shell desde Slint, así que se hace por hyprctl tras crear.
+    thread::spawn(|| {
+        thread::sleep(Duration::from_secs(2));
+        let _ = Command::new("sh")
+            .arg("-c")
+            .arg(r#"addr=$(hyprctl clients -j 2>/dev/null | (command -v jq >/dev/null && jq -r '.[] | select(.class=="md.clock") | .address' | head -n1 || true)); [ -n "$addr" ] && hyprctl eval "hl.dsp.window.alter_zorder({ window = '$addr', mode = 'bottom' })" >/dev/null 2>&1"#)
+            .status();
+    });
+
     let config = ClockConfig {
         app_id: "md.clock".to_owned(),
     };
