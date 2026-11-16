@@ -27,7 +27,6 @@ Rules.forClass("^(md%.launcher|md%.menu%..*|md%.binds|md%.clip|md%.wallpaper|md%
 -- verifican en H8.
 Rules.forClass("^(md%.clock)$"):custom({
     name      = "move-md-clock",
-    move      = "0 monitor_h/2-20",
     float     = true,
     pin       = true,
     no_focus  = true,
@@ -36,7 +35,6 @@ Rules.forClass("^(md%.clock)$"):custom({
 Rules.forClass("^(md%.notifications)$"):custom({
     name      = "move-md-notifications",
     float     = true,
-    move      = "monitor_w-window_w-20 20",
     no_focus  = true,
     pin       = true,
 })
