@@ -327,7 +327,7 @@ fn launch(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error:
             "serve",
             "--focus",
             &focus.to_string(),
-            "--break",
+            "--brk",
             &brk.to_string(),
             "--sessions",
             &sessions.to_string(),
