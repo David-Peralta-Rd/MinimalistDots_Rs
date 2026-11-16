@@ -3,7 +3,7 @@
 //! Reemplaza a `screenrecord.sh`. Los avisos de progreso/resultado se envían con
 //! `notify-send` (los recibe el demonio `md notify serve`).
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use clap::ValueEnum;
@@ -143,11 +143,18 @@ fn select_area() -> Result<Option<String>, std::io::Error> {
 
 /// Directorio de grabaciones (`$XDG_VIDEOS_DIR/recordings`).
 fn recordings_dir() -> PathBuf {
+    // Respeta XDG_VIDEOS_DIR si apunta a un directorio de videos real; si no
+    // (vacío o HOME), usa la ruta histórica del dotfiles: ~/multimedia/videos.
     let base = std::env::var_os("XDG_VIDEOS_DIR")
         .map(PathBuf::from)
+        .filter(|dir| dir.as_path() != Path::new("") && dir.as_path() != dirs_home().as_path())
         .or_else(|| {
             std::env::var_os("HOME").map(|home| PathBuf::from(home).join("multimedia/videos"))
         });
     base.map(|dir| dir.join("recordings"))
         .unwrap_or_else(|| PathBuf::from("recordings"))
+}
+
+fn dirs_home() -> PathBuf {
+    std::env::var_os("HOME").map(PathBuf::from).unwrap_or_default()
 }
