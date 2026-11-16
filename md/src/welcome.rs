@@ -51,23 +51,37 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let github_url = "https://github.com/David-Peralta-Rd/MinimalistDots_Rs";
 
     loop {
-        let options = [
+        // Novedades leídas dentro del mismo menú.
+        let updates_path = minimalistdots_dir().join("updates.toml");
+        let updates: Vec<Update> = md_core::load_updates(&updates_path);
+
+        let mut options: Vec<String> = vec![
             texts.t("escritorio.welcome_idioma"),
             texts.t("escritorio.welcome_atajos"),
-            texts.t("escritorio.welcome_novedades"),
             texts.t("escritorio.welcome_github"),
             texts.t("escritorio.welcome_desactivar"),
             texts.t("escritorio.welcome_salir"),
         ];
+        // Añade las novedades al final para que se lean en el menú.
+        let update_offset = options.len();
+        for update in &updates {
+            let label = if update.descripcion.is_empty() {
+                format!("📦 {}", update.titulo)
+            } else {
+                format!("📦 {} — {}", update.titulo, update.descripcion)
+            };
+            options.push(label);
+        }
+
         let entries: Vec<MenuEntry> = options.iter().map(|o| MenuEntry::new(o.clone())).collect();
         let config = MenuConfig {
             app_id: "md.welcome".to_owned(),
             title: texts.t("escritorio.welcome_titulo"),
             prompt: "✨".to_owned(),
             accent: md_core::Color::new(0x7e, 0xc7, 0xa2),
-            row_height: 40.0,
-            width: 520.0,
-            height: 400.0,
+            row_height: 44.0,
+            width: 720.0,
+            height: 560.0,
             can_delete: false,
             can_wipe: false,
             submit_empty: false,
@@ -88,26 +102,16 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 let _ = crate::binds::run();
             }
             2 => {
-                let updates_path = minimalistdots_dir().join("updates.toml");
-                let updates: Vec<Update> = md_core::load_updates(&updates_path);
-                if updates.is_empty() {
-                    println!("Sin novedades registradas.");
-                } else {
-                    for update in &updates {
-                        println!("- {}", update.titulo);
-                        if !update.descripcion.is_empty() {
-                            println!("  {}", update.descripcion);
-                        }
-                    }
-                }
-            }
-            3 => {
                 let _ = Command::new("xdg-open").arg(github_url).spawn();
             }
-            4 => {
+            3 => {
                 write_bool("bienvenida", false);
                 println!("Bienvenida desactivada. Reactívala editando settings.toml.");
                 break;
+            }
+            4 => break,
+            i if i >= update_offset => {
+                // Las novedades son informativas; no hace nada al seleccionar.
             }
             _ => break,
         }
