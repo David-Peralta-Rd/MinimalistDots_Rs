@@ -3,13 +3,7 @@ local Rules = require("hyprland.lib.rules")
 -- Ventanas Slint de MinimalistDots (app-id "md.<nombre>"): flotantes, centradas,
 -- pinadas (visibles en todos los workspaces) y sin borde ni animación, para que
 -- parezcan popups. `pin` solo afecta a ventanas flotantes, por eso va con `float`.
-Rules.forClass("^md%..*$"):custom({
-    float       = true,
-    pin         = true,
-    border_size = 0,
-    rounding    = 12,
-    no_anim     = true,
-})
+
 
 -- Los menús interactivos conservan el foco de teclado mientras están visibles.
 -- El OSD (`md volume`) y el popup de notificaciones (`md.notifications`) NO deben
@@ -79,4 +73,14 @@ Rules.forClass("programing-terminal-opencode"):custom({
     size = "monitor_w/3.45 monitor_h/2.52",
     move = "monitor_w*0.004 monitor_h/1.69",
     float = true,
+})
+
+-- Glassmorphism solo para las ventanas Slint (md.*): blur + transparencia.
+Rules.forClass("^md%..*$"):custom({
+    float       = true,
+    pin         = true,
+    border_size = 0,
+    rounding    = 12,
+    blur        = true,
+    no_anim     = true,
 })
