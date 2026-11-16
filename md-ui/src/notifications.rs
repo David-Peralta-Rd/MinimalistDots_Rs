@@ -64,7 +64,7 @@ impl Notifications {
         // `MdNotifications::new()` inicializa el backend: el app-id ya se puede
         // fijar antes de mostrar la ventana (lo necesitan las windowrules).
         slint::set_xdg_app_id("md.notifications".to_owned())?;
-        component.set_md_width(360.0);
+        component.set_md_width(420.0);
         component.set_md_height(CARD_HEIGHT);
 
         let weak = component.as_weak();

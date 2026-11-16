@@ -34,3 +34,13 @@ def run(ctx: Context) -> None:
         if not ctx.dry_run:
             dest.mkdir(parents=True, exist_ok=True)
             shutil.copy2(file, dest / file.name)
+
+    # Despliega los archivos Quickshell (p. ej. clock.qml) que usan layer-shell.
+    qs_src = ctx.paths.quickshell
+    qs_dest = ctx.paths.quickshell_dest
+    if qs_src.is_dir():
+        if not ctx.dry_run:
+            qs_dest.mkdir(parents=True, exist_ok=True)
+            for qfile in qs_src.iterdir():
+                if qfile.is_file():
+                    shutil.copy2(qfile, qs_dest / qfile.name)

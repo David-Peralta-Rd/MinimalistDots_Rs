@@ -2,7 +2,7 @@ local home = os.getenv("HOME")
 
 
 -- DIRECTORIO DE SERVICIOS
-package.path = package.path .. ";" .. home .. "/.local/bin/MinimalistDots/services/?.lua"
+package.path = package.path .. ";" .. home .. "/.local/bin/MinimalistDots_Rs/services/?.lua"
 
 -- SI DESEAS DESACTIVAR UN SERVICIO, SOLO DOCUMENTALO CON '--'
 -- EJEMPLO:

@@ -34,6 +34,10 @@ class Paths:
     def ai_src(self) -> Path:
         return self.repo / "dotfiles" / "ai"
 
+    @property
+    def quickshell(self) -> Path:
+        return self.repo / "dotfiles" / "quickshell"
+
     # --- En el sistema del usuario ---
     @property
     def config(self) -> Path:
@@ -57,7 +61,11 @@ class Paths:
 
     @property
     def services(self) -> Path:
-        return self.home / ".local" / "bin" / "MinimalistDots" / "services"
+        return self.home / ".local" / "bin" / "MinimalistDots_Rs" / "services"
+
+    @property
+    def quickshell_dest(self) -> Path:
+        return self.home / ".local" / "bin" / "MinimalistDots_Rs" / "quickshell"
 
     @property
     def cache_hypr(self) -> Path:
@@ -69,7 +77,7 @@ class Paths:
 
     @property
     def ai_dir(self) -> Path:
-        return self.home / ".local" / "bin" / "MinimalistDots" / "ai"
+        return self.home / ".local" / "bin" / "MinimalistDots_Rs" / "ai"
 
     @property
     def ai_conf(self) -> Path:
