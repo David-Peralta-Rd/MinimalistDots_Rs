@@ -5,8 +5,6 @@ import Quickshell.Wayland
 // Reloj de escritorio (reemplaza al widget desktop_clock de eww).
 // Capa "bottom": queda detrás de las ventanas y no reserva espacio.
 ShellRoot {
-    Theme { id: theme }
-
     SystemClock {
         id: clock
         precision: SystemClock.Minutes
@@ -33,16 +31,16 @@ ShellRoot {
             Text {
                 anchors.right: parent.right
                 text: Qt.formatDateTime(clock.date, "HH:mm")
-                color: theme.text
-                font.family: theme.font
+                color: "#abb2bf"
+                font.family: "monospace"
                 font.pixelSize: 56
                 font.weight: Font.ExtraBold
             }
             Text {
                 anchors.right: parent.right
                 text: Qt.locale().toString(clock.date, "ddd, dd MMM").toLowerCase()
-                color: theme.subtext
-                font.family: theme.font
+                color: "#5c6370"
+                font.family: "monospace"
                 font.pixelSize: 16
                 font.weight: Font.Medium
             }
