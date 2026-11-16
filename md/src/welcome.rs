@@ -62,15 +62,16 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             texts.t("escritorio.welcome_desactivar"),
             texts.t("escritorio.welcome_salir"),
         ];
-        // Añade las novedades al final para que se lean en el menú.
+        // Añade las novedades al final, extendiendo su texto en varias líneas
+        // para que quepa toda la información; el menú hace scroll con el mouse.
         let update_offset = options.len();
         for update in &updates {
-            let label = if update.descripcion.is_empty() {
-                format!("📦 {}", update.titulo)
-            } else {
-                format!("📦 {} — {}", update.titulo, update.descripcion)
-            };
-            options.push(label);
+            options.push(format!("📦 {}", update.titulo));
+            if !update.descripcion.is_empty() {
+                for line in update.descripcion.lines() {
+                    options.push(format!("   {}", line));
+                }
+            }
         }
 
         let entries: Vec<MenuEntry> = options.iter().map(|o| MenuEntry::new(o.clone())).collect();
