@@ -3,12 +3,12 @@ require("load_direction")
 
 local Service = require("hyprland.lib.services")
 
--- Reloj de escritorio (ventana Slint de `md`). La posición y el anclaje se
--- resuelven en las windowrules; bajar al fondo lo hace el propio binario.
-local MD = os.getenv("HOME") .. "/.local/bin/md"
+-- Reloj de escritorio (Quickshell): capa "bottom", queda detrás de todo y no
+-- reserva espacio. Se mantiene en Quickshell porque Slint no soporta layer-shell.
+local QML = os.getenv("HOME") .. "/.local/bin/MinimalistDots/quickshell/clock.qml"
 
 return Service.define("desktop_clock", function()
     hl.on("hyprland.start", function()
-        hl.exec_cmd(MD .. " clock")
+        hl.exec_cmd("qs -p " .. QML)
     end)
 end)

@@ -37,6 +37,7 @@ hl.window_rule({
     match = { class = "md.clock" },
     float = true,
     pin   = true,
+    border_size = 0,
     move  = "20 monitor_h/2+20",
     no_focus = true,
 })
@@ -45,6 +46,7 @@ hl.window_rule({
     match = { class = "md.notifications" },
     float = true,
     pin   = true,
+    border_size = 0,
     move  = "monitor_w-380 20",
     no_focus = true,
 })
