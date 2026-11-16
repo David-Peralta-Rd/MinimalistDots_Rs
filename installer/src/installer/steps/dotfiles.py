@@ -99,3 +99,13 @@ def run(ctx: Context) -> None:
         if app == "hypr":
             _restore_custom(ctx, dest, backup_root)
             _regen_colors(ctx)
+
+    # Despliega la IA (plantillas y ejemplos) sin borrar la config del usuario
+    # (models.env, api_models.conf).
+    ai_src = ctx.paths.ai_src
+    ai_dest = ctx.paths.ai_conf
+    if ai_src.is_dir():
+        print(f"copiando IA {ai_src} -> {ai_dest}")
+        if not ctx.dry_run:
+            ai_dest.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(ai_src, ai_dest, dirs_exist_ok=True)
