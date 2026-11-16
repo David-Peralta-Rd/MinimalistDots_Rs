@@ -19,6 +19,8 @@ use crate::generated::{MdNotifications, NotificationItem};
 /// calcula a partir de estos valores para ajustarse exactamente al contenido.
 const CARD_HEIGHT: f32 = 76.0;
 const SPACING: f32 = 8.0;
+/// Máximo de tarjetas (debe coincidir con notifd::MAX_POPUPS).
+const MAX_POPUPS: usize = 5;
 
 /// Intervalo del temporizador que expira las notificaciones vencidas.
 const EXPIRY_TICK: Duration = Duration::from_millis(200);
@@ -65,7 +67,7 @@ impl Notifications {
         // fijar antes de mostrar la ventana (lo necesitan las windowrules).
         slint::set_xdg_app_id("md.notifications".to_owned())?;
         component.set_md_width(420.0);
-        component.set_md_height(CARD_HEIGHT);
+        component.set_md_height(MAX_POPUPS as f32 * CARD_HEIGHT + (MAX_POPUPS as f32 - 1.0) * SPACING);
 
         let weak = component.as_weak();
         let active: Arc<Mutex<Vec<Active>>> = Arc::new(Mutex::new(Vec::new()));
@@ -192,16 +194,10 @@ fn refresh(component: &MdNotifications, active: &Arc<Mutex<Vec<Active>>>) {
 
     let count = items.len();
     component.set_notifications(slint::VecModel::from_slice(&items));
-    if count == 0 {
-        // Mantener la ventana mapeada (evita que `show()` no la recupere en
-        // Wayland tras un `hide()`); altura 0 la hace invisible.
-        component.set_md_height(0.0);
-        let _ = component.show();
-    } else {
-        let height = count as f32 * CARD_HEIGHT + (count as f32 - 1.0) * SPACING;
-        component.set_md_height(height);
-        let _ = component.show();
-    }
+    // Altura fija (no se cambia nunca) para que Hyprland no reubique la
+    // ventana al aparecer/desaparecer notificaciones; la ventana queda mapeada
+    // siempre (fondo transparente) para que el demonio no se caiga.
+    let _ = component.show();
 }
 
 /// Convierte una notificación activa a la fila que pinta Slint.
