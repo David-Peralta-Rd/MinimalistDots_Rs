@@ -63,7 +63,7 @@ paquetes = ["uv", "docker", "github-cli", "docker-buildx", "drawio-desktop", "do
 nombre = "screenrecord"
 origen = "aur"
 obligatorio = false
-paquetes = ["slurp", "ffmpeg", "libnotify", "gpu-screen-recorder"]
+paquetes = ["slurp", "ffmpeg", "libnotify", "gpu-screen-recorder", "extra/libplacebo"]
 
 [[grupo]]
 nombre = "process"
