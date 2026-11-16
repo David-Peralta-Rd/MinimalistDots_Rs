@@ -123,7 +123,7 @@ fn notify(summary: &str, body: &str) {
 /// Devuelve `true` si había algún proceso que detener.
 fn stop_active_recording() -> Result<bool, std::io::Error> {
     let output = Command::new("pgrep")
-        .args(["-f", "gpu-screen-recorder"])
+        .args(["gpu-screen-recorder"])
         .output()?;
     let pids = String::from_utf8_lossy(&output.stdout);
     let mut stopped = false;
