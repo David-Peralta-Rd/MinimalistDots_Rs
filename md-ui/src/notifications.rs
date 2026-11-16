@@ -194,9 +194,11 @@ fn refresh(component: &MdNotifications, active: &Arc<Mutex<Vec<Active>>>) {
 
     let count = items.len();
     component.set_notifications(slint::VecModel::from_slice(&items));
-    // Altura fija (no se cambia nunca) para que Hyprland no reubique la
-    // ventana al aparecer/desaparecer notificaciones; la ventana queda mapeada
-    // siempre (fondo transparente) para que el demonio no se caiga.
+    // Altura fija al máximo para que Hyprland no reubique la ventana al
+    // aparecer/desaparecer notificaciones (evita recortes y deriva).
+    let max_height = MAX_POPUPS as f32 * CARD_HEIGHT
+        + (MAX_POPUPS as f32 - 1.0) * SPACING;
+    component.set_md_height(max_height);
     let _ = component.show();
 }
 
