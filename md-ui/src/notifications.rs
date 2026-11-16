@@ -192,7 +192,6 @@ fn refresh(component: &MdNotifications, active: &Arc<Mutex<Vec<Active>>>) {
         guard.iter().map(to_item).collect()
     };
 
-    let count = items.len();
     component.set_notifications(slint::VecModel::from_slice(&items));
     // Altura fija al máximo para que Hyprland no reubique la ventana al
     // aparecer/desaparecer notificaciones (evita recortes y deriva).
