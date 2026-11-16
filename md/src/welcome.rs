@@ -106,9 +106,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 let _ = Command::new("xdg-open").arg(github_url).spawn();
             }
             3 => {
-                write_bool("bienvenida", false);
-                println!("Bienvenida desactivada. Reactívala editando settings.toml.");
-                break;
+                let new_val = !read_bool("bienvenida", true);
+                write_bool("bienvenida", new_val);
             }
             4 => break,
             i if i >= update_offset => {
