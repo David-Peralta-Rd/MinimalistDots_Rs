@@ -1,10 +1,14 @@
 [[novedad]]
-titulo = "Migración completa a Rust"
-descripcion = "Todos los menús y utilidades ahora viven en el binario `md` (Rust/Slint)."
+titulo = "Grabación de pantalla arreglada"
+descripcion = "Se corrigió la dependencia de libplacebo/mpv para que `md record` vuelva a funcionar."
 
 [[novedad]]
-titulo = "Idioma en runtime"
-descripcion = "Cambia el idioma de los menús con `md language` o desde esta bienvenida."
+titulo = "IA: plantillas de proyecto"
+descripcion = "Las plantillas de `md ai new` ahora incluyen documentación y estructura profesional (arquitectura, datos, seguridad, módulos)."
+
+[[novedad]]
+titulo = "Aliases de Zsh corregidos"
+descripcion = "El alias `md` de oh-my-zsh ya no eclipsa el binario `md`; `ai-new`, `ai-code` y el resto funcionan."
 
 [[novedad]]
 titulo = "IA local"
