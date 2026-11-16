@@ -419,7 +419,7 @@ export component MdNotifications inherits Window {
 
         for item[index] in root.notifications : Rectangle {
             width: parent.width;
-            height: 56px;
+            height: 72px;
             background: #1e222a;
             border-radius: root.md-radius;
             border-width: 0px;
@@ -468,7 +468,7 @@ export component MdNotifications inherits Window {
             // resumen (negrita)
             Text {
                 x: 14px;
-                y: 28px;
+                y: 26px;
                 height: 18px;
                 width: parent.width - 28px;
                 text: item.summary;
@@ -482,7 +482,7 @@ export component MdNotifications inherits Window {
             // cuerpo
             Text {
                 x: 14px;
-                y: 38px;
+                y: 46px;
                 height: 14px;
                 width: parent.width - 28px;
                 text: item.body;
