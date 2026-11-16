@@ -1,8 +1,5 @@
 # AGENTS.md — __PROJECT__
 
-## Proyecto
-<una línea: qué es y para quién>
-
 ## Stack
 <lenguaje, framework, base de datos y versión de cada uno>
 
@@ -10,28 +7,51 @@
 - Instalar: <comando>
 - Test: <comando>
 - Lint y tipos: <comando>
-- Levantar local: `docker compose up`
+- Arquitectura: <comando>
+- Humo de importación: <comando>
+- Rutas: <comando>
+- docs-check: <comando>
+- new-module: <comando>
+- suite: <comando>
+- Migraciones: <comando>
+- Levantar prod: `cd src && docker compose up --build -d`
+- Levantar dev: `cd src && docker compose -f docker-compose.dev.yml up --build`
+- Rust (si aplica): `cargo fmt --check`, `cargo clippy`, `cargo test`
 
-## Convenciones
-- Commits convencionales; una tarea por rama.
-- Toda función nueva trae su test en el mismo cambio.
-- Nada de lógica de negocio en los controladores/rutas: va en servicios.
-
-## Estilo (Python; borra esta sección si el proyecto no lo es)
-- Responde en español; código conciso, sin explicaciones largas salvo que se pidan.
-- Type hints completos (parámetros, retornos incluido `-> None`, variables no obvias); que pase Pylance en modo strict. Nada de `Any` salvo necesidad, con un comentario corto del porqué.
-- Genéricos de `typing` modernos (`list[str]`, `dict[str, int]`); dataclasses o Pydantic en vez de diccionarios sueltos.
-- Nombres explícitos; `pathlib.Path` en vez de `os.path`.
-- Tests con pytest (funciones `test_*`, fixtures), nunca `unittest.TestCase`.
-- Sigue el estilo del archivo abierto; no reformatees lo que no te pedí tocar.
+## Estructura
+- `src/`: todo el código y la configuración de ejecución.
+- Módulos por concepto de negocio; interfaz pública en `public.py`/`public.ts`.
+- `kernel/`: paths, settings, registry, errores base, logging, tiempo, ids, paginación.
+- Dependencias entre módulos: acíclicas, declaradas en `ARCHITECTURE.md`, verificadas por linter.
+- Los documentos de un solo módulo viven junto a su código, nunca en `docs/`.
 
 ## Nunca
-- Tocar migraciones ya aplicadas, secretos o archivos `.env`.
-- Instalar dependencias sin explicar por qué.
-- Cambiar autenticación, permisos o manejo de pagos sin que la tarea esté marcada [YO] y revisada por el humano.
+- Crear a mano lo que un generador produce; importar algo interno de otro módulo.
+- Consultar tablas de otro módulo; poner lógica de negocio en interface o cli.py.
+- Crear `utils/`, `helpers/`, `common/`; componer rutas con strings; leer `os.environ` fuera de `kernel/settings.py`.
+- Usar `sys.path`, `PYTHONPATH` o imports relativos que salgan del módulo.
+- Poner en `docs/` documentos de un solo módulo; editar a mano los bloques autogenerados.
+- Usar `CMD` en un Dockerfile si el entrypoint puede hacerlo; editar un Dockerfile sin revisar su par dev.
+- Montar volúmenes de código en producción; pinear versiones a mano; usar pre-releases.
+- Añadir dependencias sin que la tarea lo pida; hacer commit o push.
+- Editar `tasks.md` o tarjetas; tocar archivos fuera de los de la tarjeta; modificar pruebas para que pasen.
+- Leer o imprimir lockfiles, `.venv`, `dist` o migraciones autogeneradas.
+- Escribir `unsafe`, `unwrap`, `expect` o `panic` en rutas públicas sin ADR.
+- Poner lógica en el crate de enlace; llamar a la extensión elemento por elemento.
+- Ejecutar `cargo update` o `cargo add` salvo que la tarea lo pida; commitear `target/`.
+- Ejecutar `docker build`, `docker compose up` ni instalaciones salvo que la tarea lo pida.
+- Dejar un proceso en primer plano.
 
-## Cómo trabajas
-1. Lee `SPEC.md` y `tasks.md`.
-2. Trabaja UNA tarea marcada [DELEGAR]; propón un plan corto antes de escribir código.
-3. Corre tests, linter y tipos.
-4. Muestra el diff y explica qué cambió y por qué. No hagas commit sin revisión.
+## Cómo trabajas (modo delegado)
+Trabajas sin supervisión: nadie contesta preguntas mientras corres. Decide con lo que dicen tu tarjeta, el README del módulo y este archivo; si algo no está claro, para y repórtalo.
+
+1. Lee SOLO tu tarjeta `docs/tasks/<ID>.md` y los documentos o secciones que cita. No explores el árbol ni leas SPEC.md entero.
+2. Haz únicamente la tarea que te pidan por ID, solo si es [DELEGAR] y sus dependencias figuran como hechas en `tasks.md`.
+3. Toca SOLO los archivos que lista la tarjeta. Si necesitas otro, para y dilo.
+4. Las pruebas de aceptación de la tarjeta son la especificación. Si no existen o no fallan antes de implementar, para y repórtalo (salvo que tu rol sea escribirlas). Nunca cambies una prueba para que pase.
+5. Escribe un plan de máximo 3 líneas y continúa sin esperar respuesta.
+6. Implementa respetando los límites entre módulos, nombres explícitos y tipos estrictos; rutas y opciones solo desde el kernel. Luego corre la verificación de la tarjeta y los comandos de este archivo. No releas archivos que ya leíste; usa las opciones de salida corta de cada comando.
+7. Si algo falla: corrige y reintenta, máximo 3 veces. Si sigue fallando, PARA y reporta el comando exacto y su salida.
+8. Si cambiaste comportamiento, actualiza los documentos que la tarjeta lista (README, unidad, STACK o DATA del módulo; Unreleased del CHANGELOG) y corre `docs-check --write`.
+9. No hagas commit ni push, no instales dependencias salvo que la tarea lo pida, no edites `tasks.md` ni tarjetas.
+10. Responde en 10 líneas como máximo: ID, archivos cambiados, resultado de cada comando (ok / falla) y dudas o decisiones tomadas. No pegues código ni el diff: lo reviso con git.
