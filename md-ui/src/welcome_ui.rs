@@ -50,7 +50,14 @@ pub fn run(
     component.on_language(move || on_language());
     component.on_binds(move || on_binds());
     component.on_github(move || on_github());
-    component.on_toggle(move || on_toggle());
+    let weak_toggle = component.as_weak();
+    component.on_toggle(move || {
+        on_toggle();
+        // Cierra la ventana tras desactivar/activar.
+        if let Some(c) = weak_toggle.upgrade() {
+            let _ = c.hide();
+        }
+    });
     // exit closes window
     let weak = component.as_weak();
     component.on_exit_app(move || {
