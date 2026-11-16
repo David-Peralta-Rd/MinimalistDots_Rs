@@ -406,7 +406,7 @@ export component MdNotifications inherits Window {
     title <=> root.md-title;
     width <=> root.md-width;
     height <=> root.md-height;
-    background: #00000000;
+    background: #1e222aCC;
 
     // ----- datos -----
     in property <[NotificationItem]> notifications;
@@ -420,7 +420,7 @@ export component MdNotifications inherits Window {
         for item[index] in root.notifications : Rectangle {
             width: parent.width;
             height: 72px;
-            background: #1e222a;
+            background: #1e222aAA;
             border-radius: root.md-radius;
             border-width: 0px;
 
@@ -858,7 +858,7 @@ export component MdWelcome inherits Window {
     title <=> root.md-title;
     width: 760px;
     height: 600px;
-    background: #1e222a;
+    background: #1e222acc;
 
     callback language();
     callback binds();
