@@ -16,8 +16,8 @@ use crate::generated::MdPomodoro;
 use crate::{ShellHost, slint_color};
 
 /// Tamaño de la tarjeta pequeña (concentración o descanso minimizado).
-const SMALL_WIDTH: f32 = 190.0;
-const SMALL_HEIGHT: f32 = 96.0;
+const SMALL_WIDTH: f32 = 100.0;
+const SMALL_HEIGHT: f32 = 52.0;
 /// Tamaño de la tarjeta grande (descanso).
 const BIG_WIDTH: f32 = 500.0;
 const BIG_HEIGHT: f32 = 320.0;

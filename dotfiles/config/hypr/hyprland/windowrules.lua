@@ -61,6 +61,7 @@ hl.window_rule({
     float = true,
     pin   = true,
     border_size = 0,
+    opacity = 1.0,
     center = true,
 })
 
