@@ -6,6 +6,11 @@ import Quickshell.Io
 ShellRoot {
     id: root
 
+    Shortcut {
+        sequence: "Escape"
+        onActivated: Qt.quit()
+    }
+
     property var wallpapers: []
     property string selectedPath: ""
 
@@ -26,7 +31,6 @@ ShellRoot {
         running: false
     }
 
-    // Paleta (theme/palette.toml) - estilo normal, sin espejo
     readonly property color cFondo: "#1e222a"
     readonly property color cSuperficie: "#282c34"
     readonly property color cSeleccion: "#3e4451"
@@ -36,53 +40,89 @@ ShellRoot {
     readonly property color cAcento: "#7aa2f7"
 
     PanelWindow {
+        id: win
         anchors { top: true; left: true }
-        margins { top: 80; left: 80 }
-        implicitWidth: 560
-        implicitHeight: 520
+        margins.top: (screen ? (screen.height - implicitHeight) / 2 : 0)
+        margins.left: (screen ? (screen.width - implicitWidth) / 2 : 0)
+        implicitWidth: 600
+        implicitHeight: 560
         color: root.cFondo
+
+        // WlrLayershell not available here; default layer is fine
+
+        // Cerrar con Escape (manejado por tecla global en ShellRoot)
+
 
         Column {
             anchors.fill: parent
-            anchors.margins: 12
-            spacing: 8
+            anchors.margins: 16
+            spacing: 10
 
-            Text {
-                text: "Fondos de pantalla"
-                color: root.cTexto
-                font.pixelSize: 16
-                font.weight: Font.Bold
+            // Cabecera
+            Row {
+                width: parent.width
+                Text {
+                    text: "Fondos de pantalla"
+                    color: root.cTexto
+                    font.pixelSize: 18
+                    font.weight: Font.Bold
+                }
+                Item { width: parent.width - 180; height: 1 }
+                Rectangle {
+                    width: 28
+                    height: 28
+                    radius: 6
+                    color: closeMa.containsMouse ? root.cSeleccion : "transparent"
+                    Text {
+                        anchors.centerIn: parent
+                        text: "✕"
+                        color: root.cTextoSuave
+                        font.pixelSize: 14
+                    }
+                    MouseArea {
+                        id: closeMa
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: Qt.quit()
+                    }
+                }
             }
 
             GridView {
                 id: grid
                 width: parent.width
-                height: parent.height - 32
-                cellWidth: 132
-                cellHeight: 110
+                height: parent.height - 40
+                cellWidth: 140
+                cellHeight: 120
                 clip: true
                 model: root.wallpapers
 
                 delegate: Rectangle {
-                    width: 124
-                    height: 102
-                    radius: 6
+                    width: 132
+                    height: 112
+                    radius: 8
                     color: root.cSuperficie
-                    border.width: 1
+                    border.width: (modelData.path === root.selectedPath) ? 2 : 1
                     border.color: (modelData.path === root.selectedPath) ? root.cAcento : root.cBorde
 
                     Column {
                         anchors.centerIn: parent
-                        spacing: 4
-                        Image {
-                            source: "file://" + (modelData.path || "")
-                            width: 110
-                            height: 70
-                            fillMode: Image.PreserveAspectCrop
-                            smooth: true
+                        spacing: 6
+                        Rectangle {
+                            width: 116
+                            height: 76
+                            radius: 4
+                            color: "#000000"
+                            clip: true
+                            Image {
+                                anchors.fill: parent
+                                source: "file://" + (modelData.path || "")
+                                fillMode: Image.PreserveAspectCrop
+                                smooth: true
+                            }
                         }
                         Text {
-                            width: 110
+                            width: 116
                             text: modelData.name || ""
                             color: root.cTextoSuave
                             font.pixelSize: 9

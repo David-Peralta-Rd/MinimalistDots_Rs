@@ -14,7 +14,7 @@ ShellRoot {
         margins.left: 20
         implicitWidth: 280
         implicitHeight: 120
-        color: "#1e222a"
+        color: "transparent"
 
         WlrLayershell.namespace: "md-clock"
         WlrLayershell.layer: WlrLayer.Bottom
