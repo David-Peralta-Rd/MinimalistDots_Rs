@@ -3,11 +3,18 @@
 Los skills viven en `.agents/skills/` (espejo en `.opencode/skills/`).
 
 Skills instalados por defecto al crear el proyecto:
+- `project-architect` (local): lee `REQUIREMENTS.md` y genera el diseño completo.
 - `find-skills` (vercel-labs/skills)
 - `tdd` (mattpocock/skills)
 - `code-review` (mattpocock/skills)
 - `improve-codebase-architecture` (mattpocock/skills)
 - `systematic-debugging` (obra/superpowers)
+
+Flujo recomendado:
+1. Llena `REQUIREMENTS.md`.
+2. Ejecuta `/bootstrap` en OpenCode.
+3. Revisa y ajusta.
+4. Continúa con las tareas de `tasks.md`.
 
 ## Comandos
 

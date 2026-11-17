@@ -14,6 +14,7 @@ docker compose up
 ## Skills
 
 - Skills instalados en `.agents/skills/` (espejo en `.opencode/skills/`).
+- `project-architect` lee `REQUIREMENTS.md` y genera el diseño completo con `/bootstrap`.
 - `find-skills` viene instalado por defecto; úsalo para descubrir más skills.
 
 ## Mapa de documentación
