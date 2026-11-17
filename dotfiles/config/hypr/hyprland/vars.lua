@@ -31,7 +31,7 @@ return {
     volume_down         = MD .. " volume down",
     volume_mute         = MD .. " volume mute",
     screenshot          = MD .. " shot",
-    select_wallpaper    = MD .. " wallpaper",
+    select_wallpaper    = "qs -p " .. HOME .. "/.local/bin/MinimalistDots_Rs/quickshell/wallpaper.qml",
     show_binds          = MD .. " binds",
     screenrecord        = MD .. " record",
     process_manager     = MD .. " process",
