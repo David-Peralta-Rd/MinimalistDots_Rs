@@ -80,17 +80,48 @@ struct State {
     outcome: Option<MenuEvent>,
 }
 
+/// Tamaño máximo (en píxeles) de la miniatura generada para los iconos.
+const THUMB_SIZE: u32 = 128;
+
 /// Convierte una entrada de datos a la fila que pinta Slint (cargando el icono).
+///
+/// Las imágenes se decodifican y se reducen a una miniatura (`THUMB_SIZE`) para
+/// no cargar fotos a resolución completa en la UI (evita tirones con carpetas
+/// grandes como la de fondos). Si el archivo no es una imagen válida, se intenta
+/// cargar tal cual; si falla, queda vacío.
 fn to_menu_item(entry: &MenuEntry) -> MenuItem {
     let icon = if entry.icon.is_empty() {
         slint::Image::default()
     } else {
-        slint::Image::load_from_path(std::path::Path::new(&entry.icon)).unwrap_or_default()
+        load_icon(std::path::Path::new(&entry.icon))
     };
     MenuItem {
         label: entry.label.clone().into(),
         icon,
     }
+}
+
+/// Carga un icono reduciéndolo a miniatura cuando es una imagen.
+fn load_icon(path: &std::path::Path) -> slint::Image {
+    if let Ok(reader) = image::ImageReader::open(path) {
+        if let Ok(decoded) = reader.decode() {
+            let thumb = decoded.thumbnail(THUMB_SIZE, THUMB_SIZE);
+            let rgba = thumb.to_rgba8();
+            let (w, h) = rgba.dimensions();
+            let buffer = slint::SharedPixelBuffer::<slint::Rgba8Pixel>::new(w, h);
+            // Copiamos los píxeles al buffer de Slint.
+            let mut buf = buffer.clone();
+            let pixels = buf.make_mut_slice();
+            for (dst, src) in pixels.iter_mut().zip(rgba.chunks_exact(4)) {
+                dst.r = src[0];
+                dst.g = src[1];
+                dst.b = src[2];
+                dst.a = src[3];
+            }
+            return slint::Image::from_rgba8(buf);
+        }
+    }
+    slint::Image::load_from_path(path).unwrap_or_default()
 }
 
 /// Proyecta los índices filtrados sobre las filas ya cargadas.
