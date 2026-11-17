@@ -50,7 +50,15 @@ enum Command {
     Process,
 
     /// Selector de fondos de pantalla (hyprpaper).
-    Wallpaper,
+    Wallpaper {
+        /// Imprime la lista en JSON (para QuickShell).
+        #[arg(long)]
+        json: bool,
+
+        /// Aplica el fondo indicado (ruta) y sale.
+        #[arg(long, value_name = "PATH")]
+        apply: Option<String>,
+    },
 
     /// Notificaciones: servidor residente, historial y control.
     Notify {
@@ -132,7 +140,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Clip => clip::run()?,
         Command::Binds => binds::run()?,
         Command::Process => process::run()?,
-        Command::Wallpaper => wallpaper::run()?,
+        Command::Wallpaper { json, apply } => {
+            if json {
+                wallpaper::list_json()?;
+            } else if let Some(path) = apply {
+                wallpaper::apply_path(std::path::Path::new(&path))?;
+            } else {
+                wallpaper::run()?;
+            }
+        }
         Command::Notify { command } => notify::run(command)?,
         Command::Shot { mode } => shot::run(mode)?,
         Command::Record { mode, audio } => record::run(mode, audio)?,

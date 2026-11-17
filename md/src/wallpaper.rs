@@ -11,6 +11,8 @@ use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
 
 use crate::i18n::Texts;
 
+use serde_json::json;
+
 /// Ejecuta el selector de fondos de pantalla.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let texts = Texts::load();
@@ -81,4 +83,28 @@ fn apply(path: &Path) -> Result<(), std::io::Error> {
 /// Ruta del archivo de estado (`~/.cache/hypr/current_wallpaper`).
 fn state_file() -> Option<PathBuf> {
     std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache/hypr/current_wallpaper"))
+}
+
+/// Imprime la lista de fondos en JSON (para QuickShell).
+pub fn list_json() -> Result<(), Box<dyn std::error::Error>> {
+    let dir = wallpaper_dir();
+    std::fs::create_dir_all(&dir)?;
+    let wallpapers = discover_wallpapers(&dir);
+    let out: Vec<_> = wallpapers
+        .iter()
+        .map(|wallpaper| {
+            json!({
+                "name": wallpaper.name,
+                "path": wallpaper.path.to_string_lossy(),
+            })
+        })
+        .collect();
+    println!("{}", serde_json::to_string(&out)?);
+    Ok(())
+}
+
+/// Aplica un fondo a partir de su ruta (para QuickShell).
+pub fn apply_path(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+    apply(path)?;
+    Ok(())
 }
