@@ -7,7 +7,7 @@ Cada tarea: menos de 2 horas, toca un solo módulo y como máximo 3 archivos fue
 
 | ID | Hito | Tipo | Nivel | Depende | Módulo | Título | Estado |
 |----|------|------|-------|---------|--------|--------|--------|
-| T01 | 0 | [YO] | 3 | — | — | Ejecutar scaffold.sh y levantar el esqueleto andante | pendiente |
+| T01 | 0 | [YO] | 3 | — | — | Activar el esqueleto andante desde la terminal de OpenCode | pendiente |
 | T02 | 0 | [YO] | 3 | T01 | — | Revisar entrypoints, Dockerfiles, cli.py, lockfile y amenazas | pendiente |
 
 Convenciones:
