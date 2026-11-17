@@ -45,6 +45,25 @@ hl.window_rule({
     no_focus = true,
 })
 
+hl.window_rule({
+    name  = "move-md-pomodoro",
+    match = { class = "md.pomodoro" },
+    float = true,
+    pin   = true,
+    border_size = 0,
+    opacity = 0.4,
+    move  = "monitor_w/2-window_w/2 monitor_h-window_h-20",
+})
+
+hl.window_rule({
+    name  = "move-md-pomodoro-break",
+    match = { class = "md.pomodoro", title = "md.pomodoro.break" },
+    float = true,
+    pin   = true,
+    border_size = 0,
+    center = true,
+})
+
 Rules.forClass(".*"):noBlur()
 Rules.forClass("^(pavucontrol)$"):float()
 Rules.forClass("^(blueman%-manager)$"):float()

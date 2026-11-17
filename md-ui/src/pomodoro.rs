@@ -69,15 +69,14 @@ pub fn run(
         paused: config.accent_paused,
     };
 
-    let component = MdPomodoro::new()?;
-    // `MdPomodoro::new()` inicializa el backend: el app-id ya se puede fijar
-    // antes de mostrar la ventana (lo necesitan las windowrules de Hyprland).
+    let small = MdPomodoro::new()?;
     slint::set_xdg_app_id(config.app_id.clone())?;
-
+    small.set_md_title("md.pomodoro".into());
     let state = Rc::new(RefCell::new(state));
-    let weak = component.as_weak();
+    let weak_small = small.as_weak();
+    let big_cell: Rc<RefCell<Option<MdPomodoro>>> = Rc::new(RefCell::new(None));
 
-    apply(&component, &state.borrow(), accents);
+    apply(&small, &state.borrow(), accents);
 
     // Notificación inicial ("Pomodoro iniciado / Sesión 1 de N").
     let (session, total) = {
@@ -86,45 +85,64 @@ pub fn run(
     };
     (events.on_started)(session, total);
 
-    // ----- botones -----
-    component.on_pause_requested({
+    // ----- botones (tarjeta de trabajo) -----
+    small.on_pause_requested({
         let state = state.clone();
-        let weak = weak.clone();
+        let weak_small = weak_small.clone();
+        let big_cell = big_cell.clone();
         move || {
             state.borrow_mut().toggle_pause();
-            if let Some(component) = weak.upgrade() {
+            let big = big_cell.borrow();
+            let weak = if state.borrow().is_big_break() {
+                big.as_ref().map(|c| c.as_weak())
+            } else {
+                Some(weak_small.clone())
+            };
+            if let Some(weak) = weak
+                && let Some(component) = weak.upgrade()
+            {
                 apply(&component, &state.borrow(), accents);
             }
         }
     });
-
-    component.on_restart_requested({
+    small.on_restart_requested({
         let state = state.clone();
-        let weak = weak.clone();
+        let weak_small = weak_small.clone();
+        let big_cell = big_cell.clone();
         move || {
             state.borrow_mut().restart_phase();
-            if let Some(component) = weak.upgrade() {
+            let big = big_cell.borrow();
+            let weak = if state.borrow().is_big_break() {
+                big.as_ref().map(|c| c.as_weak())
+            } else {
+                Some(weak_small.clone())
+            };
+            if let Some(weak) = weak
+                && let Some(component) = weak.upgrade()
+            {
                 apply(&component, &state.borrow(), accents);
             }
         }
     });
-
-    component.on_collapse_requested({
+    small.on_collapse_requested({
         let state = state.clone();
-        let weak = weak.clone();
+        let weak_small = weak_small.clone();
         move || {
             state.borrow_mut().collapse();
-            if let Some(component) = weak.upgrade() {
+            if let Some(component) = weak_small.upgrade() {
                 apply(&component, &state.borrow(), accents);
             }
         }
     });
-
-    component.on_stop_requested({
-        let weak = weak.clone();
+    small.on_stop_requested({
+        let weak_small = weak_small.clone();
+        let big_cell = big_cell.clone();
         move || {
-            if let Some(component) = weak.upgrade() {
+            if let Some(component) = weak_small.upgrade() {
                 let _ = component.hide();
+            }
+            if let Some(big) = big_cell.borrow().as_ref() {
+                let _ = big.hide();
             }
         }
     });
@@ -133,7 +151,8 @@ pub fn run(
     let timer = slint::Timer::default();
     timer.start(slint::TimerMode::Repeated, TICK, {
         let state = state.clone();
-        let weak = weak.clone();
+        let weak_small = weak_small.clone();
+        let big_cell = big_cell.clone();
         move || {
             {
                 let state = state.borrow();
@@ -142,7 +161,66 @@ pub fn run(
                 }
             }
             let event = state.borrow_mut().tick();
-            if let Some(component) = weak.upgrade() {
+            let now_big = state.borrow().is_big_break();
+            let weak = if now_big {
+                // Crea la tarjeta grande la primera vez que se necesita.
+                let mut big_opt = big_cell.borrow_mut();
+                if big_opt.is_none() {
+                    if let Ok(big) = MdPomodoro::new() {
+                        big.set_md_title("md.pomodoro.break".into());
+                        // Conecta botones mínimos en la tarjeta grande.
+                        big.on_pause_requested({
+                            let state = state.clone();
+                            let big_cell = big_cell.clone();
+                            move || {
+                                state.borrow_mut().toggle_pause();
+                                if let Some(big) = big_cell.borrow().as_ref()
+                                    && let Some(component) = big.as_weak().upgrade()
+                                {
+                                    apply(&component, &state.borrow(), accents);
+                                }
+                            }
+                        });
+                        big.on_restart_requested({
+                            let state = state.clone();
+                            let big_cell = big_cell.clone();
+                            move || {
+                                state.borrow_mut().restart_phase();
+                                if let Some(big) = big_cell.borrow().as_ref()
+                                    && let Some(component) = big.as_weak().upgrade()
+                                {
+                                    apply(&component, &state.borrow(), accents);
+                                }
+                            }
+                        });
+                        big.on_stop_requested({
+                            let weak_small = weak_small.clone();
+                            let big_cell = big_cell.clone();
+                            move || {
+                                if let Some(s) = weak_small.upgrade() {
+                                    let _ = s.hide();
+                                }
+                                if let Some(big) = big_cell.borrow().as_ref() {
+                                    let _ = big.hide();
+                                }
+                            }
+                        });
+                        let _ = big.show();
+                        *big_opt = Some(big);
+                    }
+                } else if let Some(big) = big_opt.as_ref() {
+                    let _ = big.show();
+                }
+                big_opt.as_ref().map(|b| b.as_weak())
+            } else {
+                if let Some(big) = big_cell.borrow().as_ref() {
+                    let _ = big.hide();
+                }
+                Some(weak_small.clone())
+            };
+            if let Some(weak) = weak
+                && let Some(component) = weak.upgrade()
+            {
                 apply(&component, &state.borrow(), accents);
             }
             match event {
@@ -155,15 +233,18 @@ pub fn run(
                 }
                 TickEvent::Finished { total } => {
                     (events.on_finished)(total);
-                    if let Some(component) = weak.upgrade() {
+                    if let Some(component) = weak_small.upgrade() {
                         let _ = component.hide();
+                    }
+                    if let Some(big) = big_cell.borrow().as_ref() {
+                        let _ = big.hide();
                     }
                 }
             }
         }
     });
 
-    host.run(component)
+    host.run(small)
 }
 
 /// Proyecta el estado de la máquina a las propiedades del widget.
