@@ -8,10 +8,10 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Metadatos obligatorios de un catálogo de idioma.
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Meta {
     pub codigo: String,
@@ -21,7 +21,7 @@ pub struct Meta {
 }
 
 /// Un catálogo de idioma completo: metadatos + secciones de traducciones.
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Catalog {
     pub meta: Meta,
     #[serde(flatten)]
@@ -110,12 +110,42 @@ impl Translator {
     }
 }
 
-/// Carga la cadena de catálogos para `codigo` desde `dir`.
-///
-/// Orden: `<codigo>.toml`, luego su base (de `[meta].base` o del prefijo BCP 47)
-/// y, por último, `es.toml` si no es ninguno de los anteriores. Se omiten los
-/// archivos que no existen.
+/// Carga la cadena de catálogos para `codigo` desde `dir`, con caché en disco
+/// invalidada por los mtimes de los archivos `.toml` del directorio.
 pub fn load_chain(dir: &Path, codigo: &str) -> Result<Translator, CatalogError> {
+    let fingerprint = lang_cache_fingerprint(dir);
+    if let Some(path) = lang_cache_path(codigo) {
+        if let Ok(text) = std::fs::read_to_string(&path) {
+            if let Ok(cache) = serde_json::from_str::<LangCache>(&text) {
+                if cache.fingerprint == fingerprint {
+                    return Ok(Translator {
+                        chain: cache.chain,
+                    });
+                }
+            }
+        }
+    }
+
+    let translator = load_chain_uncached(dir, codigo)?;
+
+    if let Some(path) = lang_cache_path(codigo) {
+        if let Some(parent) = path.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        let cache = LangCache {
+            fingerprint,
+            chain: translator.chain.clone(),
+        };
+        if let Ok(text) = serde_json::to_string(&cache) {
+            let _ = std::fs::write(path, text);
+        }
+    }
+
+    Ok(translator)
+}
+
+/// Implementación sin caché de `load_chain`.
+fn load_chain_uncached(dir: &Path, codigo: &str) -> Result<Translator, CatalogError> {
     let mut chain = Vec::new();
 
     let primary = dir.join(format!("{codigo}.toml"));
@@ -145,6 +175,45 @@ pub fn load_chain(dir: &Path, codigo: &str) -> Result<Translator, CatalogError> 
     }
 
     Ok(Translator { chain })
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+struct LangCache {
+    fingerprint: u64,
+    chain: Vec<Catalog>,
+}
+
+fn lang_cache_dir() -> Option<std::path::PathBuf> {
+    let base = std::env::var_os("XDG_CACHE_HOME")
+        .map(std::path::PathBuf::from)
+        .or_else(|| {
+            std::env::var_os("HOME").map(|home| std::path::PathBuf::from(home).join(".cache"))
+        })?;
+    Some(base.join("md").join("lang"))
+}
+
+fn lang_cache_path(codigo: &str) -> Option<std::path::PathBuf> {
+    let safe = codigo.replace(['/', '\\'], "_");
+    lang_cache_dir().map(|dir| dir.join(format!("{safe}.json")))
+}
+
+fn lang_cache_fingerprint(dir: &Path) -> u64 {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+    let mut hasher = DefaultHasher::new();
+    if let Ok(read_dir) = std::fs::read_dir(dir) {
+        let mut paths: Vec<_> = read_dir.flatten().map(|e| e.path()).collect();
+        paths.sort();
+        for path in paths {
+            path.hash(&mut hasher);
+            if let Ok(meta) = std::fs::metadata(&path)
+                && let Ok(mtime) = meta.modified()
+            {
+                mtime.hash(&mut hasher);
+            }
+        }
+    }
+    hasher.finish()
 }
 
 /// Lista los idiomas disponibles en `dir`, como pares `(codigo, nombre)` ordenados.
