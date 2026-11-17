@@ -2,8 +2,6 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 
-// Reloj de escritorio (reemplaza al widget desktop_clock de eww).
-// Capa "bottom": queda detrás de las ventanas y no reserva espacio.
 ShellRoot {
     SystemClock {
         id: clock
@@ -11,21 +9,19 @@ ShellRoot {
     }
 
     PanelWindow {
-        id: win
-        // izquierda, centrado en vertical y 40px más abajo (igual que el eww anterior)
         anchors { left: true; top: true }
         margins.top: Math.round(((screen ? screen.height : 1080) - implicitHeight) / 2) + 40
+        margins.left: 20
         implicitWidth: 280
         implicitHeight: 120
-        color: "transparent"
-        exclusionMode: ExclusionMode.Ignore
+        color: "#1e222a"
 
         WlrLayershell.namespace: "md-clock"
         WlrLayershell.layer: WlrLayer.Bottom
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
         Column {
-            anchors { right: parent.right; rightMargin: 10; verticalCenter: parent.verticalCenter }
+            anchors { right: parent.right; rightMargin: 12; verticalCenter: parent.verticalCenter }
             spacing: 4
 
             Text {
