@@ -14,6 +14,21 @@ Luego:
 4. Usa `code-review` para revisar los documentos generados.
 5. Resume cambios y próximos pasos.
 
+## Generar escalabilidad (nuevo-modulo)
+
+Tras definir la arquitectura y stack, genera el generador de módulos adaptado:
+
+1. Crea/ajusta `tools/nuevo_modulo.py` (scaffold ya provisto) para el stack elegido (rutas `src/` vs `crates/`, plantillas).
+2. Crea plantillas de módulo en `docs/templates/module/<stack>/` (python/rust/hybrid) basadas en las convenciones decididas (interfaz pública, tests, docs).
+3. Registra el entrypoint en `pyproject.toml`:
+   ```toml
+   [project.scripts]
+   nuevo-modulo = "tools.nuevo_modulo:main"
+   ```
+   (o equivalente para el stack) para que `uv run nuevo-modulo NOMBRE` funcione.
+4. Documenta el comando en `AGENTS.md` (Comandos y Skills).
+5. Ejecuta una prueba: `uv run nuevo-modulo ejemplo` y luego elimina el módulo de prueba, o al menos `--help`, y verifica que `docs-check` + humo de importacion pasen.
+
 No hagas commit.
 
 ## Verificación post-generación (obligatoria, 2-3 revisiones)

@@ -17,6 +17,7 @@
 - Levantar prod: `cd src && docker compose up --build -d`
 - Levantar dev: `cd src && docker compose -f docker-compose.dev.yml up --build`
 - Rust (si aplica): `cargo fmt --check`, `cargo clippy`, `cargo test`
+- Nuevo modulo: `uv run nuevo-modulo <nombre>` (o `python tools/nuevo_modulo.py <nombre>`)
 
 ## Skills
 - Skills instalados en `.agents/skills/` (espejo en `.opencode/skills/`).
