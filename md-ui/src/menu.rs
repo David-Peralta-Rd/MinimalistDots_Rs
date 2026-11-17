@@ -101,24 +101,58 @@ fn to_menu_item(entry: &MenuEntry) -> MenuItem {
     }
 }
 
-/// Carga un icono reduciéndolo a miniatura cuando es una imagen.
+/// Directorio de caché de miniaturas.
+fn thumb_cache_dir() -> Option<std::path::PathBuf> {
+    let base = std::env::var_os("XDG_CACHE_HOME")
+        .map(std::path::PathBuf::from)
+        .or_else(|| std::env::var_os("HOME").map(|h| std::path::PathBuf::from(h).join(".cache")))?;
+    Some(base.join("md").join("thumbs"))
+}
+
+/// Clave de caché para una ruta y tamaño.
+fn thumb_cache_key(path: &std::path::Path) -> String {
+    use std::hash::{Hash, Hasher};
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    path.hash(&mut hasher);
+    THUMB_SIZE.hash(&mut hasher);
+    format!("{:x}", hasher.finish())
+}
+
+/// Carga un icono reduciéndolo a miniatura cuando es una imagen, usando caché
+/// en disco para evitar re-decodificar en cada apertura.
 fn load_icon(path: &std::path::Path) -> slint::Image {
-    if let Ok(reader) = image::ImageReader::open(path) {
-        if let Ok(decoded) = reader.decode() {
-            let thumb = decoded.thumbnail(THUMB_SIZE, THUMB_SIZE);
-            let rgba = thumb.to_rgba8();
-            let (w, h) = rgba.dimensions();
-            let buffer = slint::SharedPixelBuffer::<slint::Rgba8Pixel>::new(w, h);
-            // Copiamos los píxeles al buffer de Slint.
-            let mut buf = buffer.clone();
-            let pixels = buf.make_mut_slice();
-            for (dst, src) in pixels.iter_mut().zip(rgba.chunks_exact(4)) {
-                dst.r = src[0];
-                dst.g = src[1];
-                dst.b = src[2];
-                dst.a = src[3];
+    // 1. Caché en disco.
+    if let Some(dir) = thumb_cache_dir() {
+        let key = thumb_cache_key(path);
+        let cache_path = dir.join(format!("{key}.png"));
+        if cache_path.exists() {
+            if let Ok(img) = slint::Image::load_from_path(&cache_path) {
+                if img.size().width > 0 {
+                    return img;
+                }
             }
-            return slint::Image::from_rgba8(buf);
+        }
+        // 2. Generar miniatura y guardarla.
+        if let Ok(reader) = image::ImageReader::open(path) {
+            if let Ok(decoded) = reader.decode() {
+                let thumb = decoded.thumbnail(THUMB_SIZE, THUMB_SIZE);
+                let rgba = thumb.to_rgba8();
+                let (w, h) = rgba.dimensions();
+                let buffer = slint::SharedPixelBuffer::<slint::Rgba8Pixel>::new(w, h);
+                let mut buf = buffer.clone();
+                let pixels = buf.make_mut_slice();
+                for (dst, src) in pixels.iter_mut().zip(rgba.chunks_exact(4)) {
+                    dst.r = src[0];
+                    dst.g = src[1];
+                    dst.b = src[2];
+                    dst.a = src[3];
+                }
+                let img = slint::Image::from_rgba8(buf);
+                // Guardar en caché (ignorar errores).
+                let _ = std::fs::create_dir_all(&dir);
+                let _ = thumb.save(&cache_path);
+                return img;
+            }
         }
     }
     slint::Image::load_from_path(path).unwrap_or_default()
