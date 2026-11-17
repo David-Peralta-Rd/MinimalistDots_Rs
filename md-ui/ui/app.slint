@@ -527,6 +527,16 @@ export component MdPomodoro inherits Window {
     in-out property <length> md-width: 190px;
     in-out property <length> md-height: 96px;
 
+    // ----- textos localizados (los fija el anfitrión) -----
+    in property <string> label-paused-status: "⏸  En pausa";
+    in property <string> label-break-title: "☕  Hora de descansar";
+    in property <string> label-rest-hint: "Levántate, estírate y mira a lo lejos.";
+    in property <string> label-pause: "❚❚ Pausar";
+    in property <string> label-resume: "▶ Reanudar";
+    in property <string> label-restart: "↻ Reiniciar";
+    in property <string> label-minimize: "▾ Minimizar";
+    in property <string> label-stop: "✕ Detener";
+
     title <=> root.md-title;
     width <=> root.md-width;
     height <=> root.md-height;
@@ -668,7 +678,7 @@ export component MdPomodoro inherits Window {
             spacing: 10px;
 
             Text {
-                text: root.paused ? "⏸  En pausa" : "☕  Hora de descansar";
+                text: root.paused ? root.label-paused-status : root.label-break-title;
                 color: root.paused ? #5c6370 : root.accent;
                 font-size: 24px;
                 font-weight: 700;
@@ -691,7 +701,7 @@ export component MdPomodoro inherits Window {
             }
 
             Text {
-                text: "Levántate, estírate y mira a lo lejos.";
+                text: root.label-rest-hint;
                 color: #5c6370;
                 font-size: 13px;
                 horizontal-alignment: center;
@@ -722,7 +732,7 @@ export component MdPomodoro inherits Window {
                     background: bp-area.has-hover ? #3e4451 : #282c34;
 
                     Text {
-                        text: root.paused ? "▶ Reanudar" : "❚❚ Pausar";
+                        text: root.paused ? root.label-resume : root.label-pause;
                         color: #abb2bf;
                         font-size: 12px;
                         horizontal-alignment: center;
@@ -741,7 +751,7 @@ export component MdPomodoro inherits Window {
                     background: br-area.has-hover ? #3e4451 : #282c34;
 
                     Text {
-                        text: "↻ Reiniciar";
+                        text: root.label-restart;
                         color: #abb2bf;
                         font-size: 12px;
                         horizontal-alignment: center;
@@ -760,7 +770,7 @@ export component MdPomodoro inherits Window {
                     background: bc-area.has-hover ? #3e4451 : #282c34;
 
                     Text {
-                        text: "▾ Minimizar";
+                        text: root.label-minimize;
                         color: #abb2bf;
                         font-size: 12px;
                         horizontal-alignment: center;
@@ -779,7 +789,7 @@ export component MdPomodoro inherits Window {
                     background: bs-area.has-hover ? #3e4451 : #282c34;
 
                     Text {
-                        text: "✕ Detener";
+                        text: root.label-stop;
                         color: #abb2bf;
                         font-size: 12px;
                         horizontal-alignment: center;

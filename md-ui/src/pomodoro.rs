@@ -42,6 +42,15 @@ pub struct PomodoroConfig {
     pub accent_break: md_core::Color,
     /// Acento en pausa.
     pub accent_paused: md_core::Color,
+    /// Textos localizados para la tarjeta grande.
+    pub label_paused_status: String,
+    pub label_break_title: String,
+    pub label_rest_hint: String,
+    pub label_pause: String,
+    pub label_resume: String,
+    pub label_restart: String,
+    pub label_minimize: String,
+    pub label_stop: String,
 }
 
 /// Efectos secundarios en cada transición (los aporta `md`).
@@ -75,6 +84,14 @@ pub fn run(
     let state = Rc::new(RefCell::new(state));
     let weak_small = small.as_weak();
     let big_cell: Rc<RefCell<Option<MdPomodoro>>> = Rc::new(RefCell::new(None));
+    let label_paused_status = config.label_paused_status.clone();
+    let label_break_title = config.label_break_title.clone();
+    let label_rest_hint = config.label_rest_hint.clone();
+    let label_pause = config.label_pause.clone();
+    let label_resume = config.label_resume.clone();
+    let label_restart = config.label_restart.clone();
+    let label_minimize = config.label_minimize.clone();
+    let label_stop = config.label_stop.clone();
 
     apply(&small, &state.borrow(), accents);
 
@@ -168,6 +185,14 @@ pub fn run(
                 if big_opt.is_none() {
                     if let Ok(big) = MdPomodoro::new() {
                         big.set_md_title("md.pomodoro.break".into());
+                        big.set_label_paused_status(label_paused_status.clone().into());
+                        big.set_label_break_title(label_break_title.clone().into());
+                        big.set_label_rest_hint(label_rest_hint.clone().into());
+                        big.set_label_pause(label_pause.clone().into());
+                        big.set_label_resume(label_resume.clone().into());
+                        big.set_label_restart(label_restart.clone().into());
+                        big.set_label_minimize(label_minimize.clone().into());
+                        big.set_label_stop(label_stop.clone().into());
                         // Conecta botones mínimos en la tarjeta grande.
                         big.on_pause_requested({
                             let state = state.clone();

@@ -191,6 +191,14 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
         accent_focus: Color::new(0xe0, 0x6c, 0x75), // rojo
         accent_break: Color::new(0x7e, 0xc7, 0xa2), // verde
         accent_paused: Color::new(0x5c, 0x63, 0x70), // gris
+        label_paused_status: texts.t("escritorio.pomodoro_en_pausa"),
+        label_break_title: texts.t("escritorio.pomodoro_descansar"),
+        label_rest_hint: texts.t("escritorio.pomodoro_levantate"),
+        label_pause: texts.t("escritorio.pomodoro_pausar"),
+        label_resume: texts.t("escritorio.pomodoro_reanudar"),
+        label_restart: texts.t("escritorio.pomodoro_reiniciar"),
+        label_minimize: texts.t("escritorio.pomodoro_minimizar"),
+        label_stop: texts.t("escritorio.pomodoro_detener"),
     };
 
     let events = PomodoroEvents {
