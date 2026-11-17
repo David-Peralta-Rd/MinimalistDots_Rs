@@ -3021,6 +3021,7 @@ dependencies = [
  "clap",
  "md-core",
  "md-ui",
+ "serde_json",
  "zbus",
 ]
 
