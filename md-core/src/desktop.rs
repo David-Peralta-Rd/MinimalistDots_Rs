@@ -6,10 +6,13 @@
 use std::collections::{BTreeSet, HashMap};
 use std::env;
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 
+use serde::{Deserialize, Serialize};
+
 /// Una aplicación de escritorio lista para listar y lanzar.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DesktopEntry {
     pub name: String,
     pub icon: String,
@@ -165,8 +168,19 @@ pub fn data_dirs() -> Vec<PathBuf> {
 }
 
 /// Descubre las aplicaciones `.desktop` instaladas (deduplicadas por nombre de
-/// archivo, ganando el directorio de mayor prioridad).
+/// archivo, ganando el directorio de mayor prioridad). Usa caché en disco
+/// invalidada por los mtimes de los archivos `.desktop`.
 pub fn discover_desktop_entries() -> Vec<DesktopEntry> {
+    let fingerprint = desktop_cache_fingerprint();
+    if let Some(entries) = load_desktop_cache(fingerprint) {
+        return entries;
+    }
+    let entries = discover_desktop_entries_uncached();
+    save_desktop_cache(fingerprint, &entries);
+    entries
+}
+
+fn discover_desktop_entries_uncached() -> Vec<DesktopEntry> {
     let mut seen = BTreeSet::new();
     let mut entries = Vec::new();
 
@@ -220,7 +234,8 @@ impl IconIndex {
         Self { by_name }
     }
 
-    /// Índice con las raíces por defecto (XDG + `/usr/share/pixmaps`).
+    /// Índice con las raíces por defecto (XDG + `/usr/share/pixmaps`), con
+    /// caché en disco invalidado por los directorios de iconos.
     pub fn discover() -> Self {
         let mut roots = Vec::new();
         for data_dir in data_dirs() {
@@ -231,7 +246,14 @@ impl IconIndex {
         }
         roots.push(PathBuf::from("/usr/local/share/pixmaps"));
         roots.push(PathBuf::from("/usr/share/pixmaps"));
-        Self::build(&roots)
+
+        let fingerprint = icon_cache_fingerprint(&roots);
+        if let Some(by_name) = load_icon_cache(fingerprint) {
+            return Self { by_name };
+        }
+        let index = Self::build(&roots);
+        save_icon_cache(fingerprint, &index.by_name);
+        index
     }
 
     /// Resuelve un icono: una ruta absoluta se usa tal cual (si existe); un
@@ -317,6 +339,135 @@ fn walk_icons(root: &Path, by_name: &mut HashMap<String, PathBuf>) {
         if better {
             by_name.insert(name.to_owned(), path);
         }
+    }
+}
+
+// --- Caché en disco ---------------------------------------------------------
+
+#[derive(Serialize, Deserialize)]
+struct DesktopCache {
+    fingerprint: u64,
+    entries: Vec<DesktopEntry>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct IconCache {
+    fingerprint: u64,
+    by_name: HashMap<String, PathBuf>,
+}
+
+fn cache_dir() -> Option<PathBuf> {
+    let base = env::var_os("XDG_CACHE_HOME")
+        .map(PathBuf::from)
+        .or_else(|| env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache")))?;
+    Some(base.join("md"))
+}
+
+fn desktop_cache_fingerprint() -> u64 {
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    for data_dir in data_dirs() {
+        let apps_dir = data_dir.join("applications");
+        let Ok(read_dir) = fs::read_dir(&apps_dir) else {
+            continue;
+        };
+        let mut paths: Vec<PathBuf> = read_dir
+            .flatten()
+            .map(|entry| entry.path())
+            .filter(|path| path.extension().and_then(|ext| ext.to_str()) == Some("desktop"))
+            .collect();
+        paths.sort();
+        for path in paths {
+            path.hash(&mut hasher);
+            if let Ok(meta) = fs::metadata(&path)
+                && let Ok(mtime) = meta.modified()
+            {
+                mtime.hash(&mut hasher);
+            }
+        }
+    }
+    hasher.finish()
+}
+
+fn load_desktop_cache(fingerprint: u64) -> Option<Vec<DesktopEntry>> {
+    let path = cache_dir()?.join("desktop_entries.json");
+    let text = fs::read_to_string(&path).ok()?;
+    let cache: DesktopCache = serde_json::from_str(&text).ok()?;
+    if cache.fingerprint == fingerprint {
+        Some(cache.entries)
+    } else {
+        None
+    }
+}
+
+fn save_desktop_cache(fingerprint: u64, entries: &[DesktopEntry]) {
+    let Some(dir) = cache_dir() else {
+        return;
+    };
+    let _ = fs::create_dir_all(&dir);
+    let cache = DesktopCache {
+        fingerprint,
+        entries: entries.to_vec(),
+    };
+    if let Ok(text) = serde_json::to_string(&cache) {
+        let _ = fs::write(dir.join("desktop_entries.json"), text);
+    }
+}
+
+/// Huella de los directorios de iconos (solo directorios, no archivos, para
+/// ser barata y aun así detectar instalaciones/desinstalaciones).
+fn icon_cache_fingerprint(roots: &[PathBuf]) -> u64 {
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    for root in roots {
+        root.hash(&mut hasher);
+        // Recorre solo directorios.
+        fn walk(dir: &Path, hasher: &mut std::collections::hash_map::DefaultHasher) {
+            let Ok(read_dir) = fs::read_dir(dir) else {
+                return;
+            };
+            let mut entries: Vec<_> = read_dir.flatten().collect();
+            entries.sort_by_key(|e| e.file_name());
+            for entry in entries {
+                let Ok(ft) = entry.file_type() else {
+                    continue;
+                };
+                if ft.is_dir() {
+                    entry.path().hash(hasher);
+                    if let Ok(meta) = fs::metadata(entry.path())
+                        && let Ok(mtime) = meta.modified()
+                    {
+                        mtime.hash(hasher);
+                    }
+                    walk(&entry.path(), hasher);
+                }
+            }
+        }
+        walk(root, &mut hasher);
+    }
+    hasher.finish()
+}
+
+fn load_icon_cache(fingerprint: u64) -> Option<HashMap<String, PathBuf>> {
+    let path = cache_dir()?.join("icon_index.json");
+    let text = fs::read_to_string(&path).ok()?;
+    let cache: IconCache = serde_json::from_str(&text).ok()?;
+    if cache.fingerprint == fingerprint {
+        Some(cache.by_name)
+    } else {
+        None
+    }
+}
+
+fn save_icon_cache(fingerprint: u64, by_name: &HashMap<String, PathBuf>) {
+    let Some(dir) = cache_dir() else {
+        return;
+    };
+    let _ = fs::create_dir_all(&dir);
+    let cache = IconCache {
+        fingerprint,
+        by_name: by_name.clone(),
+    };
+    if let Ok(text) = serde_json::to_string(&cache) {
+        let _ = fs::write(dir.join("icon_index.json"), text);
     }
 }
 
