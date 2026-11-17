@@ -16,7 +16,7 @@ export component MdWindow inherits Window {
     width <=> root.md-width;
     height <=> root.md-height;
 
-    background: #1e222a26;
+    background: #1e222a;
 }
 
 // Diálogo "Acerca de". Usa AboutSlint: requisito de la licencia Royalty-free
@@ -54,7 +54,7 @@ export component MdMenu inherits Window {
     title <=> root.md-title;
     width <=> root.md-width;
     height <=> root.md-height;
-    background: #1e222a26;
+    background: #1e222a;
 
     // ----- configuración (la fija el anfitrión) -----
     in property <string> prompt: "";
@@ -420,7 +420,7 @@ export component MdNotifications inherits Window {
         for item[index] in root.notifications : Rectangle {
             width: parent.width;
             height: 72px;
-            background: #1e222a26;
+            background: #1e222a;
             border-radius: root.md-radius;
             border-width: 0px;
 
@@ -668,7 +668,7 @@ export component MdPomodoro inherits Window {
     if (root.big-break) : Rectangle {
         width: parent.width;
         height: parent.height;
-        background: #1e222a26;
+        background: #00000000;
         border-radius: 16px;
         border-width: 2px;
         border-color: root.paused ? #5c6370 : root.accent;
@@ -868,7 +868,7 @@ export component MdWelcome inherits Window {
     title <=> root.md-title;
     width: 760px;
     height: 600px;
-    background: #1e222a26;
+    background: #1e222a;
 
     callback language();
     callback binds();
