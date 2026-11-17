@@ -1898,6 +1898,68 @@ fn new_project(
     copy_dir_all(&tpl, &dir)?;
     // replace __PROJECT__
     replace_in_md(&dir, "__PROJECT__", name);
+
+    // Instala la skill base `find-skills` (y la espeja para OpenCode).
+    if command_exists("npx") {
+        // Skills por defecto para nuevos proyectos.
+        let defaults: &[(&str, &str)] = &[
+            ("vercel-labs/skills", "find-skills"),
+            ("mattpocock/skills", "tdd"),
+            ("mattpocock/skills", "code-review"),
+            ("mattpocock/skills", "improve-codebase-architecture"),
+            ("obra/superpowers", "systematic-debugging"),
+        ];
+        for (package, skill) in defaults {
+            let mut cmd = if command_exists("timeout") {
+                let mut cmd = Command::new("timeout");
+                cmd.arg("60").arg("npx");
+                cmd
+            } else {
+                Command::new("npx")
+            };
+            let status = cmd
+                .current_dir(&dir)
+                .args([
+                    "skills",
+                    "add",
+                    *package,
+                    "--skill",
+                    *skill,
+                    "--agent",
+                    "opencode",
+                    "-y",
+                ])
+                .stdout(std::process::Stdio::null())
+                .status();
+            if !status.is_ok_and(|s| s.success()) {
+                eprintln!(
+                    "aviso: no se pudo instalar {} ({}); se usa la copia de la plantilla si existe.",
+                    skill, package
+                );
+            }
+        }
+    } else {
+        eprintln!("aviso: npx no está instalado; se usa la copia de la plantilla para las skills.");
+    }
+    let agents_skills = dir.join(".agents/skills");
+    let opencode_dir = dir.join(".opencode");
+    let opencode_skills = opencode_dir.join("skills");
+    if agents_skills.is_dir() {
+        let _ = std::fs::create_dir_all(&opencode_dir);
+        if !opencode_skills.exists() {
+            #[cfg(unix)]
+            {
+                if std::os::unix::fs::symlink("../.agents/skills", &opencode_skills).is_err() {
+                    let _ = copy_dir_all(&agents_skills, &opencode_skills);
+                }
+            }
+            #[cfg(not(unix))]
+            {
+                let _ = copy_dir_all(&agents_skills, &opencode_skills);
+            }
+        }
+    }
+
     // git init
     let _ = Command::new("git")
         .args(["init", "-q", "-b", "main"])
@@ -1921,6 +1983,7 @@ fn new_project(
         return Ok(());
     }
     println!("creado ./{}/ (rama main, primer commit hecho)", name);
+    println!("skills: .agents/skills (find-skills instalado) + espejo .opencode/skills");
 
     if local {
         println!("modo --local: sin repo en GitHub.");

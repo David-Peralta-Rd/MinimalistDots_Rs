@@ -18,6 +18,12 @@
 - Levantar dev: `cd src && docker compose -f docker-compose.dev.yml up --build`
 - Rust (si aplica): `cargo fmt --check`, `cargo clippy`, `cargo test`
 
+## Skills
+- Skills instalados en `.agents/skills/` (espejo en `.opencode/skills/`).
+- `find-skills` viene instalado por defecto para descubrir e instalar más skills.
+- Detalle y convenciones: `docs/SKILLS.md`.
+- Actualizar: `npx skills update`. No edites a mano los `SKILL.md` instalados.
+
 ## Estructura
 - `src/`: todo el código y la configuración de ejecución.
 - Módulos por concepto de negocio; interfaz pública en `public.py`/`public.ts`.

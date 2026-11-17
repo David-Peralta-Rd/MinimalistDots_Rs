@@ -27,8 +27,8 @@ def test_update_zshrc_replaces_previous_block() -> None:
 
 
 def test_aliases_point_to_md() -> None:
-    assert 'alias ai-up="md ai up"' in zsh.ALIASES
-    assert 'alias ai-config="md ai config"' in zsh.ALIASES
+    assert 'alias ai-up="$HOME/.local/bin/md ai up"' in zsh.ALIASES
+    assert 'alias ai-config="$HOME/.local/bin/md ai config"' in zsh.ALIASES
 
 
 def test_plugins_zsh_sources_detected_paths() -> None:

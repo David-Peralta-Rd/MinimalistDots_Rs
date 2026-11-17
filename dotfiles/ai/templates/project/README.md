@@ -11,6 +11,11 @@
 docker compose up
 ```
 
+## Skills
+
+- Skills instalados en `.agents/skills/` (espejo en `.opencode/skills/`).
+- `find-skills` viene instalado por defecto; úsalo para descubrir más skills.
+
 ## Mapa de documentación
 
 <!-- docs:index:start -->
