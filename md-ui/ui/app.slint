@@ -556,8 +556,9 @@ export component MdPomodoro inherits Window {
         border-color: #4b5263;
 
         VerticalLayout {
-            padding: 10px;
-            spacing: 4px;
+            padding: 4px;
+            padding-bottom: 2px;
+            spacing: 2px;
 
             Text {
                 text: root.clock-text;
@@ -574,10 +575,9 @@ export component MdPomodoro inherits Window {
                 horizontal-alignment: center;
             }
 
-            // barra fina: se vacía a medida que pasa el tiempo
             Rectangle {
                 width: 100%;
-                height: 3px;
+                height: 2px;
                 background: #3e4451;
                 border-radius: 1px;
 
@@ -589,21 +589,21 @@ export component MdPomodoro inherits Window {
                 }
             }
 
-            // botones: pausa / reiniciar / detener
+            // botones horizontales debajo de los numeros
             HorizontalLayout {
                 alignment: center;
-                spacing: 6px;
+                spacing: 4px;
 
                 pause-btn := Rectangle {
-                    width: 24px;
-                    height: 18px;
-                    border-radius: 4px;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 2px;
                     background: pause-area.has-hover ? #3e4451 : #00000000;
 
                     Text {
                         text: root.paused ? "▶" : "❚❚";
                         color: #abb2bf;
-                        font-size: 11px;
+                        font-size: 6px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
                     }
@@ -614,15 +614,15 @@ export component MdPomodoro inherits Window {
                 }
 
                 restart-btn := Rectangle {
-                    width: 24px;
-                    height: 18px;
-                    border-radius: 4px;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 2px;
                     background: restart-area.has-hover ? #3e4451 : #00000000;
 
                     Text {
                         text: "↻";
                         color: #abb2bf;
-                        font-size: 11px;
+                        font-size: 6px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
                     }
@@ -633,15 +633,15 @@ export component MdPomodoro inherits Window {
                 }
 
                 stop-btn := Rectangle {
-                    width: 24px;
-                    height: 18px;
-                    border-radius: 4px;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 2px;
                     background: stop-area.has-hover ? #3e4451 : #00000000;
 
                     Text {
                         text: "✕";
                         color: #abb2bf;
-                        font-size: 11px;
+                        font-size: 6px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
                     }
