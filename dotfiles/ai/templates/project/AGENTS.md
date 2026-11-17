@@ -57,7 +57,7 @@ Trabajas sin supervisión: nadie contesta preguntas mientras corres. Decide con 
 4. Las pruebas de aceptación de la tarjeta son la especificación. Si no existen o no fallan antes de implementar, para y repórtalo (salvo que tu rol sea escribirlas). Nunca cambies una prueba para que pase.
 5. Escribe un plan de máximo 3 líneas y continúa sin esperar respuesta.
 6. Implementa respetando los límites entre módulos, nombres explícitos y tipos estrictos; rutas y opciones solo desde el kernel. Luego corre la verificación de la tarjeta y los comandos de este archivo. No releas archivos que ya leíste; usa las opciones de salida corta de cada comando.
-7. Si algo falla: corrige y reintenta, máximo 3 veces. Si sigue fallando, PARA y reporta el comando exacto y su salida.
+7. Antes de cerrar, verifica (hasta 3 iteraciones) la estructura de módulos, la coherencia de Dockerfiles/docker-compose (servicios, redes, volúmenes, entrypoints) y las conexiones (humo de importación, URLs/puertos desde el kernel, healthchecks). Si algo falla, corrige y reintenta; si persiste, PARA y reporta el comando exacto y su salida.
 8. Si cambiaste comportamiento, actualiza los documentos que la tarjeta lista (README, unidad, STACK o DATA del módulo; Unreleased del CHANGELOG) y corre `docs-check --write`.
 9. No hagas commit ni push, no instales dependencias salvo que la tarea lo pida, no edites `tasks.md` ni tarjetas.
 10. Responde en 10 líneas como máximo: ID, archivos cambiados, resultado de cada comando (ok / falla) y dudas o decisiones tomadas. No pegues código ni el diff: lo reviso con git.
