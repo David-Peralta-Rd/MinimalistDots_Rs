@@ -1,4 +1,8 @@
 [[novedad]]
+titulo = "IA: skills y bootstrap de proyectos"
+descripcion = "`md ai new` ahora instala skills por defecto (project-architect, find-skills, tdd, code-review, architecture, debugging) y crea `REQUIREMENTS.md` + `/bootstrap` para generar SPEC, arquitectura, tareas y primer test automáticamente."
+
+[[novedad]]
 titulo = "Grabación de pantalla arreglada"
 descripcion = "Se corrigió la dependencia de libplacebo/mpv para que `md record` vuelva a funcionar."
 
