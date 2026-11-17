@@ -19,105 +19,106 @@ configuraciones_listas = "✨ 备份完成，配置已适配"
 
 # Step 0: sudo session.
 [sudo]
-configurando_sudo = "CONFIGURING THE SUDO SESSION FOR THE INSTALLATION"
-no_root = "❌ ERROR: THIS INSTALLER MUST BE RUN AS A NORMAL USER (WITH SUDO), NOT AS ROOT."
-invalido = "❌ ERROR: COULD NOT VALIDATE THE SUDOERS CONFIGURATION."
+configurando_sudo = "为安装配置 SUDO 会话"
+no_root = "❌ 错误：此安装程序必须以普通用户（使用 sudo）运行，不能以 root 运行。"
+invalido = "❌ 错误：无法验证 sudoers 配置。"
 
 # Step 1: folder creation.
 [carpetas]
-nuevas_carpetas = "CREATING FOLDERS TO BE USED IN DOTFILES"
-nombre_de_carpeta = "NEW FOLDER CREATED == "
+nuevas_carpetas = "创建 dotfiles 使用的文件夹"
+nombre_de_carpeta = "新文件夹已创建 == "
 
 # Step 1b: language catalog deployment (for `md` at runtime).
 [idioma]
-desplegando = "COPYING LANGUAGE CATALOGS"
+desplegando = "复制语言目录"
 
 # Step 2: package installation.
 [paquetes]
-instalando_paquetes = "INSTALLING DOCUMENTED PACKAGE LISTS"
-instalando_paru = "==> 'paru' is not in the repositories, building it from the AUR..."
+instalando_paquetes = "安装已记录的软件包列表"
+instalando_paru = "==> 'paru' 不在软件源中，从 AUR 构建..."
 
 # Step 3: backup and installation of configs.
 [dotfiles]
-comenzando_backup = "CREATING BACKUP FOR CONFIGURATIONS INSIDE '~/.config'"
-encabezado = "INSTALLING ADDITIONAL CONFIGURATIONS"
-confirmacion = "THIS WILL REPLACE EXISTING CONFIGURATIONS (WITH PREVIOUS BACKUP). CONTINUE?"
+comenzando_backup = "为 '~/.config' 内的配置创建备份"
+encabezado = "安装额外配置"
+confirmacion = "这将替换现有配置（并先备份）。是否继续？"
 letra_confirmacion = "Y"
-cancelado = "CANCELLED. NO CHANGES WERE MADE."
-backup_si_existe = "🔄 BACKUP OF"
-limpiando_destino = "🗑️ CLEANING PREVIOUS DESTINATION:"
-paquete_detectado = "✨ NEW PACKAGE DETECTED:"
-copiando_paquete = "📂 COPYING"
-configurando_especificos = "⚙️ CONFIGURING HYPRLAND SPECIFIC FILES..."
-custom_restaurado = "♻️ CUSTOM OVERRIDES RESTORED IN"
+cancelado = "已取消。未做任何更改。"
+backup_si_existe = "🔄 备份"
+limpiando_destino = "🗑️ 清理之前的目录："
+paquete_detectado = "✨ 检测到新软件包："
+copiando_paquete = "📂 复制"
+configurando_especificos = "⚙️ 配置 HYPRLAND 专用文件..."
+custom_restaurado = "♻️ 已恢复自定义覆盖到"
 
 # Step 4: services and scripts.
 [servicios]
-instalando = "STARTING INSTALLATION OF SERVICES AND SCRIPTS"
-listando_servicios_antiguos = "THIS IS THE LIST OF OLD SERVICES TO BE DELETED IN '~/.local/bin/MinimalistDots/services':"
-borrando_servicios_antiguos = "DELETING OLD SERVICES INSIDE '~/.local/bin/MinimalistDots/services'"
-copiando_servicios_nuevos = "COPYING NEW SERVICES INSIDE '~/.local/bin/MinimalistDots/services'"
-listando_scripts_antiguos = "THIS IS THE LIST OF OLD SCRIPTS TO BE DELETED IN '~/.local/bin/MinimalistDots/scripts':"
-borrando_scripts_antiguos = "DELETING OLD SCRIPTS INSIDE '~/.local/bin/MinimalistDots/scripts'"
-copiando_scripts_nuevos = "COPYING NEW SCRIPTS INSIDE '~/.local/bin/MinimalistDots/scripts'"
+instalando = "开始安装服务和脚本"
+listando_servicios_antiguos = "这是将从 '~/.local/bin/MinimalistDots/services' 删除的旧服务列表："
+borrando_servicios_antiguos = "删除 '~/.local/bin/MinimalistDots/services' 中的旧服务"
+copiando_servicios_nuevos = "复制新服务到 '~/.local/bin/MinimalistDots/services'"
+listando_scripts_antiguos = "这是将从 '~/.local/bin/MinimalistDots/scripts' 删除的旧脚本列表："
+borrando_scripts_antiguos = "删除 '~/.local/bin/MinimalistDots/scripts' 中的旧脚本"
+copiando_scripts_nuevos = "复制新脚本到 '~/.local/bin/MinimalistDots/scripts'"
 
 # Sub-step: Zsh.
 [zsh]
-instalado = "==> Zsh configuration completed."
+instalado = "==> Zsh 配置已完成。"
 
 # Sub-step: process manager.
 [procesos]
-instalado = "==> Process Manager successfully installed in"
+instalado = "==> 进程管理器已成功安装到"
 
 # Sub-step: SDDM theme.
 [sddm]
-version_reciente = "==> Checking the latest theme version..."
-descarga = "==> Downloading and installing"
-instalado = "==> SDDM theme configured correctly."
+version_reciente = "==> 检查主题的最新版本..."
+descarga = "==> 下载并安装"
+instalado = "==> SDDM 主题配置正确。"
 
 # Sub-step: Docker.
 [docker]
-funciona = "✅ DOCKER WORKS WITHOUT SUDO FOR USER"
-sin_respuesta = "⚠️ DOCKER IS CONFIGURED BUT DOES NOT RESPOND YET. LOG OUT AND IN AGAIN, THEN TRY: docker info"
-reiniciar_sesion = "ℹ️ TO USE IT IN ALREADY OPEN TERMINALS: LOG OUT (OR REBOOT) OR RUN 'newgrp docker'."
+funciona = "✅ DOCKER 可供用户无 sudo 使用"
+sin_respuesta = "⚠️ DOCKER 已配置但暂无响应。请重新登录后重试：docker info"
+reiniciar_sesion = "ℹ️ 要在已打开的终端中使用：注销（或重启）或运行 'newgrp docker'。"
 
 # Sub-step: Git and GitHub.
 [github]
-sin_terminal = "No interactive terminal: GitHub setup skipped."
-pregunta = "Set up Git and GitHub now?"
-omitido = "Skipped. You can do it later with:"
-pedir_nombre = "Full name"
-pedir_correo = "GitHub email"
-datos_obligatorios = "❌ Name and email are required."
-sesion_activa = "A GitHub session is already active."
-abriendo_navegador = "The browser will open. Paste the one-time code shown here."
-generando_gpg = "Generating GPG key (ed25519, expires in 2 years). You will be asked for a passphrase to protect it."
-gpg_error = "❌ Could not get the GPG key."
-gpg_subida_error = "⚠️ Could not upload the GPG key (already on GitHub?). Check: gh gpg-key list"
-listo = "✅ Git and GitHub ready for"
+sin_terminal = "无交互终端：已跳过 GitHub 设置。"
+pregunta = "现在设置 Git 和 GitHub 吗？"
+omitido = "已跳过。稍后可使用以下命令："
+pedir_nombre = "全名"
+pedir_correo = "GitHub 邮箱"
+datos_obligatorios = "❌ 姓名和邮箱为必填项。"
+sesion_activa = "已有活动的 GitHub 会话。"
+abriendo_navegador = "浏览器将打开。请在此粘贴显示的一次性代码。"
+generando_gpg = "生成 GPG 密钥（ed25519，2 年后过期）。将要求你输入保护它的密码。"
+gpg_error = "❌ 无法获取 GPG 密钥。"
+gpg_subida_error = "⚠️ 无法上传 GPG 密钥（已在 GitHub 上？）。检查：gh gpg-key list"
+listo = "✅ Git 和 GitHub 已就绪，用户："
 
 # Sub-step: network optimization.
 [red]
-iniciando = "⚡ STARTING NETWORK OPTIMIZATION..."
-sin_interfaz = "❌ ERROR: COULD NOT DETECT AN ACTIVE NETWORK INTERFACE."
-interfaz_detectada = "🌐 ACTIVE INTERFACE DETECTED:"
-aplicando_sysctl = "📦 APPLYING KERNEL SETTINGS (SYSCTL)..."
-sysctl_aviso = "⚠️ SOME SYSCTL PARAMETERS COULD NOT BE APPLIED (THE KERNEL MAY NOT SUPPORT THEM)."
-optimizando_nic = "🔌 OPTIMIZING THE NETWORK CARD:"
-sin_ethtool = "⚠️ 'ethtool' IS NOT INSTALLED: NETWORK CARD OPTIMIZATION SKIPPED."
-persistencia = "💾 MAKING THE NETWORK CARD OPTIMIZATION PERSISTENT (UDEV + SYSTEMD)..."
-configurando_dns = "🌐 CONFIGURING DNS (CLOUDFLARE, QUAD9, GOOGLE) WITH LOCAL CACHE..."
-listo = "🔥 DONE! NETWORK OPTIMIZATION APPLIED. YOU CAN CHECK DNS WITH: resolvectl status"
+iniciando = "⚡ 开始网络优化..."
+sin_interfaz = "❌ 错误：无法检测到活动的网络接口。"
+interfaz_detectada = "🌐 检测到活动接口："
+aplicando_sysctl = "📦 应用内核设置 (SYSCTL)..."
+sysctl_aviso = "⚠️ 部分 SYSCTL 参数无法应用（内核可能不支持）。"
+optimizando_nic = "🔌 优化网卡："
+sin_ethtool = "⚠️ 未安装 'ethtool'：已跳过网卡优化。"
+persistencia = "💾 使网卡优化持久化 (UDEV + SYSTEMD)..."
+configurando_dns = "🌐 配置 DNS（Cloudflare、Quad9、Google）并启用本地缓存..."
+listo = "🔥 完成！网络优化已应用。可使用以下命令检查 DNS：resolvectl status"
 
 # Sub-step: AI for development.
 [ai]
-instalado = "AI FOR DEVELOPMENT: TEMPLATES INSTALLED IN"
-models_creado = "MODELS.ENV CREATED (EDIT THE PATHS OF YOUR .GGUF FILES):"
-models_existe = "MODELS.ENV ALREADY EXISTS: LEFT UNTOUCHED."
-api_creado = "API_MODELS.CONF CREATED (APIS FOR AI-CODE):"
-opencode_fallo = "COULD NOT INSTALL OPENCODE. TRY MANUALLY: paru -S opencode-bin"
-opencode_config_fallo = "COULD NOT GENERATE THE OPENCODE CONFIG. CHECK models.env AND RUN: ai-config"
-siguiente = "NEXT (IN A NEW TERMINAL): ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MY-PROJECT"
+instalado = "开发用 AI：模板已安装到"
+models_creado = "MODELS.ENV 已创建（编辑你的 .GGUF 文件路径）："
+models_existe = "MODELS.ENV 已存在：未修改。"
+api_creado = "API_MODELS.CONF 已创建（AI-CODE 的 API）："
+opencode_fallo = "无法安装 OPENCODE。请手动尝试：paru -S opencode-bin"
+opencode_config_fallo = "无法生成 OPENCODE 配置。检查 models.env 并运行：ai-config"
+siguiente = "下一步（在新终端中）：ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new 我的项目"
+
 
 # Desktop tools (`md`): menus, OSD and notifications (H7).
 [escritorio]

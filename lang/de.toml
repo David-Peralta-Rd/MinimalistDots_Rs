@@ -19,105 +19,106 @@ configuraciones_listas = "✨ BACKUP BEENDET UND KONFIGURATIONEN ANGEPASST"
 
 # Step 0: sudo session.
 [sudo]
-configurando_sudo = "CONFIGURING THE SUDO SESSION FOR THE INSTALLATION"
-no_root = "❌ ERROR: THIS INSTALLER MUST BE RUN AS A NORMAL USER (WITH SUDO), NOT AS ROOT."
-invalido = "❌ ERROR: COULD NOT VALIDATE THE SUDOERS CONFIGURATION."
+configurando_sudo = "KONFIGURIERE DIE SUDO-SITZUNG FÜR DIE INSTALLATION"
+no_root = "❌ FEHLER: DIESES INSTALLATIONS-PROGRAMM MUSS ALS NORMALER BENUTZER (MIT SUDO) AUSGEFÜHRT WERDEN, NICHT ALS ROOT."
+invalido = "❌ FEHLER: DIE SUDOERS-KONFIGURATION KONNTE NICHT VALIDIERT WERDEN."
 
 # Step 1: folder creation.
 [carpetas]
-nuevas_carpetas = "CREATING FOLDERS TO BE USED IN DOTFILES"
-nombre_de_carpeta = "NEW FOLDER CREATED == "
+nuevas_carpetas = "ERSTELLE ORDNER FÜR DIE DOTFILES"
+nombre_de_carpeta = "NEUER ORDNER ERSTELLT == "
 
 # Step 1b: language catalog deployment (for `md` at runtime).
 [idioma]
-desplegando = "COPYING LANGUAGE CATALOGS"
+desplegando = "KOPIERE SPRACHKATALOGE"
 
 # Step 2: package installation.
 [paquetes]
-instalando_paquetes = "INSTALLING DOCUMENTED PACKAGE LISTS"
-instalando_paru = "==> 'paru' is not in the repositories, building it from the AUR..."
+instalando_paquetes = "INSTALLIERE DOKUMENTIERTE PAKETLISTEN"
+instalando_paru = "==> 'paru' ist nicht in den Repositories, wird aus dem AUR gebaut..."
 
 # Step 3: backup and installation of configs.
 [dotfiles]
-comenzando_backup = "CREATING BACKUP FOR CONFIGURATIONS INSIDE '~/.config'"
-encabezado = "INSTALLING ADDITIONAL CONFIGURATIONS"
-confirmacion = "THIS WILL REPLACE EXISTING CONFIGURATIONS (WITH PREVIOUS BACKUP). CONTINUE?"
+comenzando_backup = "ERSTELLE BACKUP DER KONFIGURATIONEN IN '~/.config'"
+encabezado = "INSTALLIERE ZUSÄTZLICHE KONFIGURATIONEN"
+confirmacion = "DIES ERSETZT BESTEHENDE KONFIGURATIONEN (MIT VORHERIGEM BACKUP). FORTFAHREN?"
 letra_confirmacion = "Y"
-cancelado = "CANCELLED. NO CHANGES WERE MADE."
-backup_si_existe = "🔄 BACKUP OF"
-limpiando_destino = "🗑️ CLEANING PREVIOUS DESTINATION:"
-paquete_detectado = "✨ NEW PACKAGE DETECTED:"
-copiando_paquete = "📂 COPYING"
-configurando_especificos = "⚙️ CONFIGURING HYPRLAND SPECIFIC FILES..."
-custom_restaurado = "♻️ CUSTOM OVERRIDES RESTORED IN"
+cancelado = "ABGEBROCHEN. KEINE ÄNDERUNGEN VORGENOMMEN."
+backup_si_existe = "🔄 BACKUP VON"
+limpiando_destino = "🗑️ BEREINIGE VORHERIGES ZIEL:"
+paquete_detectado = "✨ NEUES PAKET ERKANNT:"
+copiando_paquete = "📂 KOPIERE"
+configurando_especificos = "⚙️ KONFIGURIERE HYPRLAND-SPEZIFISCHE DATEIEN..."
+custom_restaurado = "♻️ BENUTZERANPASSUNGEN WIEDERHERGESTELLT IN"
 
 # Step 4: services and scripts.
 [servicios]
-instalando = "STARTING INSTALLATION OF SERVICES AND SCRIPTS"
-listando_servicios_antiguos = "THIS IS THE LIST OF OLD SERVICES TO BE DELETED IN '~/.local/bin/MinimalistDots/services':"
-borrando_servicios_antiguos = "DELETING OLD SERVICES INSIDE '~/.local/bin/MinimalistDots/services'"
-copiando_servicios_nuevos = "COPYING NEW SERVICES INSIDE '~/.local/bin/MinimalistDots/services'"
-listando_scripts_antiguos = "THIS IS THE LIST OF OLD SCRIPTS TO BE DELETED IN '~/.local/bin/MinimalistDots/scripts':"
-borrando_scripts_antiguos = "DELETING OLD SCRIPTS INSIDE '~/.local/bin/MinimalistDots/scripts'"
-copiando_scripts_nuevos = "COPYING NEW SCRIPTS INSIDE '~/.local/bin/MinimalistDots/scripts'"
+instalando = "STARTE INSTALLATION DER DIENSTE UND SKRIPTE"
+listando_servicios_antiguos = "DIES IST DIE LISTE ALTER DIENSTE, DIE IN '~/.local/bin/MinimalistDots/services' GELÖSCHT WERDEN:"
+borrando_servicios_antiguos = "LÖSCHE ALTE DIENSTE IN '~/.local/bin/MinimalistDots/services'"
+copiando_servicios_nuevos = "KOPIERE NEUE DIENSTE IN '~/.local/bin/MinimalistDots/services'"
+listando_scripts_antiguos = "DIES IST DIE LISTE ALTER SKRIPTE, DIE IN '~/.local/bin/MinimalistDots/scripts' GELÖSCHT WERDEN:"
+borrando_scripts_antiguos = "LÖSCHE ALTE SKRIPTE IN '~/.local/bin/MinimalistDots/scripts'"
+copiando_scripts_nuevos = "KOPIERE NEUE SKRIPTE IN '~/.local/bin/MinimalistDots/scripts'"
 
 # Sub-step: Zsh.
 [zsh]
-instalado = "==> Zsh configuration completed."
+instalado = "==> Zsh-Konfiguration abgeschlossen."
 
 # Sub-step: process manager.
 [procesos]
-instalado = "==> Process Manager successfully installed in"
+instalado = "==> Process Manager erfolgreich installiert in"
 
 # Sub-step: SDDM theme.
 [sddm]
-version_reciente = "==> Checking the latest theme version..."
-descarga = "==> Downloading and installing"
-instalado = "==> SDDM theme configured correctly."
+version_reciente = "==> Prüfe die neueste Theme-Version..."
+descarga = "==> Herunterladen und Installieren"
+instalado = "==> SDDM-Theme erfolgreich konfiguriert."
 
 # Sub-step: Docker.
 [docker]
-funciona = "✅ DOCKER WORKS WITHOUT SUDO FOR USER"
-sin_respuesta = "⚠️ DOCKER IS CONFIGURED BUT DOES NOT RESPOND YET. LOG OUT AND IN AGAIN, THEN TRY: docker info"
-reiniciar_sesion = "ℹ️ TO USE IT IN ALREADY OPEN TERMINALS: LOG OUT (OR REBOOT) OR RUN 'newgrp docker'."
+funciona = "✅ DOCKER FUNKTIONIERT FÜR DEN BENUTZER OHNE SUDO"
+sin_respuesta = "⚠️ DOCKER IST KONFIGURIERT, ANTWORTET ABER NOCH NICHT. MELDE DICH AB UND AN, DANN TESTE: docker info"
+reiniciar_sesion = "ℹ️ UM ES IN BEREITS OFFENEN TERMINALS ZU NUTZEN: ABMELDEN (ODER NEUSTART) ODER 'newgrp docker' AUSFÜHREN."
 
 # Sub-step: Git and GitHub.
 [github]
-sin_terminal = "No interactive terminal: GitHub setup skipped."
-pregunta = "Set up Git and GitHub now?"
-omitido = "Skipped. You can do it later with:"
-pedir_nombre = "Full name"
-pedir_correo = "GitHub email"
-datos_obligatorios = "❌ Name and email are required."
-sesion_activa = "A GitHub session is already active."
-abriendo_navegador = "The browser will open. Paste the one-time code shown here."
-generando_gpg = "Generating GPG key (ed25519, expires in 2 years). You will be asked for a passphrase to protect it."
-gpg_error = "❌ Could not get the GPG key."
-gpg_subida_error = "⚠️ Could not upload the GPG key (already on GitHub?). Check: gh gpg-key list"
-listo = "✅ Git and GitHub ready for"
+sin_terminal = "Kein interaktives Terminal: GitHub-Einrichtung übersprungen."
+pregunta = "Git und GitHub jetzt einrichten?"
+omitido = "Übersprungen. Du kannst es später mit folgendem tun:"
+pedir_nombre = "Vollständiger Name"
+pedir_correo = "GitHub-E-Mail"
+datos_obligatorios = "❌ Name und E-Mail sind erforderlich."
+sesion_activa = "Es ist bereits eine GitHub-Sitzung aktiv."
+abriendo_navegador = "Der Browser wird geöffnet. Füge hier den einmaligen Code ein, der angezeigt wird."
+generando_gpg = "Erzeuge GPG-Schlüssel (ed25519, läuft in 2 Jahren ab). Du wirst nach einer Passphrase gefragt."
+gpg_error = "❌ GPG-Schlüssel konnte nicht abgerufen werden."
+gpg_subida_error = "⚠️ GPG-Schlüssel konnte nicht hochgeladen werden (schon auf GitHub?). Prüfe: gh gpg-key list"
+listo = "✅ Git und GitHub bereit für"
 
 # Sub-step: network optimization.
 [red]
-iniciando = "⚡ STARTING NETWORK OPTIMIZATION..."
-sin_interfaz = "❌ ERROR: COULD NOT DETECT AN ACTIVE NETWORK INTERFACE."
-interfaz_detectada = "🌐 ACTIVE INTERFACE DETECTED:"
-aplicando_sysctl = "📦 APPLYING KERNEL SETTINGS (SYSCTL)..."
-sysctl_aviso = "⚠️ SOME SYSCTL PARAMETERS COULD NOT BE APPLIED (THE KERNEL MAY NOT SUPPORT THEM)."
-optimizando_nic = "🔌 OPTIMIZING THE NETWORK CARD:"
-sin_ethtool = "⚠️ 'ethtool' IS NOT INSTALLED: NETWORK CARD OPTIMIZATION SKIPPED."
-persistencia = "💾 MAKING THE NETWORK CARD OPTIMIZATION PERSISTENT (UDEV + SYSTEMD)..."
-configurando_dns = "🌐 CONFIGURING DNS (CLOUDFLARE, QUAD9, GOOGLE) WITH LOCAL CACHE..."
-listo = "🔥 DONE! NETWORK OPTIMIZATION APPLIED. YOU CAN CHECK DNS WITH: resolvectl status"
+iniciando = "⚡ STARTE NETZWERKOPTIMIERUNG..."
+sin_interfaz = "❌ FEHLER: ES KONNTE KEINE AKTIVE NETZWERKSCHNITTSTELLE ERKANNT WERDEN."
+interfaz_detectada = "🌐 AKTIVE SCHNITTSTELLE ERKANNT:"
+aplicando_sysctl = "📦 WENDE KERNEL-EINSTELLUNGEN (SYSCTL) AN..."
+sysctl_aviso = "⚠️ EINIGE SYSCTL-PARAMETER KONNTEN NICHT ANGEWENDET WERDEN (DER KERNEL UNTERSTÜTZT SIE MÖGLICHERWEISE NICHT)."
+optimizando_nic = "🔌 OPTIMIERE DIE NETZWERKKARTE:"
+sin_ethtool = "⚠️ 'ethtool' IST NICHT INSTALLIERT: OPTIMIERUNG DER NETZWERKKARTE ÜBERSPRUNGEN."
+persistencia = "💾 MACHE DIE OPTIMIERUNG DER NETZWERKKARTE PERSISTENT (UDEV + SYSTEMD)..."
+configurando_dns = "🌐 KONFIGURIERE DNS (CLOUDFLARE, QUAD9, GOOGLE) MIT LOKALEM CACHE..."
+listo = "🔥 FERTIG! NETZWERKOPTIMIERUNG ANGEWENDET. DU KANNST DNS PRÜFEN MIT: resolvectl status"
 
 # Sub-step: AI for development.
 [ai]
-instalado = "AI FOR DEVELOPMENT: TEMPLATES INSTALLED IN"
-models_creado = "MODELS.ENV CREATED (EDIT THE PATHS OF YOUR .GGUF FILES):"
-models_existe = "MODELS.ENV ALREADY EXISTS: LEFT UNTOUCHED."
-api_creado = "API_MODELS.CONF CREATED (APIS FOR AI-CODE):"
-opencode_fallo = "COULD NOT INSTALL OPENCODE. TRY MANUALLY: paru -S opencode-bin"
-opencode_config_fallo = "COULD NOT GENERATE THE OPENCODE CONFIG. CHECK models.env AND RUN: ai-config"
-siguiente = "NEXT (IN A NEW TERMINAL): ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MY-PROJECT"
+instalado = "KI FÜR ENTWICKLUNG: VORLAGEN INSTALLIERT IN"
+models_creado = "MODELS.ENV ERSTELLT (BEARBEITE DIE PFADE DEINER .GGUF-DATEIEN):"
+models_existe = "MODELS.ENV EXISTIERT BEREITS: UNVERÄNDERT GELASSEN."
+api_creado = "API_MODELS.CONF ERSTELLT (APIS FÜR AI-CODE):"
+opencode_fallo = "OPENCODE KONNTE NICHT INSTALLIERT WERDEN. VERSUCHE MANUELL: paru -S opencode-bin"
+opencode_config_fallo = "OPENCODE-KONFIG KONNTE NICHT ERSTELLT WERDEN. PRÜFE models.env UND FÜHRE AUS: ai-config"
+siguiente = "WEITER (IN EINEM NEUEN TERMINAL): ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MEIN-PROJEKT"
+
 
 # Desktop tools (`md`): menus, OSD and notifications (H7).
 [escritorio]

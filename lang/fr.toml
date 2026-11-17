@@ -2,13 +2,13 @@
 codigo = "fr"
 nombre = "Français"
 
-# Mensajes compartidos entre pasos (errores y avisos transversales).
+# Messages partagés entre les étapes (erreurs et avertissements transversaux).
 [comun]
 configuracion_no_encontrada = "CONFIGURATION INTROUVABLE"
 paso_fallido = "❌ ÉTAPE ÉCHOUÉE :"
 instalacion_con_errores = "⚠️ L'INSTALLATION S'EST TERMINÉE AVEC DES ERREURS. VÉRIFIEZ LES MESSAGES ❌ CI-DESSUS."
 
-# Orquestación general (steps.sh).
+# Orchestration générale (steps.sh).
 [instalador]
 bienvenido = "BIENVENUE DANS L'INSTALLATION DE MINIMALISTDOTS"
 recarga = "🔄 RECHARGEMENT DE HYPRLAND"
@@ -17,109 +17,110 @@ recarga_exito = "✅ RECHARGÉ CORRECTEMENT"
 no_sesion = "ℹ️ AUCUNE SESSION HYPRLAND ACTIVE"
 configuraciones_listas = "✨ SAUVEGARDE TERMINÉE ET CONFIGURATIONS ADAPTÉES"
 
-# Paso 0: sesión de sudo.
+# Étape 0 : session sudo.
 [sudo]
-configurando_sudo = "CONFIGURANDO LA SESIÓN DE SUDO PARA LA INSTALACIÓN"
-no_root = "❌ ERROR: ESTE INSTALADOR DEBE EJECUTARSE COMO USUARIO NORMAL (CON SUDO), NO COMO ROOT."
-invalido = "❌ ERROR: NO SE PUDO VALIDAR LA CONFIGURACIÓN DE SUDOERS."
+configurando_sudo = "CONFIGURATION DE LA SESSION SUDO POUR L'INSTALLATION"
+no_root = "❌ ERREUR : CE PROGRAMME D'INSTALLATION DOIT ÊTRE EXÉCUTÉ EN TANT QU'UTILISATEUR NORMAL (AVEC SUDO), PAS EN ROOT."
+invalido = "❌ ERREUR : IMPOSSIBLE DE VALIDER LA CONFIGURATION SUDOERS."
 
-# Paso 1: creación de carpetas.
+# Étape 1 : création des dossiers.
 [carpetas]
-nuevas_carpetas = "CREANDO CARPETAS QUE SE USARAN EN EL DOTFILES"
-nombre_de_carpeta = "NUEVA CARPETA CREADA == "
+nuevas_carpetas = "CRÉATION DES DOSSIERS UTILISÉS DANS LES DOTFILES"
+nombre_de_carpeta = "NOUVEAU DOSSIER CRÉÉ == "
 
-# Paso 1b: despliegue de catálogos de idioma (para `md` en runtime).
+# Étape 1b : déploiement des catalogues de langue.
 [idioma]
-desplegando = "COPIANDO CATÁLOGOS DE IDIOMA"
+desplegando = "COPIE DES CATALOGUES DE LANGUE"
 
-# Paso 2: instalación de paquetes.
+# Étape 2 : installation des paquets.
 [paquetes]
-instalando_paquetes = "INSTALANDO LISTAS DE PAQUETES DOCUMENTADOS"
-instalando_paru = "==> 'paru' no está en los repositorios, compilándolo desde el AUR..."
+instalando_paquetes = "INSTALLATION DES LISTES DE PAQUETS DOCUMENTÉES"
+instalando_paru = "==> 'paru' n'est pas dans les dépôts, compilation depuis l'AUR..."
 
-# Paso 3: backup e instalación de configuraciones.
+# Étape 3 : sauvegarde et installation des configs.
 [dotfiles]
-comenzando_backup = "CREANDO BACKUP PARA CONFIGURACIONES DENTRO DE '~/.CONFIG'"
-encabezado = "INSTALANDO CONFIGURACIONES ADICIONALES"
-confirmacion = "ESTO REEMPLAZARÁ LAS CONFIGURACIONES EXISTENTES (CON BACKUP PREVIO). ¿CONTINUAR?"
+comenzando_backup = "CRÉATION DE LA SAUVEGARDE DES CONFIGURATIONS DANS '~/.config'"
+encabezado = "INSTALLATION DES CONFIGURATIONS SUPPLÉMENTAIRES"
+confirmacion = "CELA REMPLACERA LES CONFIGURATIONS EXISTANTES (AVEC SAUVEGARDE PRÉALABLE). CONTINUER ?"
 letra_confirmacion = "Y"
-cancelado = "CANCELADO. NO SE HIZO NINGÚN CAMBIO."
-backup_si_existe = "🔄 BACKUP DE"
-limpiando_destino = "🗑️ LIMPIANDO DESTINO ANTERIOR:"
-paquete_detectado = "✨ NUEVO PAQUETE DETECTADO:"
-copiando_paquete = "📂 COPIANDO"
-configurando_especificos = "⚙️ CONFIGURANDO ARCHIVOS ESPECÍFICOS DE HYPRLAND..."
-custom_restaurado = "♻️ PERSONALIZACIONES RESTAURADAS EN"
+cancelado = "ANNULÉ. AUCUNE MODIFICATION APPORTÉE."
+backup_si_existe = "🔄 SAUVEGARDE DE"
+limpiando_destino = "🗑️ NETTOYAGE DE LA DESTINATION PRÉCÉDENTE :"
+paquete_detectado = "✨ NOUVEAU PAQUET DÉTECTÉ :"
+copiando_paquete = "📂 COPIE"
+configurando_especificos = "⚙️ CONFIGURATION DES FICHIERS SPÉCIFIQUES À HYPRLAND..."
+custom_restaurado = "♻️ PERSONNALISATIONS RESTAURÉES DANS"
 
-# Paso 4: servicios y scripts.
+# Étape 4 : services et scripts.
 [servicios]
-instalando = "EMPEZAMOS LA INSTALACION DE SERVICIOS Y SCRIPTS"
-listando_servicios_antiguos = "ESTA ES LA LISTA DE SERVICIOS ANTIGUOS QUE SE VA BORRAR EN '~/.local/bin/MinimalistDots/services':"
-borrando_servicios_antiguos = "BORRANDO SERVICIOS ANTIGUOS DENTRO DE '~/.local/bin/MinimalistDots/services'"
-copiando_servicios_nuevos = "COPIANDO SERVICIOS NUEVOS DENTRO DE '~/.local/bin/MinimalistDots/services'"
-listando_scripts_antiguos = "ESTA ES LA LISTA DE SCRIPTS ANTIGUOS QUE SE VA BORRAR EN '~/.local/bin/MinimalistDots/scripts':"
-borrando_scripts_antiguos = "BORRANDO SCRIPTS ANTIGUOS DENTRO DE '~/.local/bin/MinimalistDots/scripts'"
-copiando_scripts_nuevos = "COPIANDO SCRIPTS NUEVOS DENTRO DE '~/.local/bin/MinimalistDots/scripts'"
+instalando = "DÉMARRAGE DE L'INSTALLATION DES SERVICES ET SCRIPTS"
+listando_servicios_antiguos = "VOICI LA LISTE DES ANCIENS SERVICES À SUPPRIMER DANS '~/.local/bin/MinimalistDots/services' :"
+borrando_servicios_antiguos = "SUPPRESSION DES ANCIENS SERVICES DANS '~/.local/bin/MinimalistDots/services'"
+copiando_servicios_nuevos = "COPIE DES NOUVEAUX SERVICES DANS '~/.local/bin/MinimalistDots/services'"
+listando_scripts_antiguos = "VOICI LA LISTE DES ANCIENS SCRIPTS À SUPPRIMER DANS '~/.local/bin/MinimalistDots/scripts' :"
+borrando_scripts_antiguos = "SUPPRESSION DES ANCIENS SCRIPTS DANS '~/.local/bin/MinimalistDots/scripts'"
+copiando_scripts_nuevos = "COPIE DES NOUVEAUX SCRIPTS DANS '~/.local/bin/MinimalistDots/scripts'"
 
-# Sub-paso: Zsh.
+# Sous-étape : Zsh.
 [zsh]
-instalado = "==> Configuración de Zsh completada."
+instalado = "==> Configuration de Zsh terminée."
 
-# Sub-paso: gestor de procesos.
+# Sous-étape : gestionnaire de processus.
 [procesos]
-instalado = "==> Process Manager instalado exitosamente en"
+instalado = "==> Process Manager installé avec succès dans"
 
-# Sub-paso: tema de SDDM.
+# Sous-étape : thème SDDM.
 [sddm]
-version_reciente = "==> Consultando la versión más reciente del tema..."
-descarga = "==> Descargando e instalando"
-instalado = "==> Tema de SDDM configurado correctamente."
+version_reciente = "==> Vérification de la dernière version du thème..."
+descarga = "==> Téléchargement et installation"
+instalado = "==> Thème SDDM configuré correctement."
 
-# Sub-paso: Docker.
+# Sous-étape : Docker.
 [docker]
-funciona = "✅ DOCKER FUNCIONA SIN SUDO PARA EL USUARIO"
-sin_respuesta = "⚠️ DOCKER QUEDÓ CONFIGURADO, PERO AÚN NO RESPONDE. REINICIA SESIÓN Y PRUEBA: docker info"
-reiniciar_sesion = "ℹ️ PARA USARLO EN LAS TERMINALES YA ABIERTAS: CIERRA SESIÓN (O REINICIA) O EJECUTA 'newgrp docker'."
+funciona = "✅ DOCKER FONCTIONNE SANS SUDO POUR L'UTILISATEUR"
+sin_respuesta = "⚠️ DOCKER EST CONFIGURÉ MAIS NE RÉPOND PAS ENCORE. DÉCONNECTEZ-VOUS ET RECONNECTEZ-VOUS, PUIS ESSAYEZ : docker info"
+reiniciar_sesion = "ℹ️ POUR L'UTILISER DANS LES TERMINAUX DÉJÀ OUVERTS : DÉCONNECTEZ-VOUS (OU REDÉMARREZ) OU EXÉCUTEZ 'newgrp docker'."
 
-# Sub-paso: Git y GitHub.
+# Sous-étape : Git et GitHub.
 [github]
-sin_terminal = "Sin terminal interactiva: se omite la configuración de GitHub."
-pregunta = "¿Configurar Git y GitHub ahora?"
-omitido = "Omitido. Puedes hacerlo luego con:"
-pedir_nombre = "Nombre completo"
-pedir_correo = "Correo de GitHub"
-datos_obligatorios = "❌ Nombre y correo son obligatorios."
-sesion_activa = "Ya hay una sesión de GitHub activa."
-abriendo_navegador = "Se abrirá el navegador. Pega el código de un solo uso que aparece aquí."
-generando_gpg = "Generando clave GPG (ed25519, vence en 2 años). Te pedirá una contraseña para protegerla."
-gpg_error = "❌ No se pudo obtener la clave GPG."
-gpg_subida_error = "⚠️ No se pudo subir la clave GPG (¿ya estaba en GitHub?). Revisa: gh gpg-key list"
-listo = "✅ Git y GitHub listos para"
+sin_terminal = "Pas de terminal interactif : configuration GitHub ignorée."
+pregunta = "Configurer Git et GitHub maintenant ?"
+omitido = "Ignoré. Vous pouvez le faire plus tard avec :"
+pedir_nombre = "Nom complet"
+pedir_correo = "E-mail GitHub"
+datos_obligatorios = "❌ Le nom et l'e-mail sont obligatoires."
+sesion_activa = "Une session GitHub est déjà active."
+abriendo_navegador = "Le navigateur va s'ouvrir. Collez le code à usage unique affiché ici."
+generando_gpg = "Génération de la clé GPG (ed25519, expire dans 2 ans). Une phrase secrète vous sera demandée."
+gpg_error = "❌ Impossible d'obtenir la clé GPG."
+gpg_subida_error = "⚠️ Impossible d'envoyer la clé GPG (déjà sur GitHub ?). Vérifiez : gh gpg-key list"
+listo = "✅ Git et GitHub prêts pour"
 
-# Sub-paso: optimización de red.
+# Sous-étape : optimisation réseau.
 [red]
-iniciando = "⚡ INICIANDO OPTIMIZACIÓN DE RED..."
-sin_interfaz = "❌ ERROR: NO SE PUDO DETECTAR UNA INTERFAZ DE RED ACTIVA."
-interfaz_detectada = "🌐 INTERFAZ ACTIVA DETECTADA:"
-aplicando_sysctl = "📦 APLICANDO CONFIGURACIONES DEL KERNEL (SYSCTL)..."
-sysctl_aviso = "⚠️ ALGUNOS PARÁMETROS SYSCTL NO SE PUDIERON APLICAR (EL KERNEL PUEDE NO SOPORTARLOS)."
-optimizando_nic = "🔌 OPTIMIZANDO LA TARJETA DE RED:"
-sin_ethtool = "⚠️ 'ethtool' NO ESTÁ INSTALADO: SE OMITE LA OPTIMIZACIÓN DE LA TARJETA DE RED."
-persistencia = "💾 HACIENDO PERSISTENTE LA OPTIMIZACIÓN DE LA TARJETA (UDEV + SYSTEMD)..."
-configurando_dns = "🌐 CONFIGURANDO DNS (CLOUDFLARE, QUAD9, GOOGLE) CON CACHÉ LOCAL..."
-listo = "🔥 ¡LISTO! OPTIMIZACIÓN DE RED APLICADA. PUEDES REVISAR EL DNS CON: resolvectl status"
+iniciando = "⚡ DÉMARRAGE DE L'OPTIMISATION RÉSEAU..."
+sin_interfaz = "❌ ERREUR : IMPOSSIBLE DE DÉTECTER UNE INTERFACE RÉSEAU ACTIVE."
+interfaz_detectada = "🌐 INTERFACE ACTIVE DÉTECTÉE :"
+aplicando_sysctl = "📦 APPLICATION DES PARAMÈTRES NOYAU (SYSCTL)..."
+sysctl_aviso = "⚠️ CERTAINS PARAMÈTRES SYSCTL N'ONT PAS PU ÊTRE APPLIQUÉS (LE NOYAU NE LES PREND PEUT-ÊTRE PAS EN CHARGE)."
+optimizando_nic = "🔌 OPTIMISATION DE LA CARTE RÉSEAU :"
+sin_ethtool = "⚠️ 'ethtool' N'EST PAS INSTALLÉ : OPTIMISATION DE LA CARTE RÉSEAU IGNORÉE."
+persistencia = "💾 RENDRE PERSISTANTE L'OPTIMISATION DE LA CARTE RÉSEAU (UDEV + SYSTEMD)..."
+configurando_dns = "🌐 CONFIGURATION DU DNS (CLOUDFLARE, QUAD9, GOOGLE) AVEC CACHE LOCAL..."
+listo = "🔥 TERMINÉ ! OPTIMISATION RÉSEAU APPLIQUÉE. VOUS POUVEZ VÉRIFIER LE DNS AVEC : resolvectl status"
 
-# Sub-paso: IA para desarrollo.
+# Sous-étape : IA pour le développement.
 [ai]
-instalado = "IA PARA DESARROLLO: PLANTILLAS INSTALADAS EN"
-models_creado = "MODELS.ENV CREADO (EDITA LAS RUTAS DE TUS .GGUF):"
-models_existe = "MODELS.ENV YA EXISTE: NO SE TOCA."
-api_creado = "API_MODELS.CONF CREADO (APIS PARA AI-CODE):"
-opencode_fallo = "NO SE PUDO INSTALAR OPENCODE. PRUEBA A MANO: paru -S opencode-bin"
-opencode_config_fallo = "NO SE PUDO GENERAR LA CONFIG DE OPENCODE. REVISA models.env Y EJECUTA: ai-config"
-siguiente = "SIGUIENTE (EN UNA TERMINAL NUEVA): ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MI-PROYECTO"
+instalado = "IA POUR LE DÉVELOPPEMENT : MODÈLES INSTALLÉS DANS"
+models_creado = "MODELS.ENV CRÉÉ (MODIFIEZ LES CHEMINS DE VOS FICHIERS .GGUF) :"
+models_existe = "MODELS.ENV EXISTE DÉJÀ : NON MODIFIÉ."
+api_creado = "API_MODELS.CONF CRÉÉ (APIS POUR AI-CODE) :"
+opencode_fallo = "IMPOSSIBLE D'INSTALLER OPENCODE. ESSAYEZ MANUELLEMENT : paru -S opencode-bin"
+opencode_config_fallo = "IMPOSSIBLE DE GÉNÉRER LA CONFIG OPENCODE. VÉRIFIEZ models.env ET EXÉCUTEZ : ai-config"
+siguiente = "SUIVANT (DANS UN NOUVEAU TERMINAL) : ai-doctor  →  ai-up chat  →  ai-bench  →  ai-new MON-PROJET"
 
-# Herramientas de escritorio (`md`): menús, OSD y notificaciones (H7).
+
+# Outils de bureau (`md`) : menus, OSD et notifications (H7).
 [escritorio]
 lanzador = "Lanceur"
 portapapeles = "Presse-papiers"
