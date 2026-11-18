@@ -181,7 +181,6 @@ def generate_quickshell_palette(palette: dict[str, str]) -> str:
         return palette.get(key, "#000000")
 
     return f'''// Generado desde theme/palette.toml. NO EDITES A MANO.
-pragma Singleton
 import QtQuick
 
 QtObject {{

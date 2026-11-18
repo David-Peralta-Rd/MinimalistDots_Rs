@@ -8,6 +8,8 @@ import Quickshell.Wayland
 ShellRoot {
     id: root
 
+    Palette { id: palette }
+
     property var wallpapers: []
     property var filteredWallpapers: []
     property string selectedPath: ""
@@ -51,16 +53,16 @@ ShellRoot {
     }
 
     // Paleta normal (sin espejo)
-    readonly property color cFondo: Palette.fondo
-    readonly property color cTarjeta: Palette.tarjeta
-    readonly property color cSuperficie: Palette.superficie
-    readonly property color cHover: Palette.hover
-    readonly property color cSeleccion: Palette.seleccion
-    readonly property color cBorde: Palette.seleccion
-    readonly property color cBordeFuerte: Palette.bordeInactivo
-    readonly property color cTexto: Palette.texto
-    readonly property color cTextoSuave: Palette.textoSuave
-    readonly property color cAcento: Palette.acentoAzul
+    readonly property color cFondo: palette.fondo
+    readonly property color cTarjeta: palette.tarjeta
+    readonly property color cSuperficie: palette.superficie
+    readonly property color cHover: palette.hover
+    readonly property color cSeleccion: palette.seleccion
+    readonly property color cBorde: palette.seleccion
+    readonly property color cBordeFuerte: palette.bordeInactivo
+    readonly property color cTexto: palette.texto
+    readonly property color cTextoSuave: palette.textoSuave
+    readonly property color cAcento: palette.acentoAzul
 
     onWallpapersChanged: updateFilter()
     onSearchTextChanged: updateFilter()
