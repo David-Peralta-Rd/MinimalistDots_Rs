@@ -9,6 +9,7 @@ ShellRoot {
 
     property var wallpapers: []
     property string selectedPath: ""
+    property string titleText: "Fondos de pantalla"
     property string mdBin: Quickshell.env("HOME") + "/.local/bin/md"
 
     Process {
@@ -17,7 +18,11 @@ ShellRoot {
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
-                try { root.wallpapers = JSON.parse(text) }
+                try {
+                    const d = JSON.parse(text)
+                    root.wallpapers = d.items || []
+                    if (d.title) root.titleText = d.title
+                }
                 catch (e) { console.log("parse error", e) }
             }
         }
@@ -98,7 +103,7 @@ ShellRoot {
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: "Fondos de pantalla"
+                        text: root.titleText
                         color: root.cTexto
                         font.pixelSize: 18
                         font.weight: Font.Bold

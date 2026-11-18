@@ -87,10 +87,11 @@ fn state_file() -> Option<PathBuf> {
 
 /// Imprime la lista de fondos en JSON (para QuickShell).
 pub fn list_json() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = crate::i18n::Texts::load();
     let dir = wallpaper_dir();
     std::fs::create_dir_all(&dir)?;
     let wallpapers = discover_wallpapers(&dir);
-    let out: Vec<_> = wallpapers
+    let items: Vec<_> = wallpapers
         .iter()
         .map(|wallpaper| {
             json!({
@@ -99,6 +100,10 @@ pub fn list_json() -> Result<(), Box<dyn std::error::Error>> {
             })
         })
         .collect();
+    let out = json!({
+        "title": texts.t("escritorio.fondo_pantalla"),
+        "items": items,
+    });
     println!("{}", serde_json::to_string(&out)?);
     Ok(())
 }
