@@ -50,7 +50,15 @@ enum Command {
     Process,
 
     /// Selector de fondos de pantalla (hyprpaper).
-    Wallpaper,
+    Wallpaper {
+        /// Imprime la lista en JSON (para QuickShell).
+        #[arg(long)]
+        json: bool,
+
+        /// Aplica el fondo indicado (ruta) y sale.
+        #[arg(long, value_name = "PATH")]
+        apply: Option<String>,
+    },
 
     /// Notificaciones: servidor residente, historial y control.
     Notify {
@@ -87,7 +95,11 @@ enum Command {
     },
 
     /// Reloj de escritorio persistente.
-    Clock,
+    Clock {
+        /// Imprime un color de texto con contraste para el fondo actual (JSON).
+        #[arg(long)]
+        color: bool,
+    },
 
     /// Cambia el idioma de los menús y avisos.
     Language,
@@ -132,7 +144,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Clip => clip::run()?,
         Command::Binds => binds::run()?,
         Command::Process => process::run()?,
-        Command::Wallpaper => wallpaper::run()?,
+        Command::Wallpaper { json, apply } => {
+            if json {
+                wallpaper::list_json()?;
+            } else if let Some(path) = apply {
+                wallpaper::apply_path(std::path::Path::new(&path))?;
+            } else {
+                wallpaper::run()?;
+            }
+        }
         Command::Notify { command } => notify::run(command)?,
         Command::Shot { mode } => shot::run(mode)?,
         Command::Record { mode, audio } => record::run(mode, audio)?,
@@ -140,7 +160,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Pomodoro { command } => {
             pomodoro::run(command.unwrap_or(pomodoro::PomodoroCommand::Toggle))?;
         }
-        Command::Clock => clock::run()?,
+        Command::Clock { color } => {
+            if color {
+                clock::print_color()?;
+            } else {
+                clock::run()?;
+            }
+        }
         Command::Language => language::run()?,
         Command::Welcome => welcome::run()?,
         Command::Ai { command } => ai::run(command)?,
