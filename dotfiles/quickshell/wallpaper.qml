@@ -87,7 +87,7 @@ ShellRoot {
 
             Column {
                 anchors.fill: parent
-                anchors.margins: 18
+                anchors.margins: 16
                 spacing: 12
 
                 // Cabecera
@@ -135,14 +135,15 @@ ShellRoot {
                     id: grid
                     width: parent.width
                     height: parent.height - 50
-                    cellWidth: 150
+                    cellWidth: grid.width > 0 ? Math.floor(grid.width / 4) : 150
                     cellHeight: 128
                     clip: true
                     model: root.wallpapers
 
                     delegate: Rectangle {
-                        width: 140
+                        width: grid.cellWidth - 6
                         height: 120
+                        x: 3
                         radius: 10
                         color: root.cSuperficie
                         border.width: (modelData.path === root.selectedPath) ? 2 : 1
