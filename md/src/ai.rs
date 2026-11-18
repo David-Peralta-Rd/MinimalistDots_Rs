@@ -1909,17 +1909,22 @@ fn new_project(
             ("mattpocock/skills", "improve-codebase-architecture"),
             ("obra/superpowers", "systematic-debugging"),
         ];
+        println!("instalando skills base (puede tardar; muestra progreso de npx)...");
         for (package, skill) in defaults {
+            println!("  → {} ({})", skill, package);
             let mut cmd = if command_exists("timeout") {
                 let mut cmd = Command::new("timeout");
-                cmd.arg("60").arg("npx");
+                cmd.arg("180").arg("npx");
                 cmd
             } else {
                 Command::new("npx")
             };
             let status = cmd
                 .current_dir(&dir)
+                .env("CI", "1")
+                .env("NPM_CONFIG_YES", "true")
                 .args([
+                    "--yes",
                     "skills",
                     "add",
                     *package,
@@ -1929,13 +1934,21 @@ fn new_project(
                     "opencode",
                     "-y",
                 ])
-                .stdout(std::process::Stdio::null())
                 .status();
-            if !status.is_ok_and(|s| s.success()) {
-                eprintln!(
-                    "aviso: no se pudo instalar {} ({}); se usa la copia de la plantilla si existe.",
-                    skill, package
-                );
+            match status {
+                Ok(s) if s.success() => {}
+                Ok(s) if s.code() == Some(124) => {
+                    eprintln!(
+                        "  aviso: {} ({}) tardó más de 180 s y se canceló; puedes instalarlo después con `npx skills add {} --skill {}`.",
+                        skill, package, package, skill
+                    );
+                }
+                _ => {
+                    eprintln!(
+                        "  aviso: no se pudo instalar {} ({}); se usa la copia de la plantilla si existe.",
+                        skill, package
+                    );
+                }
             }
         }
     } else {
