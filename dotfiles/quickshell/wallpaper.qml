@@ -115,25 +115,26 @@ ShellRoot {
                 spacing: 12
 
                 // Cabecera
-                Row {
+                Item {
                     width: parent.width
-                    height: 32
-                    spacing: 8
-                    rightPadding: 0
+                    height: 36
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
                         text: root.titleText
                         color: root.cTexto
                         font.pixelSize: 18
                         font.weight: Font.Bold
+                        elide: Text.ElideRight
+                        width: parent.width - 48
                     }
 
-                    Item { width: parent.width - 220; height: 1 }
-
                     Rectangle {
-                        width: 36
-                        height: 36
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        width: 26
+                        height: 26
                         radius: 8
                         color: closeMa.containsMouse ? root.cHover : "transparent"
                         border.width: 1
