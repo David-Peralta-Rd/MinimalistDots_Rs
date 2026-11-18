@@ -95,7 +95,11 @@ enum Command {
     },
 
     /// Reloj de escritorio persistente.
-    Clock,
+    Clock {
+        /// Imprime un color de texto con contraste para el fondo actual (JSON).
+        #[arg(long)]
+        color: bool,
+    },
 
     /// Cambia el idioma de los menús y avisos.
     Language,
@@ -156,7 +160,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::Pomodoro { command } => {
             pomodoro::run(command.unwrap_or(pomodoro::PomodoroCommand::Toggle))?;
         }
-        Command::Clock => clock::run()?,
+        Command::Clock { color } => {
+            if color {
+                clock::print_color()?;
+            } else {
+                clock::run()?;
+            }
+        }
         Command::Language => language::run()?,
         Command::Welcome => welcome::run()?,
         Command::Ai { command } => ai::run(command)?,
