@@ -1922,7 +1922,9 @@ fn new_project(
             let status = cmd
                 .current_dir(&dir)
                 .env("CI", "1")
+                .env("NO_COLOR", "1")
                 .env("NPM_CONFIG_YES", "true")
+                .stdin(std::process::Stdio::null())
                 .args([
                     "--yes",
                     "skills",
