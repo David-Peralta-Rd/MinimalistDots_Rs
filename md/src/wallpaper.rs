@@ -102,6 +102,7 @@ pub fn list_json() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
     let out = json!({
         "title": texts.t("escritorio.fondo_pantalla"),
+        "search": texts.t("escritorio.buscar_fondo"),
         "items": items,
     });
     println!("{}", serde_json::to_string(&out)?);

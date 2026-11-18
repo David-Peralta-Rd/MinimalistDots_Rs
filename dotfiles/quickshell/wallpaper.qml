@@ -8,8 +8,22 @@ ShellRoot {
     id: root
 
     property var wallpapers: []
+    property var filteredWallpapers: []
     property string selectedPath: ""
     property string titleText: "Fondos de pantalla"
+    property string searchPlaceholder: "Buscar fondo…"
+    property string searchText: ""
+
+    function updateFilter() {
+        if (searchText === "") { filteredWallpapers = wallpapers; return }
+        var q = searchText.toLowerCase()
+        var out = []
+        for (var i = 0; i < wallpapers.length; i++) {
+            var w = wallpapers[i]
+            if ((w.name || "").toLowerCase().indexOf(q) >= 0) out.push(w)
+        }
+        filteredWallpapers = out
+    }
     property string mdBin: Quickshell.env("HOME") + "/.local/bin/md"
 
     Process {
@@ -22,6 +36,8 @@ ShellRoot {
                     const d = JSON.parse(text)
                     root.wallpapers = d.items || []
                     if (d.title) root.titleText = d.title
+                    if (d.search) root.searchPlaceholder = d.search
+                    root.updateFilter()
                 }
                 catch (e) { console.log("parse error", e) }
             }
@@ -44,6 +60,9 @@ ShellRoot {
     readonly property color cTexto: "#abb2bf"
     readonly property color cTextoSuave: "#5c6370"
     readonly property color cAcento: "#7aa2f7"
+
+    onWallpapersChanged: updateFilter()
+    onSearchTextChanged: updateFilter()
 
     PanelWindow {
         id: win
@@ -109,7 +128,7 @@ ShellRoot {
                         font.weight: Font.Bold
                     }
 
-                    Item { width: parent.width - 220; height: 1 }
+                    Item { width: parent.width - 260; height: 1 }
 
                     Rectangle {
                         width: 32
@@ -135,15 +154,52 @@ ShellRoot {
                     }
                 }
 
+                // Buscador
+                Rectangle {
+                    width: parent.width
+                    height: 34
+                    radius: 8
+                    color: root.cSuperficie
+                    border.width: 1
+                    border.color: searchField.activeFocus ? root.cAcento : root.cBorde
+
+                    Row {
+                        anchors.fill: parent
+                        anchors.leftMargin: 10
+                        anchors.rightMargin: 10
+                        spacing: 8
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "🔍"
+                            color: root.cTextoSuave
+                            font.pixelSize: 13
+                        }
+                        TextField {
+                            id: searchField
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width - 28
+                            placeholderText: root.searchPlaceholder
+                            color: "#ffffff"
+                            placeholderTextColor: "#ffffff"
+                            font.pixelSize: 13
+                            background: null
+                            palette { text: "#ffffff"; placeholderText: "#ffffff" }
+                            onTextChanged: root.searchText = text
+                            Keys.onEscapePressed: Qt.quit()
+                        }
+                    }
+                }
+
                 // Grid de miniaturas
                 GridView {
                     id: grid
                     width: parent.width
-                    height: parent.height - 50
+                    height: parent.height - 120
                     cellWidth: grid.width > 0 ? Math.floor(grid.width / 4) : 150
                     cellHeight: 128
                     clip: true
-                    model: root.wallpapers
+                    model: root.filteredWallpapers
 
                     delegate: Rectangle {
                         width: grid.cellWidth - 6
@@ -204,6 +260,14 @@ ShellRoot {
                         policy: ScrollBar.AsNeeded
                         width: 8
                     }
+                }
+
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: root.filteredWallpapers.length === 0
+                    text: "Sin resultados"
+                    color: root.cTextoSuave
+                    font.pixelSize: 12
                 }
             }
         }
