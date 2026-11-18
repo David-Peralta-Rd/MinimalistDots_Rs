@@ -266,7 +266,7 @@ fn choose(title: &str, labels: &[String]) -> Option<String> {
         app_id: "md.ai.ask".to_owned(),
         title: title.to_owned(),
         prompt: "🤖".to_owned(),
-        accent: md_core::Color::new(0x56, 0xb6, 0xc2),
+        accent: crate::util::load_palette().accent_cyan,
         row_height: 40.0,
         width: 680.0,
         height: 440.0,

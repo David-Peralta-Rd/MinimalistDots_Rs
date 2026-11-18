@@ -1,4 +1,5 @@
 import QtQuick
+import "."
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
@@ -50,16 +51,16 @@ ShellRoot {
     }
 
     // Paleta normal (sin espejo)
-    readonly property color cFondo: "#1e222a"
-    readonly property color cTarjeta: "#23272f"
-    readonly property color cSuperficie: "#282c34"
-    readonly property color cHover: "#323742"
-    readonly property color cSeleccion: "#3e4451"
-    readonly property color cBorde: "#3e4451"
-    readonly property color cBordeFuerte: "#4b5263"
-    readonly property color cTexto: "#abb2bf"
-    readonly property color cTextoSuave: "#5c6370"
-    readonly property color cAcento: "#7aa2f7"
+    readonly property color cFondo: Palette.fondo
+    readonly property color cTarjeta: Palette.tarjeta
+    readonly property color cSuperficie: Palette.superficie
+    readonly property color cHover: Palette.hover
+    readonly property color cSeleccion: Palette.seleccion
+    readonly property color cBorde: Palette.seleccion
+    readonly property color cBordeFuerte: Palette.bordeInactivo
+    readonly property color cTexto: Palette.texto
+    readonly property color cTextoSuave: Palette.textoSuave
+    readonly property color cAcento: Palette.acentoAzul
 
     onWallpapersChanged: updateFilter()
     onSearchTextChanged: updateFilter()

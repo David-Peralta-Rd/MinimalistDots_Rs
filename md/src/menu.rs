@@ -27,7 +27,7 @@ pub fn run(args: &Args) -> Result<(), Box<dyn std::error::Error>> {
             app_id: format!("md.menu.{}", args.name),
             title: format!("Menú {}", args.name),
             prompt: args.prompt.clone(),
-            accent: md_core::Color::new(0x7e, 0xc7, 0xa2),
+            accent: crate::util::load_palette().accent_green,
             row_height: 40.0,
             width: 600.0,
             height: 400.0,

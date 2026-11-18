@@ -49,7 +49,8 @@ fn current_clock_text() -> ClockText {
 
 /// Imprime un color de texto con contraste para el fondo actual (JSON).
 pub fn print_color() -> Result<(), Box<dyn std::error::Error>> {
-    let mut text = "#abb2bf".to_owned();
+    let palette = crate::util::load_palette();
+    let mut text = palette.text.hex();
     if let Some(home) = std::env::var_os("HOME") {
         let state = std::path::PathBuf::from(home).join(".cache/hypr/current_wallpaper");
         if let Ok(raw) = std::fs::read_to_string(&state) {
@@ -68,9 +69,9 @@ pub fn print_color() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 let avg = if count > 0 { sum / count } else { 128 };
                 text = if avg < 128 {
-                    "#e8e8e8".to_owned()
+                    palette.contrast_light.hex()
                 } else {
-                    "#1a1a2e".to_owned()
+                    palette.contrast_dark.hex()
                 };
             }
         }

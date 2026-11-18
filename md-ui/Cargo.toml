@@ -10,6 +10,7 @@ image = "0.25"
 
 [build-dependencies]
 slint-build = "1.18.1"
+toml = "1.2.1"
 
 [lints]
 workspace = true

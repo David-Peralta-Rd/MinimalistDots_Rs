@@ -16,7 +16,7 @@ use std::process::{Command, Stdio};
 
 use clap::Subcommand;
 
-use md_core::{Color, MenuEntry, MenuMode, Pomodoro};
+use md_core::{MenuEntry, MenuMode, Pomodoro};
 use md_ui::{
     MenuConfig, MenuEvent, PomodoroConfig, PomodoroEvents, SlintHost, run_menu, run_pomodoro,
 };
@@ -188,9 +188,9 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
 
     let config = PomodoroConfig {
         app_id: "md.pomodoro".to_owned(),
-        accent_focus: Color::new(0xe0, 0x6c, 0x75), // rojo
-        accent_break: Color::new(0x7e, 0xc7, 0xa2), // verde
-        accent_paused: Color::new(0x5c, 0x63, 0x70), // gris
+        accent_focus: crate::util::load_palette().accent_red,
+        accent_break: crate::util::load_palette().accent_green,
+        accent_paused: crate::util::load_palette().paused_text,
         label_paused_status: texts.t("escritorio.pomodoro_en_pausa"),
         label_break_title: texts.t("escritorio.pomodoro_descansar"),
         label_rest_hint: texts.t("escritorio.pomodoro_levantate"),
@@ -281,7 +281,7 @@ fn ask(texts: &Texts, key: &str, options: &[u32]) -> Option<u32> {
         app_id: "md.pomodoro.ask".to_owned(),
         title: texts.t(key),
         prompt: "🍅".to_owned(),
-        accent: Color::new(0xe0, 0x6c, 0x75),
+        accent: crate::util::load_palette().accent_red,
         row_height: 40.0,
         width: 320.0,
         height: 300.0,

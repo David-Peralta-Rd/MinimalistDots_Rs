@@ -1,7 +1,37 @@
 //! Utilidades compartidas de los subcomandos de `md`.
 
 use std::io::Write;
+use std::path::PathBuf;
 use std::process::{Command, Stdio};
+
+/// Carga la paleta instalada (o la del repo en desarrollo), con respaldo embebido.
+pub fn load_palette() -> md_core::Palette {
+    if let Ok(path) = std::env::var("MD_PALETTE") {
+        let path = PathBuf::from(path);
+        if let Ok(palette) = md_core::Palette::load(&path) {
+            return palette;
+        }
+    }
+    if let Some(home) = std::env::var_os("HOME") {
+        let home = PathBuf::from(home);
+        let candidates = [
+            home.join(".config/minimalistdots/palette.toml"),
+            home.join(".config/hypr/palette.toml"),
+        ];
+        for path in candidates {
+            if let Ok(palette) = md_core::Palette::load(&path) {
+                return palette;
+            }
+        }
+    }
+    // Respaldo embebido en el binario (paleta por defecto).
+    include_str!("../../theme/palette.toml")
+        .parse()
+        .unwrap_or_else(|_| {
+            // No debería fallar: el archivo se valida en compilación.
+            md_core::Palette::load(std::path::Path::new("/dev/null")).unwrap()
+        })
+}
 
 /// Marca temporal para nombres de archivo (`%y%m%d_%Hh%Mm%Ss`).
 pub fn now_stamp() -> String {

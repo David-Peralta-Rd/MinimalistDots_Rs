@@ -1,4 +1,5 @@
 import QtQuick
+import "."
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -6,7 +7,7 @@ import Quickshell.Wayland
 ShellRoot {
     id: root
 
-    property string textColor: "#abb2bf"
+    property string textColor: Palette.texto
     property string shadowColor: "#00000080"
 
     Process {

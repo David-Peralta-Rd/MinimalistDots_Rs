@@ -28,7 +28,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             app_id: "md.clip".to_owned(),
             title: texts.t("escritorio.portapapeles"),
             prompt: "📋".to_owned(),
-            accent: md_core::Color::new(0x7a, 0xa2, 0xf7), // azul
+            accent: crate::util::load_palette().accent_blue,
             row_height: 36.0,
             width: 700.0,
             height: 420.0,

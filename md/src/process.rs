@@ -21,7 +21,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         app_id: "md.process".to_owned(),
         title: texts.t("escritorio.gestor_procesos"),
         prompt: "⚙️".to_owned(),
-        accent: md_core::Color::new(0xe0, 0x6c, 0x75), // rojo
+        accent: crate::util::load_palette().accent_red,
         row_height: 36.0,
         width: 640.0,
         height: 480.0,

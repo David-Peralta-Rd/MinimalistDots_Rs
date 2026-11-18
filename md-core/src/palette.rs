@@ -40,6 +40,18 @@ pub struct Palette {
     pub accent_magenta: Color,
     #[serde(rename = "acento_cian")]
     pub accent_cyan: Color,
+    #[serde(rename = "hover")]
+    pub hover: Color,
+    #[serde(rename = "tarjeta")]
+    pub card: Color,
+    #[serde(rename = "texto_pausado")]
+    pub paused_text: Color,
+    #[serde(rename = "texto_contraste_claro")]
+    pub contrast_light: Color,
+    #[serde(rename = "texto_contraste_oscuro")]
+    pub contrast_dark: Color,
+    #[serde(rename = "overlay")]
+    pub overlay: Color,
 }
 
 impl std::str::FromStr for Palette {
@@ -85,6 +97,12 @@ acento_rojo = \"#e06c75\"
 acento_amarillo = \"#d19a66\"
 acento_magenta = \"#c678dd\"
 acento_cian = \"#56b6c2\"
+hover = \"#2c313a\"
+tarjeta = \"#23272f\"
+texto_pausado = \"#9aa0a6\"
+texto_contraste_claro = \"#e8e8e8\"
+texto_contraste_oscuro = \"#1a1a2e\"
+overlay = \"#000000\"
 ";
 
     #[test]
@@ -103,6 +121,12 @@ acento_cian = \"#56b6c2\"
         assert_eq!(palette.accent_yellow.hex(), "#d19a66");
         assert_eq!(palette.accent_magenta.hex(), "#c678dd");
         assert_eq!(palette.accent_cyan.hex(), "#56b6c2");
+        assert_eq!(palette.hover.hex(), "#2c313a");
+        assert_eq!(palette.card.hex(), "#23272f");
+        assert_eq!(palette.paused_text.hex(), "#9aa0a6");
+        assert_eq!(palette.contrast_light.hex(), "#e8e8e8");
+        assert_eq!(palette.contrast_dark.hex(), "#1a1a2e");
+        assert_eq!(palette.overlay.hex(), "#000000");
         Ok(())
     }
 

@@ -28,7 +28,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         app_id: "md.language".to_owned(),
         title: texts.t("escritorio.idioma_titulo"),
         prompt: "🌐".to_owned(),
-        accent: md_core::Color::new(0x56, 0xb6, 0xc2),
+        accent: crate::util::load_palette().accent_cyan,
         row_height: 40.0,
         width: 480.0,
         height: 360.0,

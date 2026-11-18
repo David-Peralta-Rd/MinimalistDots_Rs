@@ -100,6 +100,14 @@ def run(ctx: Context) -> None:
             _restore_custom(ctx, dest, backup_root)
             _regen_colors(ctx)
 
+    # Regenera archivos dependientes de la paleta (Hyprland, foot, hyprlock,
+    # QuickShell) para que todo siga a theme/palette.toml.
+    palette = theme.load_palette(ctx.paths.palette)
+    ctx.write(ctx.paths.hypr / "hyprlock.conf", theme.generate_hyprlock_conf(palette))
+    ctx.write(ctx.paths.config / "foot" / "foot.ini", theme.generate_foot_ini(palette))
+    ctx.write(ctx.paths.quickshell_dest / "Palette.qml", theme.generate_quickshell_palette(palette))
+    ctx.write(ctx.paths.config / "minimalistdots" / "palette.toml", ctx.paths.palette.read_text(encoding="utf-8"))
+
     # Despliega la IA (plantillas y ejemplos) sin borrar la config del usuario
     # (models.env, api_models.conf).
     ai_src = ctx.paths.ai_src

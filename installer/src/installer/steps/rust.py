@@ -29,7 +29,8 @@ def run(ctx: Context) -> None:
         try:
             src_mtime = src.stat().st_mtime
             newest = max(
-                (p.stat().st_mtime for p in repo.rglob("*.rs") if p.is_file()),
+                [p.stat().st_mtime for p in repo.rglob("*.rs") if p.is_file()]
+                + [p.stat().st_mtime for p in [repo / "theme" / "palette.toml"] if p.is_file()],
                 default=0.0,
             )
             needs_build = newest > src_mtime

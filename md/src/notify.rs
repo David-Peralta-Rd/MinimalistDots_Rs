@@ -167,7 +167,7 @@ fn history() -> Result<(), Box<dyn std::error::Error>> {
         app_id: "md.notify".to_owned(),
         title: texts.t("escritorio.notificaciones"),
         prompt: texts.t("escritorio.notificaciones_prompt"),
-        accent: md_core::Color::new(0x7a, 0xa2, 0xf7),
+        accent: crate::util::load_palette().accent_blue,
         row_height: 36.0,
         width: 720.0,
         height: 440.0,

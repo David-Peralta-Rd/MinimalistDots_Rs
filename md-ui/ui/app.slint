@@ -1,10 +1,11 @@
+import { Colors } from "colors.slint";
 import { AboutSlint } from "std-widgets.slint";
 
 // Ventana base de la que heredarán los menús, OSD y widgets de MinimalistDots.
 // La v1 usa ventanas xdg-toplevel posicionadas con windowrules de Hyprland
 // (ADR-0003). `accent` y `md-radius` permiten estilizar cada instancia.
 export component MdWindow inherits Window {
-    in property <color> accent: #7ec7a2;
+    in property <color> accent: Colors.acento_verde;
     in property <length> md-radius: 10px;
 
     // Título y tamaño configurables desde Rust (alias de las props de Window).
@@ -16,7 +17,7 @@ export component MdWindow inherits Window {
     width <=> root.md-width;
     height <=> root.md-height;
 
-    background: #1e222a;
+    background: Colors.fondo;
 }
 
 // Diálogo "Acerca de". Usa AboutSlint: requisito de la licencia Royalty-free
@@ -45,7 +46,7 @@ export struct MenuItem {
 // El filtrado y el orden lo hace el anfitrión (Rust) con `md_core::menu`; este
 // widget solo pinta la lista ya filtrada (`shown`) y emite callbacks.
 export component MdMenu inherits Window {
-    in property <color> accent: #7ec7a2;
+    in property <color> accent: Colors.acento_verde;
     in property <length> md-radius: 10px;
     in-out property <string> md-title: "MinimalistDots";
     in-out property <length> md-width: 600px;
@@ -54,7 +55,7 @@ export component MdMenu inherits Window {
     title <=> root.md-title;
     width <=> root.md-width;
     height <=> root.md-height;
-    background: #1e222a;
+    background: Colors.fondo;
 
     // ----- configuración (la fija el anfitrión) -----
     in property <string> prompt: "";
@@ -150,7 +151,7 @@ export component MdMenu inherits Window {
         y: 10px;
         width: parent.width - 20px;
         height: 40px;
-        background: #282c34;
+        background: Colors.superficie;
         border-radius: 6px;
     }
 
@@ -172,11 +173,11 @@ export component MdMenu inherits Window {
         height: 28px;
         border-radius: 4px;
         visible: root.can-wipe;
-        background: root.confirm-wipe ? #e06c75 : (wipe-area.pressed ? #282c34 : (wipe-area.has-hover ? #3e4451 : #00000000));
+        background: root.confirm-wipe ? Colors.acento_rojo : (wipe-area.pressed ? Colors.superficie : (wipe-area.has-hover ? Colors.seleccion : transparent));
 
         Text {
             text: root.confirm-wipe ? root.confirm-wipe-label : root.wipe-label;
-            color: root.confirm-wipe ? #1e222a : #abb2bf;
+            color: root.confirm-wipe ? Colors.fondo : Colors.texto;
             font-size: 12px;
             vertical-alignment: center;
             horizontal-alignment: center;
@@ -194,7 +195,7 @@ export component MdMenu inherits Window {
         height: input-box.height;
         width: (wipe-btn.visible ? wipe-btn.x : input-box.x + input-box.width - 10px) - self.x;
         text <=> root.query;
-        color: #abb2bf;
+        color: Colors.texto;
         vertical-alignment: center;
         single-line: true;
 
@@ -257,7 +258,7 @@ export component MdMenu inherits Window {
             width: parent.width;
             height: root.row-height;
             border-radius: 4px;
-            background: index == root.current-index ? #3e4451 : #00000000;
+            background: index == root.current-index ? Colors.seleccion : transparent;
 
             // icono (solo si la imagen no está vacía)
             if (item.icon.width > 0) : Image {
@@ -277,7 +278,7 @@ export component MdMenu inherits Window {
                 width: parent.width - (item.icon.width > 0 ? root.row-height + 2px : 8px) - (root.can-delete ? 40px : 8px);
                 vertical-alignment: center;
                 text: item.label;
-                color: index == root.current-index ? root.accent : #abb2bf;
+                color: index == root.current-index ? root.accent : Colors.texto;
                 font-weight: index == root.current-index ? 600 : 400;
                 overflow: elide;
             }
@@ -289,11 +290,11 @@ export component MdMenu inherits Window {
                 width: 26px;
                 height: 22px;
                 border-radius: 4px;
-                background: #00000000;
+                background: transparent;
 
                 Text {
                     text: "🗑";
-                    color: #abb2bf;
+                    color: Colors.texto;
                     vertical-alignment: center;
                     horizontal-alignment: center;
                     width: 100%;
@@ -311,8 +312,8 @@ export component MdMenu inherits Window {
 // un instante y se cierra sola. El auto-cierre lo dispara el anfitrión con
 // `slint::Timer`; este widget solo pinta icono + etiqueta + barra opcional.
 export component MdOsd inherits Window {
-    in property <color> accent: #7ec7a2;
-    in property <color> card-color: #1e222a;
+    in property <color> accent: Colors.acento_verde;
+    in property <color> card-color: Colors.fondo;
     in property <length> md-radius: 10px;
     in-out property <string> md-title: "md.osd";
     in-out property <length> md-width: 220px;
@@ -321,7 +322,7 @@ export component MdOsd inherits Window {
     title <=> root.md-title;
     width <=> root.md-width;
     height <=> root.md-height;
-    background: #00000000;
+    background: transparent;
 
     // ----- datos -----
     in property <string> glyph: "";
@@ -336,7 +337,7 @@ export component MdOsd inherits Window {
         background: root.card-color;
         border-radius: root.md-radius;
         border-width: 1px;
-        border-color: root.muted ? #e06c75 : #00000000;
+        border-color: root.muted ? Colors.acento_rojo : transparent;
     }
 
     if (root.glyph != "") : Text {
@@ -356,7 +357,7 @@ export component MdOsd inherits Window {
         width: parent.width - (root.glyph != "" ? 42px : 14px) - 14px;
         height: parent.height;
         text: root.label;
-        color: root.muted ? #e06c75 : #abb2bf;
+        color: root.muted ? Colors.acento_rojo : Colors.texto;
         font-weight: 600;
         font-size: 14px;
         vertical-alignment: center;
@@ -367,7 +368,7 @@ export component MdOsd inherits Window {
         y: parent.height - 6px;
         width: parent.width - 28px;
         height: 3px;
-        background: #3e4451;
+        background: Colors.seleccion;
         border-radius: 1px;
 
         Rectangle {
@@ -397,7 +398,7 @@ export struct NotificationItem {
 // v1: el clic en la tarjeta cierra la notificación (la acción por defecto se
 // añadirá cuando se implemente la invocación de acciones en el demonio).
 export component MdNotifications inherits Window {
-    in property <color> accent: #7aa2f7;
+    in property <color> accent: Colors.acento_azul;
     in property <length> md-radius: 10px;
     in-out property <string> md-title: "md.notifications";
     in-out property <length> md-width: 420px;
@@ -406,7 +407,7 @@ export component MdNotifications inherits Window {
     title <=> root.md-title;
     width <=> root.md-width;
     height <=> root.md-height;
-    background: #00000000;
+    background: transparent;
 
     // ----- datos -----
     in property <[NotificationItem]> notifications;
@@ -420,7 +421,7 @@ export component MdNotifications inherits Window {
         for item[index] in root.notifications : Rectangle {
             width: parent.width;
             height: 72px;
-            background: #1e222a;
+            background: Colors.fondo;
             border-radius: root.md-radius;
             border-width: 0px;
 
@@ -437,7 +438,7 @@ export component MdNotifications inherits Window {
                 height: 14px;
                 width: parent.width - 60px;
                 text: item.app;
-                color: item.urgency == "critical" ? #e06c75 : #5c6370;
+                color: item.urgency == "critical" ? Colors.acento_rojo : Colors.texto_suave;
                 font-size: 10px;
                 font-weight: 600;
                 overflow: elide;
@@ -450,11 +451,11 @@ export component MdNotifications inherits Window {
                 width: 22px;
                 height: 22px;
                 border-radius: 4px;
-                background: close-area.pressed ? #282c34 : (close-area.has-hover ? #3e4451 : #00000000);
+                background: close-area.pressed ? Colors.superficie : (close-area.has-hover ? Colors.seleccion : transparent);
 
                 Text {
                     text: "✕";
-                    color: #abb2bf;
+                    color: Colors.texto;
                     font-size: 12px;
                     horizontal-alignment: center;
                     vertical-alignment: center;
@@ -472,7 +473,7 @@ export component MdNotifications inherits Window {
                 height: 18px;
                 width: parent.width - 28px;
                 text: item.summary;
-                color: #abb2bf;
+                color: Colors.texto;
                 font-size: 13px;
                 font-weight: 700;
                 overflow: elide;
@@ -486,7 +487,7 @@ export component MdNotifications inherits Window {
                 height: 14px;
                 width: parent.width - 28px;
                 text: item.body;
-                color: #5c6370;
+                color: Colors.texto_suave;
                 font-size: 12px;
                 overflow: elide;
                 vertical-alignment: center;
@@ -499,13 +500,13 @@ export component MdNotifications inherits Window {
                 y: 50px;
                 width: parent.width - 28px;
                 height: 3px;
-                background: #3e4451;
+                background: Colors.seleccion;
                 border-radius: 1px;
 
                 Rectangle {
                     width: parent.width * item.progress / 100;
                     height: 100%;
-                    background: item.urgency == "critical" ? #e06c75 : root.accent;
+                    background: item.urgency == "critical" ? Colors.acento_rojo : root.accent;
                     border-radius: 1px;
                 }
             }
@@ -521,7 +522,7 @@ export component MdNotifications inherits Window {
 // (`clock-text`, `session-text`, `subtitle`, `paused`, `big-break`, `pct`) y
 // emite los botones (`pause`/`restart`/`stop`/`collapse`).
 export component MdPomodoro inherits Window {
-    in property <color> accent: #e06c75;
+    in property <color> accent: Colors.acento_rojo;
     in property <length> md-radius: 12px;
     in-out property <string> md-title: "md.pomodoro";
     in-out property <length> md-width: 190px;
@@ -540,7 +541,7 @@ export component MdPomodoro inherits Window {
     title <=> root.md-title;
     width <=> root.md-width;
     height <=> root.md-height;
-    background: #00000000;
+    background: transparent;
 
     // ----- datos (los fija el anfitrión) -----
     in property <string> clock-text: "25:00";
@@ -560,10 +561,10 @@ export component MdPomodoro inherits Window {
     if (!root.big-break) : Rectangle {
         width: parent.width;
         height: parent.height;
-        background: #1e222ae6;
+        background: Colors.fondo.with-alpha(0.9);
         border-radius: root.md-radius;
         border-width: 1px;
-        border-color: #4b5263;
+        border-color: Colors.borde_inactivo;
 
         VerticalLayout {
             padding: 4px;
@@ -572,7 +573,7 @@ export component MdPomodoro inherits Window {
 
             Text {
                 text: root.clock-text;
-                color: root.paused ? #9aa0a6 : #abb2bf;
+                color: root.paused ? Colors.texto_pausado : Colors.texto;
                 font-size: 16px;
                 font-weight: 700;
                 horizontal-alignment: center;
@@ -580,7 +581,7 @@ export component MdPomodoro inherits Window {
 
             Text {
                 text: root.session-text;
-                color: #9aa0a6;
+                color: Colors.texto_pausado;
                 font-size: 10px;
                 horizontal-alignment: center;
             }
@@ -588,7 +589,7 @@ export component MdPomodoro inherits Window {
             Rectangle {
                 width: 100%;
                 height: 4px;
-                background: #3e4451;
+                background: Colors.seleccion;
                 border-radius: 2px;
 
                 Rectangle {
@@ -608,11 +609,11 @@ export component MdPomodoro inherits Window {
                     width: 18px;
                     height: 18px;
                     border-radius: 4px;
-                    background: pause-area.pressed ? #282c34 : (pause-area.has-hover ? #3e4451 : #00000000);
+                    background: pause-area.pressed ? Colors.superficie : (pause-area.has-hover ? Colors.seleccion : transparent);
 
                     Text {
                         text: root.paused ? "▶" : "❚❚";
-                        color: #abb2bf;
+                        color: Colors.texto;
                         font-size: 11px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -627,11 +628,11 @@ export component MdPomodoro inherits Window {
                     width: 18px;
                     height: 18px;
                     border-radius: 4px;
-                    background: restart-area.pressed ? #282c34 : (restart-area.has-hover ? #3e4451 : #00000000);
+                    background: restart-area.pressed ? Colors.superficie : (restart-area.has-hover ? Colors.seleccion : transparent);
 
                     Text {
                         text: "↻";
-                        color: #abb2bf;
+                        color: Colors.texto;
                         font-size: 11px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -646,11 +647,11 @@ export component MdPomodoro inherits Window {
                     width: 18px;
                     height: 18px;
                     border-radius: 4px;
-                    background: stop-area.pressed ? #282c34 : (stop-area.has-hover ? #3e4451 : #00000000);
+                    background: stop-area.pressed ? Colors.superficie : (stop-area.has-hover ? Colors.seleccion : transparent);
 
                     Text {
                         text: "✕";
-                        color: #abb2bf;
+                        color: Colors.texto;
                         font-size: 11px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -668,10 +669,10 @@ export component MdPomodoro inherits Window {
     if (root.big-break) : Rectangle {
         width: parent.width;
         height: parent.height;
-        background: #1e222a;
+        background: Colors.fondo;
         border-radius: 16px;
         border-width: 2px;
-        border-color: root.paused ? #5c6370 : root.accent;
+        border-color: root.paused ? Colors.texto_suave : root.accent;
 
         VerticalLayout {
             padding: 24px;
@@ -679,7 +680,7 @@ export component MdPomodoro inherits Window {
 
             Text {
                 text: root.paused ? root.label-paused-status : root.label-break-title;
-                color: root.paused ? #5c6370 : root.accent;
+                color: root.paused ? Colors.texto_suave : root.accent;
                 font-size: 24px;
                 font-weight: 700;
                 horizontal-alignment: center;
@@ -687,7 +688,7 @@ export component MdPomodoro inherits Window {
 
             Text {
                 text: root.clock-text;
-                color: #abb2bf;
+                color: Colors.texto;
                 font-size: 72px;
                 font-weight: 700;
                 horizontal-alignment: center;
@@ -695,14 +696,14 @@ export component MdPomodoro inherits Window {
 
             Text {
                 text: root.subtitle;
-                color: #5c6370;
+                color: Colors.texto_suave;
                 font-size: 14px;
                 horizontal-alignment: center;
             }
 
             Text {
                 text: root.label-rest-hint;
-                color: #5c6370;
+                color: Colors.texto_suave;
                 font-size: 13px;
                 horizontal-alignment: center;
             }
@@ -710,7 +711,7 @@ export component MdPomodoro inherits Window {
             Rectangle {
                 width: 100%;
                 height: 6px;
-                background: #3e4451;
+                background: Colors.seleccion;
                 border-radius: 3px;
 
                 Rectangle {
@@ -729,11 +730,11 @@ export component MdPomodoro inherits Window {
                     width: 96px;
                     height: 30px;
                     border-radius: 8px;
-                    background: bp-area.has-hover ? #3e4451 : #282c34;
+                    background: bp-area.has-hover ? Colors.seleccion : Colors.superficie;
 
                     Text {
                         text: root.paused ? root.label-resume : root.label-pause;
-                        color: #abb2bf;
+                        color: Colors.texto;
                         font-size: 12px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -748,11 +749,11 @@ export component MdPomodoro inherits Window {
                     width: 96px;
                     height: 30px;
                     border-radius: 8px;
-                    background: br-area.has-hover ? #3e4451 : #282c34;
+                    background: br-area.has-hover ? Colors.seleccion : Colors.superficie;
 
                     Text {
                         text: root.label-restart;
-                        color: #abb2bf;
+                        color: Colors.texto;
                         font-size: 12px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -767,11 +768,11 @@ export component MdPomodoro inherits Window {
                     width: 96px;
                     height: 30px;
                     border-radius: 8px;
-                    background: bc-area.has-hover ? #3e4451 : #282c34;
+                    background: bc-area.has-hover ? Colors.seleccion : Colors.superficie;
 
                     Text {
                         text: root.label-minimize;
-                        color: #abb2bf;
+                        color: Colors.texto;
                         font-size: 12px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -786,11 +787,11 @@ export component MdPomodoro inherits Window {
                     width: 96px;
                     height: 30px;
                     border-radius: 8px;
-                    background: bs-area.has-hover ? #3e4451 : #282c34;
+                    background: bs-area.has-hover ? Colors.seleccion : Colors.superficie;
 
                     Text {
                         text: root.label-stop;
-                        color: #abb2bf;
+                        color: Colors.texto;
                         font-size: 12px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -819,7 +820,7 @@ export component MdClock inherits Window {
     title <=> root.md-title;
     width <=> root.md-width;
     height <=> root.md-height;
-    background: #00000000;
+    background: transparent;
 
     // ----- datos (los fija el anfitrión) -----
     in property <string> clock-text: "00:00";
@@ -831,7 +832,7 @@ export component MdClock inherits Window {
 
         Text {
             text: root.clock-text;
-            color: #abb2bf;
+            color: Colors.texto;
             font-size: 56px;
             font-weight: 700;
             horizontal-alignment: right;
@@ -839,7 +840,7 @@ export component MdClock inherits Window {
 
         Text {
             text: root.date-text;
-            color: #5c6370;
+            color: Colors.texto_suave;
             font-size: 16px;
             font-weight: 500;
             horizontal-alignment: right;
@@ -868,7 +869,7 @@ export component MdWelcome inherits Window {
     title <=> root.md-title;
     width: 760px;
     height: 600px;
-    background: #1e222a;
+    background: Colors.fondo;
 
     callback language();
     callback binds();
@@ -883,14 +884,14 @@ export component MdWelcome inherits Window {
         // --- Cabecera con identidad visual ---
         Text {
             text: "MinimalistDots_Rs";
-            color: #7ec7a2;
+            color: Colors.acento_verde;
             font-size: 32px;
             font-weight: 800;
             horizontal-alignment: center;
         }
         Text {
             text: root.subtitle;
-            color: #abb2bf;
+            color: Colors.texto;
             font-size: 14px;
             horizontal-alignment: center;
         }
@@ -898,7 +899,7 @@ export component MdWelcome inherits Window {
         // --- Novedades (scroll) ---
         Text {
             text: "📦 " + root.label-changelog;
-            color: #7aa2f7;
+            color: Colors.acento_azul;
             font-size: 16px;
             font-weight: 700;
         }
@@ -908,7 +909,7 @@ export component MdWelcome inherits Window {
                 spacing: 6px;
                 for entry in root.changelog : Text {
                     text: entry;
-                    color: #abb2bf;
+                    color: Colors.texto;
                     font-size: 13px;
                     wrap: word-wrap;
                 }
@@ -922,51 +923,51 @@ export component MdWelcome inherits Window {
 
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
-                background: lang-area.has-hover ? #3e4451 : #2c313a;
+                background: lang-area.has-hover ? Colors.seleccion : Colors.hover;
                 HorizontalLayout {
                     alignment: center; spacing: 6px;
-                    Text { text: "🌐"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
-                    Text { text: root.label-language; color: #abb2bf; font-size: 13px; vertical-alignment: center; }
+                    Text { text: "🌐"; color: Colors.texto; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.label-language; color: Colors.texto; font-size: 13px; vertical-alignment: center; }
                 }
                 lang-area := TouchArea { clicked => { root.language(); } }
             }
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
-                background: binds-area.has-hover ? #3e4451 : #2c313a;
+                background: binds-area.has-hover ? Colors.seleccion : Colors.hover;
                 HorizontalLayout {
                     alignment: center; spacing: 6px;
-                    Text { text: "⌨️"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
-                    Text { text: root.label-binds; color: #abb2bf; font-size: 13px; vertical-alignment: center; }
+                    Text { text: "⌨️"; color: Colors.texto; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.label-binds; color: Colors.texto; font-size: 13px; vertical-alignment: center; }
                 }
                 binds-area := TouchArea { clicked => { root.binds(); } }
             }
             Rectangle {
                 width: 120px; height: 40px; border-radius: 8px;
-                background: gh-area.has-hover ? #3e4451 : #2c313a;
+                background: gh-area.has-hover ? Colors.seleccion : Colors.hover;
                 HorizontalLayout {
                     alignment: center; spacing: 6px;
-                    Text { text: "🐙"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
-                    Text { text: root.label-github; color: #abb2bf; font-size: 13px; vertical-alignment: center; }
+                    Text { text: "🐙"; color: Colors.texto; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.label-github; color: Colors.texto; font-size: 13px; vertical-alignment: center; }
                 }
                 gh-area := TouchArea { clicked => { root.github(); } }
             }
             Rectangle {
                 width: 140px; height: 40px; border-radius: 8px;
-                background: toggle-area.has-hover ? #3e4451 : #2c313a;
+                background: toggle-area.has-hover ? Colors.seleccion : Colors.hover;
                 HorizontalLayout {
                     alignment: center; spacing: 6px;
-                    Text { text: "🔁"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
-                    Text { text: root.bienvenida-on ? root.label-toggle-on : root.label-toggle-off; color: #abb2bf; font-size: 12px; vertical-alignment: center; }
+                    Text { text: "🔁"; color: Colors.texto; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.bienvenida-on ? root.label-toggle-on : root.label-toggle-off; color: Colors.texto; font-size: 12px; vertical-alignment: center; }
                 }
                 toggle-area := TouchArea { clicked => { root.toggle(); } }
             }
             Rectangle {
                 width: 100px; height: 40px; border-radius: 8px;
-                background: exit-area.has-hover ? #3e4451 : #2c313a;
+                background: exit-area.has-hover ? Colors.seleccion : Colors.hover;
                 HorizontalLayout {
                     alignment: center; spacing: 6px;
-                    Text { text: "🚪"; color: #abb2bf; font-size: 14px; vertical-alignment: center; }
-                    Text { text: root.label-exit; color: #abb2bf; font-size: 13px; vertical-alignment: center; }
+                    Text { text: "🚪"; color: Colors.texto; font-size: 14px; vertical-alignment: center; }
+                    Text { text: root.label-exit; color: Colors.texto; font-size: 13px; vertical-alignment: center; }
                 }
                 exit-area := TouchArea { clicked => { root.exit-app(); } }
             }

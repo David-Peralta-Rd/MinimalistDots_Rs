@@ -31,7 +31,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         app_id: "md.binds".to_owned(),
         title: texts.t("escritorio.atajos"),
         prompt: "⌨️".to_owned(),
-        accent: md_core::Color::new(0x7e, 0xc7, 0xa2),
+        accent: crate::util::load_palette().accent_green,
         row_height: 36.0,
         width: 650.0,
         height: 480.0,
