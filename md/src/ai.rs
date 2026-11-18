@@ -2027,14 +2027,25 @@ fn new_project(
                 args.push("--description");
                 args.push(d);
             }
-            let status = Command::new("gh").args(&args).status();
-            if status.is_ok_and(|s| s.success()) {
-                println!("repo creado en GitHub.");
+            println!("creando repo en GitHub y subiendo (puede tardar)...");
+            let mut cmd = if command_exists("timeout") {
+                let mut cmd = Command::new("timeout");
+                cmd.arg("180").arg("gh");
+                cmd
             } else {
-                eprintln!(
-                    "aviso: no se pudo crear el repo en GitHub (¿ya existe '{}' en tu cuenta?); queda local.",
+                Command::new("gh")
+            };
+            let status = cmd.args(&args).status();
+            match status {
+                Ok(s) if s.success() => println!("repo creado en GitHub."),
+                Ok(s) if s.code() == Some(124) => eprintln!(
+                    "aviso: subir a GitHub tardó más de 180 s y se canceló; el proyecto queda local. Puedes subirlo después con `gh repo create {} --source=. --remote=origin --push`.",
                     name
-                );
+                ),
+                _ => eprintln!(
+                    "aviso: no se pudo crear el repo en GitHub (¿ya existe '{}' en tu cuenta o falló la red?); queda local.",
+                    name
+                ),
             }
         }
     }
