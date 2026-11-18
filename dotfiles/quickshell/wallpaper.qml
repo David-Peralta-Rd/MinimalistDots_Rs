@@ -81,7 +81,7 @@ ShellRoot {
             interval: 100
             running: true
             repeat: false
-            onTriggered: card.forceActiveFocus()
+            onTriggered: searchField.forceActiveFocus()
         }
 
         // Fondo oscuro suave detrás del panel (clic fuera cierra)
@@ -107,7 +107,7 @@ ShellRoot {
             border.color: root.cBordeFuerte
             focus: true
             Keys.onEscapePressed: Qt.quit()
-            Component.onCompleted: forceActiveFocus()
+            Component.onCompleted: searchField.forceActiveFocus()
 
             Column {
                 anchors.fill: parent
@@ -119,6 +119,7 @@ ShellRoot {
                     width: parent.width
                     height: 32
                     spacing: 8
+                    rightPadding: 0
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
@@ -128,11 +129,11 @@ ShellRoot {
                         font.weight: Font.Bold
                     }
 
-                    Item { width: parent.width - 260; height: 1 }
+                    Item { width: parent.width - 220; height: 1 }
 
                     Rectangle {
-                        width: 32
-                        height: 32
+                        width: 36
+                        height: 36
                         radius: 8
                         color: closeMa.containsMouse ? root.cHover : "transparent"
                         border.width: 1
@@ -141,7 +142,7 @@ ShellRoot {
                             anchors.centerIn: parent
                             text: "✕"
                             color: root.cTextoSuave
-                            font.pixelSize: 14
+                            font.pixelSize: 16
                             font.weight: Font.Medium
                         }
                         MouseArea {
