@@ -36,10 +36,10 @@ obligatorio = false
 paquetes = ["rose-pine-hyprcursor", "bibata-cursor-theme-bin"]
 
 [[grupo]]
-nombre = "cosmic-files"
+nombre = "dolphin"
 origen = "repo"
 obligatorio = false
-paquetes = ["cosmic-files", "plasma-integration", "breeze-icons", "kio-extras", "kio-admin", "ffmpegthumbs", "kdegraphics-thumbnailers", "kimageformats", "qt6-imageformats", "kvantum", "archlinux-xdg-menu", "qqc2-desktop-style"]
+paquetes = ["dolphin", "kde-cli-tools", "plasma-integration", "breeze-icons", "kio-extras", "kio-admin", "ffmpegthumbs", "kdegraphics-thumbnailers", "kimageformats", "qt6-imageformats", "kvantum", "archlinux-xdg-menu", "qqc2-desktop-style"]
 
 [[grupo]]
 nombre = "sddm_theme"

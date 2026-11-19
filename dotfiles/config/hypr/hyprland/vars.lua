@@ -12,7 +12,7 @@ return {
     terminal        = "footclient",
     terminal_float  = "footclient --app-id=programing-terminal",
     terminal_float_opencode  = "footclient --app-id=programing-terminal-opencode",
-    fileManager     = "cosmic-files",
+    fileManager     = "dolphin",
     menu            = MD .. " launcher",
     browser         = "brave",
     mainMod         = "SUPER",

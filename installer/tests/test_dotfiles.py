@@ -30,19 +30,21 @@ def _make_repo(tmp_path: Path) -> Paths:
     (repo / "dotfiles" / "config" / "hypr" / "hyprland" / "general.lua").write_text(
         "-- general\n"
     )
+    (repo / "dotfiles" / "config" / "dolphinrc").write_text("[General]\nVersion=1\n")
     (repo / "theme").mkdir()
     (repo / "theme" / "palette.toml").write_text(PALETTE)
 
     # Configuración previa del usuario (debe respaldarse y restaurarse custom/).
     (home / ".config" / "hypr" / "custom").mkdir(parents=True)
     (home / ".config" / "hypr" / "custom" / "keep.lua").write_text("-- del usuario\n")
+    (home / ".config" / "dolphinrc").write_text("[General]\nVersion=viejo\n")
 
     return Paths(repo=repo, home=home)
 
 
 def test_discover_apps_lists_config_entries(tmp_path: Path) -> None:
     paths = _make_repo(tmp_path)
-    assert dotfiles._discover_apps(paths.dots_config) == ["hypr"]
+    assert dotfiles._discover_apps(paths.dots_config) == ["dolphinrc", "hypr"]
 
 
 def test_run_deploys_backs_up_and_restores(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -53,6 +55,7 @@ def test_run_deploys_backs_up_and_restores(tmp_path: Path, monkeypatch: pytest.M
 
     # Desplegado desde el proyecto.
     assert (paths.config / "hypr" / "hyprland" / "general.lua").exists()
+    assert (paths.config / "dolphinrc").read_text() == "[General]\nVersion=1\n"
     # colors.lua regenerado desde la paleta.
     colors = paths.config / "hypr" / "hyprland" / "colors.lua"
     assert colors.exists()
@@ -83,3 +86,4 @@ def test_run_dry_run_does_not_touch_disk(tmp_path: Path) -> None:
 
     # En dry-run no se despliega nada nuevo ni se toca la config previa.
     assert not (paths.config / "hypr" / "hyprland").exists()
+    assert (paths.config / "dolphinrc").read_text() == "[General]\nVersion=viejo\n"
