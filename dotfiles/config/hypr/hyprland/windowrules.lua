@@ -46,6 +46,17 @@ hl.window_rule({
 })
 
 hl.window_rule({
+    name  = "move-md-osd",
+    match = { class = "md.osd" },
+    float = true,
+    pin   = true,
+    border_size = 0,
+    move  = "monitor_w/2-window_w/2 20",
+    no_focus = true,
+    no_anim = true,
+})
+
+hl.window_rule({
     name  = "move-md-pomodoro",
     match = { class = "md.pomodoro" },
     float = true,

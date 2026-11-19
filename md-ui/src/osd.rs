@@ -37,9 +37,9 @@ impl Default for OsdConfig {
             level: -1,
             muted: false,
             accent: md_core::Color::new(0x7e, 0xc7, 0xa2),
-            width: 220.0,
-            height: 56.0,
-            lifetime: Duration::from_millis(1200),
+            width: 80.0,
+            height: 40.0,
+            lifetime: Duration::from_millis(800),
         }
     }
 }
@@ -67,6 +67,9 @@ pub fn run(host: &impl ShellHost, config: &OsdConfig) -> Result<(), slint::Platf
         if let Some(component) = weak.upgrade() {
             let _ = component.hide();
         }
+        // Cierra el bucle de eventos para que el proceso termine a tiempo
+        // (evita ventanas residuales al pulsar volumen rápidamente).
+        let _ = slint::quit_event_loop();
     });
 
     host.run(component)

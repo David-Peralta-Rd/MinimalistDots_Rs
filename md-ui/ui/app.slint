@@ -313,11 +313,11 @@ export component MdMenu inherits Window {
 // `slint::Timer`; este widget solo pinta icono + etiqueta + barra opcional.
 export component MdOsd inherits Window {
     in property <color> accent: Colors.acento_verde;
-    in property <color> card-color: Colors.fondo;
-    in property <length> md-radius: 10px;
+    in property <color> card-color: Colors.tarjeta;
+    in property <length> md-radius: 20px;
     in-out property <string> md-title: "md.osd";
-    in-out property <length> md-width: 220px;
-    in-out property <length> md-height: 56px;
+    in-out property <length> md-width: 80px;
+    in-out property <length> md-height: 40px;
 
     title <=> root.md-title;
     width <=> root.md-width;
@@ -334,10 +334,10 @@ export component MdOsd inherits Window {
     card := Rectangle {
         width: parent.width;
         height: parent.height;
-        background: root.card-color;
+        background: @linear-gradient(135deg, Colors.tarjeta, Colors.seleccion);
         border-radius: root.md-radius;
         border-width: 1px;
-        border-color: root.muted ? Colors.acento_rojo : transparent;
+        border-color: root.muted ? Colors.acento_rojo : Colors.borde_activo;
     }
 
     if (root.glyph != "") : Text {
@@ -352,14 +352,15 @@ export component MdOsd inherits Window {
     }
 
     Text {
-        x: root.glyph != "" ? 42px : 14px;
+        x: root.glyph != "" ? 42px : 0px;
         y: 0px;
-        width: parent.width - (root.glyph != "" ? 42px : 14px) - 14px;
+        width: root.glyph != "" ? parent.width - 56px : parent.width;
         height: parent.height;
         text: root.label;
-        color: root.muted ? Colors.acento_rojo : Colors.texto;
-        font-weight: 600;
-        font-size: 14px;
+        color: root.muted ? Colors.acento_rojo : Colors.contraste_claro;
+        font-weight: 700;
+        font-size: 18px;
+        horizontal-alignment: center;
         vertical-alignment: center;
     }
 

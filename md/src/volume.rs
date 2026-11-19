@@ -33,16 +33,20 @@ pub fn run(action: Action) -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     };
 
-    // Igual que el script original: muteado muestra "Mute" sin barra.
+    // OSD minimalista: solo el porcentaje (o "Mute"), sin icono ni barra.
+    // Se cierran ventanas OSD previas para evitar solapamiento al pulsar rápido.
+    let _ = Command::new("hyprctl")
+        .args(["dispatch", "closewindow", "class:md.osd"])
+        .status();
+
     let config = OsdConfig {
-        glyph: state.icon().to_owned(),
+        glyph: String::new(),
         label: state.label(),
-        level: if state.muted {
-            -1
-        } else {
-            i32::from(state.level)
-        },
+        level: -1,
         muted: state.muted,
+        accent: md_core::Color::new(0x7e, 0xc7, 0xa2),
+        width: 80.0,
+        height: 40.0,
         ..OsdConfig::default()
     };
     run_osd(&SlintHost, &config)?;
