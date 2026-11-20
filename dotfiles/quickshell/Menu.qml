@@ -114,9 +114,11 @@ ShellRoot {
                 // Barra de búsqueda
                 Rectangle {
                     width: parent.width
-                    height: 40
-                    radius: 6
+                    height: 44
+                    radius: Theme.radiusCard
                     color: Theme.superficie
+                    border.width: Theme.borderWidth
+                    border.color: search.activeFocus ? Theme.bordeActivo : Theme.bordeInactivo
 
                     Row {
                         anchors.fill: parent
@@ -130,6 +132,9 @@ ShellRoot {
                             text: root.query
                             color: Theme.texto
                             placeholderTextColor: Theme.textoSuave
+                            font.pixelSize: Theme.fontSizeNormal
+                            background: null
+                            focus: true
                             onTextChanged: { root.query = text; root.updateFilter() }
                             onAccepted: root.selectCurrent()
                             Keys.onEscapePressed: root.writeResult('{"type":"cancelled"}')
@@ -230,28 +235,6 @@ ShellRoot {
                 }
             }
 
-            Rectangle {
-                width: 22
-                height: 22
-                radius: 4
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.margins: 6
-                color: menuCloseArea.pressed ? Theme.seleccion : "transparent"
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "✕"
-                    color: Theme.texto
-                    font.pixelSize: 12
-                }
-
-                MouseArea {
-                    id: menuCloseArea
-                    anchors.fill: parent
-                    onClicked: root.writeResult('{"type":"cancelled"}')
-                }
-            }
         }
     }
 
@@ -267,4 +250,4 @@ ShellRoot {
         repeat: false
         onTriggered: root.confirmWipe = false
     }
-}
+}%      
