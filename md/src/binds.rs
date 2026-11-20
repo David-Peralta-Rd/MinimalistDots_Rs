@@ -8,7 +8,7 @@ use std::path::PathBuf;
 use md_core::{parse_keybinds, to_menu_entries};
 
 use crate::i18n::Texts;
-use crate::menu::{MenuResult, run_entries};
+use crate::menu::run_entries;
 
 /// Ejecuta el visor de atajos.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {

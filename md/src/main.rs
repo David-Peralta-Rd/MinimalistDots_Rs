@@ -178,8 +178,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             delete_cmd,
             wipe_cmd,
         } => {
+            let _ = name;
             menu::run(&menu::Args {
-                name,
                 prompt: prompt.unwrap_or_default(),
                 raw,
                 delete_cmd,

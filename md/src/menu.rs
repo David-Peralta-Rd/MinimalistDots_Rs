@@ -12,7 +12,6 @@ use crate::quickshell;
 
 /// Argumentos del subcomando `menu`.
 pub struct Args {
-    pub name: String,
     pub prompt: String,
     pub raw: bool,
     pub delete_cmd: Option<String>,

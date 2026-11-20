@@ -196,21 +196,12 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
 }
 
 /// Texto "Sesión X de Y" con los marcadores ya sustituidos.
-fn session_of(texts: &Texts, session: u32, total: u32) -> String {
-    let session = session.to_string();
-    let total = total.to_string();
-    texts.t_fill(
-        "escritorio.pomodoro_sesion_de",
-        &[("session", &session), ("total", &total)],
-    )
-}
-
 // =============================================================================
 // Preguntas (menú dmenu reutilizado)
 // =============================================================================
 
 /// Pregunta un número eligiendo entre `options` (o tecleándolo). `None` al cancelar.
-fn ask(texts: &Texts, key: &str, options: &[u32]) -> Option<u32> {
+fn ask(texts: &Texts, _key: &str, options: &[u32]) -> Option<u32> {
     let entries: Vec<MenuEntry> = options
         .iter()
         .map(|n| MenuEntry::new(n.to_string()))
@@ -322,19 +313,6 @@ fn clear_prompt_pid() {
 // =============================================================================
 
 /// Reproduce el aviso (desacoplado) desde el widget al cambiar de fase.
-fn play_sound_detached() {
-    let Ok(exe) = current_exe() else {
-        return;
-    };
-    let _ = Command::new("setsid")
-        .arg(&exe)
-        .args(["pomodoro", "sound"])
-        .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .spawn();
-}
-
 /// Reproduce el aviso en primer plano (subcomando `sound`). Escribe su PID en
 /// `sound.pid` para que `stop` pueda cortarlo.
 fn play_sound() {
