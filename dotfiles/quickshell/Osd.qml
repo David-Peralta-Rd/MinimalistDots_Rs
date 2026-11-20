@@ -24,6 +24,7 @@ ShellRoot {
         WlrLayershell.namespace: "md.osd"
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+        WlrLayershell.exclusiveZone: 0
 
         Rectangle {
             anchors.fill: parent
