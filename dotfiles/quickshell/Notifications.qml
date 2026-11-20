@@ -31,14 +31,14 @@ ShellRoot {
     }
 
     PanelWindow {
-        implicitWidth: 420
-        implicitHeight: 400
+        implicitWidth: 340
+        implicitHeight: 320
         color: "transparent"
 
         anchors.top: true
         anchors.right: true
-        margins.top: 20
-        margins.right: 20
+        margins.top: 10
+        margins.right: 10
 
         WlrLayershell.namespace: "md.notifications"
         WlrLayershell.layer: WlrLayer.Overlay
@@ -51,14 +51,17 @@ ShellRoot {
             Repeater {
                 model: root.notifications
                 SoftCard {
-                    width: 420
-                    height: 72
+                    width: 340
+                    implicitHeight: contentCol.implicitHeight + 24
                     softRadius: Theme.radiusCard
                     softColor: Theme.fondo
                     softBorder: modelData.urgency === "critical" ? Theme.acentoRojo : Theme.bordeInactivo
 
                     Column {
-                        anchors.fill: parent
+                        id: contentCol
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
                         anchors.margins: 12
                         spacing: 2
 
@@ -74,14 +77,14 @@ ShellRoot {
                             font.pixelSize: 13
                             font.weight: Font.Bold
                             width: parent.width
-                            elide: Text.ElideRight
+                            wrapMode: Text.WordWrap
                         }
                         Text {
                             text: modelData.body || ""
                             color: Theme.textoSuave
                             font.pixelSize: 12
                             width: parent.width
-                            elide: Text.ElideRight
+                            wrapMode: Text.WordWrap
                             visible: (modelData.body || "") !== ""
                         }
                         Rectangle {
