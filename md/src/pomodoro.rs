@@ -16,8 +16,8 @@ use std::process::{Command, Stdio};
 
 use clap::Subcommand;
 
-use md_core::{MenuEntry, MenuMode};
-use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
+use md_core::MenuEntry;
+use crate::menu::{MenuResult, run_entries};
 
 use crate::i18n::Texts;
 use crate::util::notify_send;
@@ -215,24 +215,11 @@ fn ask(texts: &Texts, key: &str, options: &[u32]) -> Option<u32> {
         .iter()
         .map(|n| MenuEntry::new(n.to_string()))
         .collect();
-    let config = MenuConfig {
-        app_id: "md.pomodoro.ask".to_owned(),
-        title: texts.t(key),
-        prompt: "🍅".to_owned(),
-        accent: crate::util::load_palette().accent_red,
-        row_height: 40.0,
-        width: 320.0,
-        height: 300.0,
-        can_delete: false,
-        can_wipe: false,
-        submit_empty: true,
-        wipe_label: None,
-        confirm_wipe_label: None,
-    };
+    let _ = texts;
 
-    match run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config).ok()? {
-        MenuEvent::Selected(index) => options.get(index).copied(),
-        MenuEvent::Typed(query) => query.trim().parse().ok().filter(|n| (1..=999).contains(n)),
+    match run_entries(&entries, "🍅", false, false, true, None, None).ok()? {
+        MenuResult::Selected(index) => options.get(index).copied(),
+        MenuResult::Typed(query) => query.trim().parse().ok().filter(|n| (1..=999).contains(n)),
         _ => None,
     }
 }
