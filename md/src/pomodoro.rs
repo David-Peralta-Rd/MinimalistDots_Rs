@@ -175,6 +175,7 @@ fn test() -> Result<(), Box<dyn std::error::Error>> {
 
 /// Ejecuta el widget en primer plano (proceso desacoplado por `launch`).
 fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
     std::fs::create_dir_all(state_dir())?;
     std::fs::write(
         state_dir().join("widget.pid"),
@@ -187,9 +188,16 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
             "{}/.local/bin/MinimalistDots_Rs/quickshell/Pomodoro.qml",
             std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_owned())
         ))
-        .env("MD_POMODORO_FOCUS", (focus * 60).to_string())
-        .env("MD_POMODORO_BREAK", (brk * 60).to_string())
+        .env("MD_POMODORO_FOCUS", focus.to_string())
+        .env("MD_POMODORO_BREAK", brk.to_string())
         .env("MD_POMODORO_SESSIONS", sessions.to_string())
+        .env("MD_POMODORO_FOCUS_LABEL", texts.t("escritorio.pomodoro_a_concentrarse"))
+        .env("MD_POMODORO_BREAK_LABEL", texts.t("escritorio.pomodoro_descanso_titulo"))
+        .env("MD_POMODORO_PAUSED_LABEL", texts.t("escritorio.pomodoro_en_pausa"))
+        .env("MD_POMODORO_PAUSE_LABEL", texts.t("escritorio.pomodoro_pausar"))
+        .env("MD_POMODORO_RESUME_LABEL", texts.t("escritorio.pomodoro_reanudar"))
+        .env("MD_POMODORO_RESTART_LABEL", texts.t("escritorio.pomodoro_reiniciar"))
+        .env("MD_POMODORO_CLOSE_LABEL", texts.t("escritorio.pomodoro_cerrar"))
         .spawn();
 
     // Mantiene el proceso vivo mientras corre el widget.
