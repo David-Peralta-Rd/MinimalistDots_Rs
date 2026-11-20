@@ -39,7 +39,7 @@ pub fn run_entries(
 ) -> Result<MenuResult, Box<dyn std::error::Error>> {
     let json_entries: Vec<serde_json::Value> = entries
         .iter()
-        .map(|e| serde_json::json!({ "label": e.label, "icon": e.icon }))
+        .map(|e| serde_json::json!({ "label": e.label, "icon": crate::util::thumbnail(&e.icon) }))
         .collect();
     let entries_path = std::env::temp_dir().join("md-menu-entries.json");
     let result_path = std::env::temp_dir().join("md-menu-result.json");

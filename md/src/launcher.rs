@@ -21,7 +21,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             label: app.name.clone(),
             icon: icons
                 .resolve(&app.icon)
-                .map(|path| path.to_string_lossy().into_owned())
+                .map(|path| crate::util::thumbnail(&path.to_string_lossy()))
                 .unwrap_or_default(),
             extra: app.generic_name.clone(),
         })
