@@ -156,7 +156,7 @@ ShellRoot {
                         width: 18
                         height: 14
                         softRadius: 3
-                        softColor: pa.hasHover ? Theme.seleccion : "transparent"
+                        softColor: pa.containsMouse ? Theme.seleccion : "transparent"
 
                         Text {
                             anchors.centerIn: parent
@@ -177,7 +177,7 @@ ShellRoot {
                         width: 18
                         height: 14
                         softRadius: 3
-                        softColor: ra.hasHover ? Theme.seleccion : "transparent"
+                        softColor: ra.containsMouse ? Theme.seleccion : "transparent"
 
                         Text {
                             anchors.centerIn: parent
@@ -198,7 +198,7 @@ ShellRoot {
                         width: 18
                         height: 14
                         softRadius: 3
-                        softColor: sa.hasHover ? Theme.seleccion : "transparent"
+                        softColor: sa.containsMouse ? Theme.seleccion : "transparent"
 
                         Text {
                             anchors.centerIn: parent
@@ -217,12 +217,8 @@ ShellRoot {
                 }
             }
 
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.NoButton
-                onEntered: root.workHovered = true
-                onExited: root.workHovered = false
+            HoverHandler {
+                onHoveredChanged: root.workHovered = hovered
             }
         }
     }
@@ -312,7 +308,7 @@ ShellRoot {
                         width: 104
                         height: 30
                         radius: 8
-                        color: bpa.hasHover ? Theme.hover : Theme.superficie
+                        color: bpa.containsMouse ? Theme.hover : Theme.superficie
 
                         Text {
                             anchors.centerIn: parent
@@ -333,7 +329,7 @@ ShellRoot {
                         width: 104
                         height: 30
                         radius: 8
-                        color: bra.hasHover ? Theme.hover : Theme.superficie
+                        color: bra.containsMouse ? Theme.hover : Theme.superficie
 
                         Text {
                             anchors.centerIn: parent
@@ -354,7 +350,7 @@ ShellRoot {
                         width: 104
                         height: 30
                         radius: 8
-                        color: bca.hasHover ? Theme.hover : Theme.superficie
+                        color: bca.containsMouse ? Theme.hover : Theme.superficie
 
                         Text {
                             anchors.centerIn: parent
@@ -375,7 +371,7 @@ ShellRoot {
                         width: 104
                         height: 30
                         radius: 8
-                        color: bsa.hasHover ? Theme.hover : Theme.superficie
+                        color: bsa.containsMouse ? Theme.hover : Theme.superficie
 
                         Text {
                             anchors.centerIn: parent
