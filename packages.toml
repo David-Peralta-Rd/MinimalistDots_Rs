@@ -20,7 +20,7 @@ paquetes = ["zsh", "git", "zsh-completions", "zsh-autocomplete", "zsh-autosugges
 nombre = "core"
 origen = "repo"
 obligatorio = true
-paquetes = ["extra/mpv", "git", "sddm", "qt6ct", "flatpak", "udisks2", "cliphist", "hypridle", "hyprland", "hyprlock", "hyprpaper", "reflector", "fastfetch", "hyprpolkitagent", "xdg-desktop-portal-hyprland", "quickshell", "qt6-declarative", "qt6-quickcontrols2"]
+paquetes = ["extra/mpv", "git", "sddm", "qt6ct", "flatpak", "udisks2", "cliphist", "hypridle", "hyprland", "hyprlock", "hyprpaper", "reflector", "fastfetch", "hyprpolkitagent", "xdg-desktop-portal-hyprland", "quickshell", "qt6-declarative"]
 
 [[grupo]]
 nombre = "apps"
