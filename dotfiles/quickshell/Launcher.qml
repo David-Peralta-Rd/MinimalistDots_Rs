@@ -20,19 +20,15 @@ ShellRoot {
         onActivated: root.cancel()
     }
 
-    Component.onCompleted: loadEntries()
-
-    function loadEntries() {
-        if (entriesPath === "") { entries = []; filtered = []; return }
-        var xhr = new XMLHttpRequest()
-        xhr.open("GET", "file://" + entriesPath)
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                try { entries = JSON.parse(xhr.responseText) } catch (e) { entries = [] }
-                updateFilter()
-            }
+    FileView {
+        id: entriesFile
+        path: root.entriesPath
+        preload: true
+        watchChanges: true
+        onLoaded: {
+            try { root.entries = JSON.parse(entriesFile.text()) } catch (e) { root.entries = [] }
+            root.updateFilter()
         }
-        xhr.send()
     }
 
     function updateFilter() {

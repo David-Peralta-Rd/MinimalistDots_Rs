@@ -16,23 +16,14 @@ ShellRoot {
         onActivated: closeAllProc.running = true
     }
 
-    Component.onCompleted: loadState()
-    Timer {
-        interval: 300
-        running: true
-        repeat: true
-        onTriggered: root.loadState()
-    }
-
-    function loadState() {
-        var xhr = new XMLHttpRequest()
-        xhr.open("GET", "file://" + statePath)
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                try { root.notifications = JSON.parse(xhr.responseText) } catch (e) { root.notifications = [] }
-            }
+    FileView {
+        id: stateFile
+        path: root.statePath
+        preload: true
+        watchChanges: true
+        onLoaded: {
+            try { root.notifications = JSON.parse(stateFile.text()) } catch (e) { root.notifications = [] }
         }
-        xhr.send()
     }
 
     PanelWindow {
