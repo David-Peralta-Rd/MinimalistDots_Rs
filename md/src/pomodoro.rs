@@ -157,6 +157,8 @@ fn stop() -> Result<(), Box<dyn std::error::Error>> {
         let _ = Command::new("kill").arg(pid.to_string()).status();
     }
     let _ = std::fs::remove_file(state_dir().join("widget.pid"));
+    let texts = Texts::load();
+    notify_send("Pomodoro", 2500, &texts.t("escritorio.pomodoro_detenido"), "");
     Ok(())
 }
 
@@ -182,7 +184,7 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
         std::process::id().to_string(),
     )?;
 
-    let _child = std::process::Command::new("qs")
+    let mut child = std::process::Command::new("qs")
         .arg("-p")
         .arg(format!(
             "{}/.local/bin/MinimalistDots_Rs/quickshell/Pomodoro.qml",
@@ -198,12 +200,11 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
         .env("MD_POMODORO_RESUME_LABEL", texts.t("escritorio.pomodoro_reanudar"))
         .env("MD_POMODORO_RESTART_LABEL", texts.t("escritorio.pomodoro_reiniciar"))
         .env("MD_POMODORO_CLOSE_LABEL", texts.t("escritorio.pomodoro_cerrar"))
-        .spawn();
+        .spawn()?;
 
-    // Mantiene el proceso vivo mientras corre el widget.
-    loop {
-        std::thread::sleep(std::time::Duration::from_secs(3600));
-    }
+    // El proceso vive mientras el widget (QuickShell) esté abierto.
+    let _ = child.wait();
+    Ok(())
 }
 
 // Texto "Sesión X de Y" con los marcadores ya sustituidos.

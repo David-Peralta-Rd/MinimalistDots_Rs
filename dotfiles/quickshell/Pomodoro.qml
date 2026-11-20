@@ -18,6 +18,7 @@ ShellRoot {
     property bool paused: false
     property bool finished: false
     property bool collapsed: false
+    property bool workHovered: false
 
     property int pct: phase === "focus"
         ? Math.round((remaining / focusSec) * 100)
@@ -27,7 +28,7 @@ ShellRoot {
 
     Shortcut {
         sequence: "Escape"
-        onActivated: Qt.quit()
+        onActivated: { stopProc.running = true }
     }
 
     function mmss(s) {
@@ -98,7 +99,7 @@ ShellRoot {
         Rectangle {
             anchors.fill: parent
             color: Theme.fondo
-            opacity: 0.6
+            opacity: root.workHovered ? 1.0 : 0.3
             radius: Theme.radiusCard
             border.width: Theme.borderWidth
             border.color: Theme.bordeInactivo
@@ -110,7 +111,7 @@ ShellRoot {
 
                 Column {
                     width: parent.width - 22
-                    spacing: 2
+                    spacing: 4
 
                     Text {
                         width: parent.width
@@ -155,7 +156,7 @@ ShellRoot {
                         width: 18
                         height: 14
                         softRadius: 3
-                        softColor: pa.hasHover ? Theme.hover : "transparent"
+                        softColor: pa.hasHover ? Theme.seleccion : "transparent"
 
                         Text {
                             anchors.centerIn: parent
@@ -176,7 +177,7 @@ ShellRoot {
                         width: 18
                         height: 14
                         softRadius: 3
-                        softColor: ra.hasHover ? Theme.hover : "transparent"
+                        softColor: ra.hasHover ? Theme.seleccion : "transparent"
 
                         Text {
                             anchors.centerIn: parent
@@ -197,7 +198,7 @@ ShellRoot {
                         width: 18
                         height: 14
                         softRadius: 3
-                        softColor: sa.hasHover ? Theme.hover : "transparent"
+                        softColor: sa.hasHover ? Theme.seleccion : "transparent"
 
                         Text {
                             anchors.centerIn: parent
@@ -210,10 +211,18 @@ ShellRoot {
                             id: sa
                             anchors.fill: parent
                             hoverEnabled: true
-                            onClicked: Qt.quit()
+                            onClicked: { stopProc.running = true }
                         }
                     }
                 }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                acceptedButtons: Qt.NoButton
+                onEntered: root.workHovered = true
+                onExited: root.workHovered = false
             }
         }
     }
@@ -379,7 +388,7 @@ ShellRoot {
                             id: bsa
                             anchors.fill: parent
                             hoverEnabled: true
-                            onClicked: Qt.quit()
+                            onClicked: { stopProc.running = true }
                         }
                     }
                 }
@@ -389,4 +398,9 @@ ShellRoot {
 
     Process { id: soundProc; command: ["md", "pomodoro", "sound"] }
     Process { id: notifyProc }
+    Process {
+        id: stopProc
+        command: ["md", "pomodoro", "stop"]
+        onExited: Qt.quit()
+    }
 }
