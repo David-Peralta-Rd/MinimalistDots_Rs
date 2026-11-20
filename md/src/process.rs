@@ -3,8 +3,9 @@
 //! Reemplaza a `process_manager.sh`. Versión de lista única por `ps`; la
 //! división GUI/sistema del script original se puede añadir después.
 
-use md_core::{MenuEntry, MenuMode, parse_ps};
-use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
+use md_core::{MenuEntry, parse_ps};
+
+use crate::menu::{MenuResult, run_entries};
 
 use crate::i18n::Texts;
 
@@ -17,22 +18,9 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .map(|process| MenuEntry::new(process.label.clone()))
         .collect();
 
-    let config = MenuConfig {
-        app_id: "md.process".to_owned(),
-        title: texts.t("escritorio.gestor_procesos"),
-        prompt: "⚙️".to_owned(),
-        accent: crate::util::load_palette().accent_red,
-        row_height: 36.0,
-        width: 640.0,
-        height: 480.0,
-        can_delete: false,
-        can_wipe: false,
-        submit_empty: false,
-        wipe_label: None,
-        confirm_wipe_label: None,
-    };
+    let _ = texts;
 
-    if let MenuEvent::Selected(index) = run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config)?
+    if let MenuResult::Selected(index) = run_entries(&entries, "⚙️", false, false, false, None, None)?
         && let Some(process) = processes.get(index)
     {
         kill(process.pid)?;

@@ -6,8 +6,9 @@
 use std::io::{Read, Write};
 use std::process::{Command, Stdio};
 
-use md_core::{MenuEntry, MenuMode, parse_clip_list};
-use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
+use md_core::{MenuEntry, parse_clip_list};
+
+use crate::menu::{MenuResult, run_entries};
 
 use crate::i18n::Texts;
 
@@ -24,40 +25,35 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             .map(|entry| MenuEntry::new(entry.preview.clone()))
             .collect();
 
-        let config = MenuConfig {
-            app_id: "md.clip".to_owned(),
-            title: texts.t("escritorio.portapapeles"),
-            prompt: "📋".to_owned(),
-            accent: crate::util::load_palette().accent_blue,
-            row_height: 36.0,
-            width: 700.0,
-            height: 420.0,
-            can_delete: true,
-            can_wipe: true,
-            submit_empty: false,
-            wipe_label: Some(texts.t("escritorio.borrar_todo")),
-            confirm_wipe_label: Some(texts.t("escritorio.confirmar_borrar")),
-        };
+        let _ = texts;
 
-        match run_menu(&SlintHost, &items, MenuMode::Dmenu, &config)? {
-            MenuEvent::Selected(index) => {
+        match run_entries(
+            &items,
+            "📋",
+            true,
+            true,
+            false,
+            Some(&texts.t("escritorio.borrar_todo")),
+            Some(&texts.t("escritorio.confirmar_borrar")),
+        )? {
+            MenuResult::Selected(index) => {
                 if let Some(entry) = entries.get(index) {
                     copy(&entry.line)?;
                 }
                 return Ok(());
             }
-            MenuEvent::Delete(index) => {
+            MenuResult::Delete(index) => {
                 if let Some(entry) = entries.get(index) {
                     let line = entry.line.clone();
                     entries.remove(index);
                     delete(&line)?;
                 }
             }
-            MenuEvent::Wipe => {
+            MenuResult::Wipe => {
                 entries.clear();
                 wipe()?;
             }
-            MenuEvent::Cancelled | MenuEvent::Typed(_) => return Ok(()),
+            MenuResult::Cancelled | MenuResult::Typed(_) => return Ok(()),
         }
     }
 }

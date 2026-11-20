@@ -6,8 +6,8 @@ use std::process::Command;
 
 use clap::ValueEnum;
 
+use crate::quickshell;
 use md_core::VolumeState;
-use md_ui::{OsdConfig, SlintHost, run_osd};
 
 /// Acción de volumen pedida por el usuario.
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -33,23 +33,13 @@ pub fn run(action: Action) -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     };
 
-    // OSD minimalista: solo el porcentaje (o "Mute"), sin icono ni barra.
-    // Se cierran ventanas OSD previas para evitar solapamiento al pulsar rápido.
-    let _ = Command::new("hyprctl")
-        .args(["dispatch", "closewindow", "class:md.osd"])
-        .status();
+    // OSD minimalista con QuickShell: solo el porcentaje (o "Mute").
+    quickshell::kill("Osd.qml");
+    quickshell::spawn("Osd.qml", &[
+        ("MD_OSD_LABEL", &state.label()),
+        ("MD_OSD_MUTED", &state.muted.to_string()),
+    ])?;
 
-    let config = OsdConfig {
-        glyph: String::new(),
-        label: state.label(),
-        level: -1,
-        muted: state.muted,
-        accent: md_core::Color::new(0x7e, 0xc7, 0xa2),
-        width: 80.0,
-        height: 40.0,
-        ..OsdConfig::default()
-    };
-    run_osd(&SlintHost, &config)?;
     Ok(())
 }
 

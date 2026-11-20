@@ -5,8 +5,9 @@
 
 use clap::Subcommand;
 
-use md_core::{MenuEntry, MenuMode, Notification};
-use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
+use md_core::{MenuEntry, Notification};
+
+use crate::menu::{MenuResult, run_entries};
 
 use crate::i18n::Texts;
 
@@ -25,6 +26,11 @@ pub enum NotifyCommand {
     /// Cierra las notificaciones visibles.
     Dismiss,
 
+    /// Cierra una notificación por id.
+    Close {
+        id: u32,
+    },
+
     /// Borra el historial.
     Clear,
 
@@ -39,6 +45,7 @@ pub fn run(command: NotifyCommand) -> Result<(), Box<dyn std::error::Error>> {
         NotifyCommand::History => history(),
         NotifyCommand::Dnd => dnd(),
         NotifyCommand::Dismiss => dismiss(),
+        NotifyCommand::Close { id } => close(id),
         NotifyCommand::Clear => clear(),
         NotifyCommand::Status => status(),
     }
@@ -98,6 +105,19 @@ fn dnd() -> Result<(), Box<dyn std::error::Error>> {
 /// Cierra las notificaciones visibles.
 fn dismiss() -> Result<(), Box<dyn std::error::Error>> {
     control_call::<()>("ClearPopups")?;
+    Ok(())
+}
+
+/// Cierra una notificación por id.
+fn close(id: u32) -> Result<(), Box<dyn std::error::Error>> {
+    let connection = zbus::blocking::Connection::session()?;
+    let proxy = zbus::blocking::Proxy::new(
+        &connection,
+        "org.freedesktop.Notifications",
+        "/com/github/MinimalistDots/Notifd",
+        "com.github.MinimalistDots.Notifd",
+    )?;
+    let _: () = proxy.call("CloseNotification", &(id,))?;
     Ok(())
 }
 
@@ -163,22 +183,9 @@ fn history() -> Result<(), Box<dyn std::error::Error>> {
         entries.push(MenuEntry::new(label));
     }
 
-    let config = MenuConfig {
-        app_id: "md.notify".to_owned(),
-        title: texts.t("escritorio.notificaciones"),
-        prompt: texts.t("escritorio.notificaciones_prompt"),
-        accent: crate::util::load_palette().accent_blue,
-        row_height: 36.0,
-        width: 720.0,
-        height: 440.0,
-        can_delete: false,
-        can_wipe: false,
-        submit_empty: false,
-        wipe_label: None,
-        confirm_wipe_label: None,
-    };
+    let _ = texts;
 
-    if let MenuEvent::Selected(index) = run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config)? {
+    if let MenuResult::Selected(index) = run_entries(&entries, &texts.t("escritorio.notificaciones_prompt"), false, false, false, None, None)? {
         if index == 0 {
             return dnd();
         }

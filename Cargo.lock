@@ -3022,6 +3022,7 @@ dependencies = [
  "image",
  "md-core",
  "md-ui",
+ "serde",
  "serde_json",
  "zbus",
 ]

@@ -2,10 +2,10 @@
 
 use std::fs;
 
-use md_core::{MenuEntry, MenuMode};
-use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
+use md_core::MenuEntry;
 
 use crate::i18n::{Texts, lang_dir, settings_path};
+use crate::menu::{MenuResult, run_entries};
 
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let texts = Texts::load();
@@ -24,23 +24,10 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .map(|label| MenuEntry::new(label.clone()))
         .collect();
-    let config = MenuConfig {
-        app_id: "md.language".to_owned(),
-        title: texts.t("escritorio.idioma_titulo"),
-        prompt: "🌐".to_owned(),
-        accent: crate::util::load_palette().accent_cyan,
-        row_height: 40.0,
-        width: 480.0,
-        height: 360.0,
-        can_delete: false,
-        can_wipe: false,
-        submit_empty: false,
-        wipe_label: None,
-        confirm_wipe_label: None,
-    };
+    let _ = texts;
 
-    let choice = match run_menu(&SlintHost, &entries, MenuMode::Launcher, &config) {
-        Ok(MenuEvent::Selected(index)) => languages.get(index).map(|(code, _)| code.clone()),
+    let choice = match run_entries(&entries, "🌐", false, false, false, None, None) {
+        Ok(MenuResult::Selected(index)) => languages.get(index).map(|(code, _)| code.clone()),
         _ => None,
     };
 

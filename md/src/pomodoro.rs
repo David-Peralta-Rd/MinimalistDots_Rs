@@ -16,10 +16,8 @@ use std::process::{Command, Stdio};
 
 use clap::Subcommand;
 
-use md_core::{MenuEntry, MenuMode, Pomodoro};
-use md_ui::{
-    MenuConfig, MenuEvent, PomodoroConfig, PomodoroEvents, SlintHost, run_menu, run_pomodoro,
-};
+use md_core::{MenuEntry, MenuMode};
+use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
 
 use crate::i18n::Texts;
 use crate::util::notify_send;
@@ -183,78 +181,18 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
         std::process::id().to_string(),
     )?;
 
-    let texts = Texts::load();
-    let state = Pomodoro::new(focus, brk, sessions)?;
+    let _child = std::process::Command::new("qs")
+        .arg("-p")
+        .arg(format!("{}/.local/bin/MinimalistDots_Rs/quickshell/Pomodoro.qml", std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_owned())))
+        .env("MD_POMODORO_FOCUS", (focus * 60).to_string())
+        .env("MD_POMODORO_BREAK", (brk * 60).to_string())
+        .env("MD_POMODORO_SESSIONS", sessions.to_string())
+        .spawn();
 
-    let config = PomodoroConfig {
-        app_id: "md.pomodoro".to_owned(),
-        accent_focus: crate::util::load_palette().accent_red,
-        accent_break: crate::util::load_palette().accent_green,
-        accent_paused: crate::util::load_palette().paused_text,
-        label_paused_status: texts.t("escritorio.pomodoro_en_pausa"),
-        label_break_title: texts.t("escritorio.pomodoro_descansar"),
-        label_rest_hint: texts.t("escritorio.pomodoro_levantate"),
-        label_pause: texts.t("escritorio.pomodoro_pausar"),
-        label_resume: texts.t("escritorio.pomodoro_reanudar"),
-        label_restart: texts.t("escritorio.pomodoro_reiniciar"),
-        label_minimize: texts.t("escritorio.pomodoro_minimizar"),
-        label_stop: texts.t("escritorio.pomodoro_detener"),
-    };
-
-    let events = PomodoroEvents {
-        on_started: Box::new({
-            let texts = texts.clone();
-            move |session, total| {
-                notify_send(
-                    "Pomodoro",
-                    2500,
-                    &texts.t("escritorio.pomodoro_iniciado"),
-                    &session_of(&texts, session, total),
-                );
-            }
-        }),
-        on_break_started: Box::new({
-            let texts = texts.clone();
-            move |session, total| {
-                play_sound_detached();
-                notify_send(
-                    "Pomodoro",
-                    2500,
-                    &texts.t("escritorio.pomodoro_descanso_titulo"),
-                    &session_of(&texts, session, total),
-                );
-            }
-        }),
-        on_focus_started: Box::new({
-            let texts = texts.clone();
-            move |session, total| {
-                play_sound_detached();
-                notify_send(
-                    "Pomodoro",
-                    2500,
-                    &session_of(&texts, session, total),
-                    &texts.t("escritorio.pomodoro_a_concentrarse"),
-                );
-            }
-        }),
-        on_finished: Box::new({
-            move |total| {
-                notify_send(
-                    "Pomodoro",
-                    2500,
-                    &texts.t("escritorio.pomodoro_completado"),
-                    &texts.t_fill(
-                        "escritorio.pomodoro_terminaste",
-                        &[("total", &total.to_string())],
-                    ),
-                );
-            }
-        }),
-    };
-
-    let result = run_pomodoro(&SlintHost, &config, state, events);
-    let _ = std::fs::remove_file(state_dir().join("widget.pid"));
-    result.map_err(Into::into)
+    // Mantiene el proceso vivo mientras corre el widget.
+    loop {
+        std::thread::sleep(std::time::Duration::from_secs(3600));
+    }
 }
 
 /// Texto "Sesión X de Y" con los marcadores ya sustituidos.

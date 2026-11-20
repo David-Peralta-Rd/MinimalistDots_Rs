@@ -14,6 +14,7 @@ mod notifd;
 mod notify;
 mod pomodoro;
 mod process;
+mod quickshell;
 mod record;
 mod shot;
 mod util;
@@ -105,7 +106,11 @@ enum Command {
     Language,
 
     /// Pantalla de bienvenida (idioma, atajos, novedades, GitHub).
-    Welcome,
+    Welcome {
+        /// Alterna el estado de bienvenida y sale.
+        #[arg(long)]
+        toggle: bool,
+    },
 
     /// IA local: menú de modelos, servidores `llama-server`, diagnóstico.
     Ai {
@@ -168,7 +173,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         Command::Language => language::run()?,
-        Command::Welcome => welcome::run()?,
+        Command::Welcome { toggle } => welcome::run(toggle)?,
         Command::Ai { command } => ai::run(command)?,
         Command::Menu {
             name,

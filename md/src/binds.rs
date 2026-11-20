@@ -5,10 +5,10 @@
 
 use std::path::PathBuf;
 
-use md_core::{MenuMode, parse_keybinds, to_menu_entries};
-use md_ui::{MenuConfig, SlintHost, run_menu};
+use md_core::{parse_keybinds, to_menu_entries};
 
 use crate::i18n::Texts;
+use crate::menu::{MenuResult, run_entries};
 
 /// Ejecuta el visor de atajos.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -27,23 +27,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let keybinds = parse_keybinds(&json)?;
     let entries = to_menu_entries(&keybinds);
 
-    let config = MenuConfig {
-        app_id: "md.binds".to_owned(),
-        title: texts.t("escritorio.atajos"),
-        prompt: "⌨️".to_owned(),
-        accent: crate::util::load_palette().accent_green,
-        row_height: 36.0,
-        width: 650.0,
-        height: 480.0,
-        can_delete: false,
-        can_wipe: false,
-        submit_empty: false,
-        wipe_label: None,
-        confirm_wipe_label: None,
-    };
-
-    // Visor de solo lectura: la selección se ignora (cierra el menú).
-    let _ = run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config)?;
+    let _ = run_entries(&entries, "⌨️", false, false, false, None, None)?;
+    let _ = texts;
     Ok(())
 }
 
