@@ -123,6 +123,7 @@ siguiente = "WEITER (IN EINEM NEUEN TERMINAL): ai-doctor  →  ai-up chat  →  
 # Desktop tools (`md`): menus, OSD and notifications (H7).
 [escritorio]
 lanzador = "Starter"
+buscar_app = "Anwendung suchen…"
 portapapeles = "Zwischenablage"
 atajos = "Tastenkürzel"
 gestor_procesos = "Prozessverwaltung"

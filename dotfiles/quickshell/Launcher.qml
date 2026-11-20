@@ -84,17 +84,30 @@ ShellRoot {
                 anchors.margins: 12
                 spacing: 8
 
-                TextField {
-                    id: search
+                Rectangle {
                     width: parent.width
-                    placeholderText: root.prompt
-                    color: Theme.texto
-                    placeholderTextColor: Theme.textoSuave
-                    onTextChanged: { root.query = text; root.updateFilter() }
-                    onAccepted: {
-                        if (root.filtered.length > 0) root.select(root.entries.indexOf(root.filtered[0]))
+                    height: 40
+                    radius: Theme.radiusCard
+                    color: Theme.superficie
+                    border.width: Theme.borderWidth
+                    border.color: search.activeFocus ? Theme.bordeActivo : Theme.bordeInactivo
+
+                    TextField {
+                        id: search
+                        anchors.fill: parent
+                        anchors.margins: 8
+                        placeholderText: root.prompt
+                        color: Theme.texto
+                        placeholderTextColor: Theme.textoSuave
+                        font.pixelSize: Theme.fontSizeNormal
+                        background: null
+                        focus: true
+                        onTextChanged: { root.query = text; root.updateFilter() }
+                        onAccepted: {
+                            if (root.filtered.length > 0) root.select(root.entries.indexOf(root.filtered[0]))
+                        }
+                        Keys.onEscapePressed: root.cancel()
                     }
-                    Keys.onEscapePressed: root.cancel()
                 }
 
                 ListView {
@@ -104,26 +117,29 @@ ShellRoot {
                     model: root.filtered
                     delegate: Rectangle {
                         width: ListView.view.width
-                        height: 36
-                        color: mouseArea.containsMouse ? Theme.seleccion : "transparent"
-                        radius: 4
+                        height: 40
+                        color: mouseArea.containsMouse ? Theme.hover : "transparent"
+                        radius: Theme.radiusCard
+                        border.width: mouseArea.containsMouse ? Theme.borderWidth : 0
+                        border.color: mouseArea.containsMouse ? Theme.bordeActivo : "transparent"
 
                         Row {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: parent.left
-                            anchors.leftMargin: 8
-                            spacing: 8
+                            anchors.leftMargin: 12
+                            spacing: 10
 
                             Image {
-                                width: 24
-                                height: 24
+                                width: 26
+                                height: 26
                                 source: modelData.icon ? ("file://" + modelData.icon) : ""
                                 visible: !!modelData.icon
+                                fillMode: Image.PreserveAspectFit
                             }
                             Text {
                                 text: modelData.label || ""
                                 color: Theme.texto
-                                font.pixelSize: 14
+                                font.pixelSize: Theme.fontSizeNormal
                                 verticalAlignment: Text.AlignVCenter
                             }
                         }
@@ -138,28 +154,6 @@ ShellRoot {
                 }
             }
 
-            Rectangle {
-                width: 22
-                height: 22
-                radius: 4
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.margins: 6
-                color: launcherCloseArea.pressed ? Theme.seleccion : "transparent"
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "✕"
-                    color: Theme.texto
-                    font.pixelSize: 12
-                }
-
-                MouseArea {
-                    id: launcherCloseArea
-                    anchors.fill: parent
-                    onClicked: root.cancel()
-                }
-            }
         }
     }
 

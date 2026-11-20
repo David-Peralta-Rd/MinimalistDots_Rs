@@ -27,8 +27,6 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         })
         .collect();
 
-    let _ = texts;
-
     // Serializa las entradas para QuickShell.
     let json_entries: Vec<serde_json::Value> = entries
         .iter()
@@ -55,7 +53,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         &[
             ("MD_LAUNCHER_ENTRIES", entries_path.to_str().unwrap_or("")),
             ("MD_LAUNCHER_RESULT", result_path.to_str().unwrap_or("")),
-            ("MD_LAUNCHER_PROMPT", "🚀"),
+            ("MD_LAUNCHER_PROMPT", texts.t("escritorio.buscar_app").as_str()),
             ("QML_XHR_ALLOW_FILE_READ", "1"),
         ],
     );

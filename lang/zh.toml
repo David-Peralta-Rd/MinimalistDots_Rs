@@ -123,6 +123,7 @@ siguiente = "下一步（在新终端中）：ai-doctor  →  ai-up chat  →  a
 # Desktop tools (`md`): menus, OSD and notifications (H7).
 [escritorio]
 lanzador = "启动器"
+buscar_app = "搜索应用…"
 portapapeles = "剪贴板"
 atajos = "键盘快捷键"
 gestor_procesos = "进程管理器"
