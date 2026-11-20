@@ -24,6 +24,10 @@ ShellRoot {
         onLoaded: {
             try { root.notifications = JSON.parse(stateFile.text()) } catch (e) { root.notifications = [] }
         }
+        onFileChanged: {
+            try { stateFile.reload() } catch (e) {}
+            try { root.notifications = JSON.parse(stateFile.text()) } catch (e) { root.notifications = [] }
+        }
     }
 
     PanelWindow {
