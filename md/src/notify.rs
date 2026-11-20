@@ -191,6 +191,8 @@ fn history() -> Result<(), Box<dyn std::error::Error>> {
         false,
         None,
         None,
+        None,
+        None,
     )? {
         if index == 0 {
             return dnd();

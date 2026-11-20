@@ -263,7 +263,7 @@ fn choose(title: &str, labels: &[String]) -> Option<String> {
         .map(|label| MenuEntry::new(label.clone()))
         .collect();
     let _ = title;
-    match run_entries(&entries, "🤖", false, false, false, None, None).ok()? {
+    match run_entries(&entries, "🤖", false, false, false, None, None, None, None).ok()? {
         MenuResult::Selected(index) => labels.get(index).cloned(),
         _ => None,
     }

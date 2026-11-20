@@ -220,7 +220,7 @@ fn ask(texts: &Texts, _key: &str, options: &[u32]) -> Option<u32> {
         .collect();
     let _ = texts;
 
-    match run_entries(&entries, "🍅", false, false, true, None, None).ok()? {
+    match run_entries(&entries, "🍅", false, false, true, None, None, Some(400), Some(300)).ok()? {
         MenuResult::Selected(index) => options.get(index).copied(),
         MenuResult::Typed(query) => query.trim().parse().ok().filter(|n| (1..=999).contains(n)),
         _ => None,

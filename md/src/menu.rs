@@ -36,6 +36,8 @@ pub fn run_entries(
     submit_empty: bool,
     wipe_label: Option<&str>,
     confirm_wipe_label: Option<&str>,
+    menu_width: Option<u32>,
+    menu_height: Option<u32>,
 ) -> Result<MenuResult, Box<dyn std::error::Error>> {
     let json_entries: Vec<serde_json::Value> = entries
         .iter()
@@ -56,21 +58,28 @@ pub fn run_entries(
     let submit_empty_s = submit_empty.to_string();
     let wipe_label = wipe_label.unwrap_or("🧹 Borrar todo");
     let confirm_wipe_label = confirm_wipe_label.unwrap_or("¿Seguro? Pulsa otra vez");
+    let width_s = menu_width.map(|v| v.to_string());
+    let height_s = menu_height.map(|v| v.to_string());
 
-    let _ = quickshell::spawn_wait(
-        "Menu.qml",
-        &[
-            ("MD_MENU_ENTRIES", entries_path.to_str().unwrap_or("")),
-            ("MD_MENU_RESULT", result_path.to_str().unwrap_or("")),
-            ("MD_MENU_PROMPT", prompt),
-            ("MD_MENU_CAN_DELETE", &can_delete_s),
-            ("MD_MENU_CAN_WIPE", &can_wipe_s),
-            ("MD_MENU_SUBMIT_EMPTY", &submit_empty_s),
-            ("MD_MENU_WIPE_LABEL", wipe_label),
-            ("MD_MENU_CONFIRM_WIPE_LABEL", confirm_wipe_label),
-            ("QML_XHR_ALLOW_FILE_READ", "1"),
-        ],
-    );
+    let mut envs: Vec<(&str, &str)> = vec![
+        ("MD_MENU_ENTRIES", entries_path.to_str().unwrap_or("")),
+        ("MD_MENU_RESULT", result_path.to_str().unwrap_or("")),
+        ("MD_MENU_PROMPT", prompt),
+        ("MD_MENU_CAN_DELETE", &can_delete_s),
+        ("MD_MENU_CAN_WIPE", &can_wipe_s),
+        ("MD_MENU_SUBMIT_EMPTY", &submit_empty_s),
+        ("MD_MENU_WIPE_LABEL", wipe_label),
+        ("MD_MENU_CONFIRM_WIPE_LABEL", confirm_wipe_label),
+        ("QML_XHR_ALLOW_FILE_READ", "1"),
+    ];
+    if let Some(w) = width_s.as_deref() {
+        envs.push(("MD_MENU_WIDTH", w));
+    }
+    if let Some(h) = height_s.as_deref() {
+        envs.push(("MD_MENU_HEIGHT", h));
+    }
+
+    let _ = quickshell::spawn_wait("Menu.qml", &envs);
 
     let raw = std::fs::read_to_string(&result_path).unwrap_or_default();
     let value: serde_json::Value = serde_json::from_str(&raw).unwrap_or(serde_json::json!({}));
@@ -121,6 +130,8 @@ pub fn run(args: &Args) -> Result<(), Box<dyn std::error::Error>> {
             args.delete_cmd.is_some(),
             args.wipe_cmd.is_some(),
             !args.raw,
+            None,
+            None,
             None,
             None,
         )?;

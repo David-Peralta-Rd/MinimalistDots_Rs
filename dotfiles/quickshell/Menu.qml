@@ -10,6 +10,8 @@ ShellRoot {
 
     property string entriesPath: Quickshell.env("MD_MENU_ENTRIES") || ""
     property string resultPath: Quickshell.env("MD_MENU_RESULT") || ""
+    property int menuWidth: parseInt(Quickshell.env("MD_MENU_WIDTH") || "600")
+    property int menuHeight: parseInt(Quickshell.env("MD_MENU_HEIGHT") || "400")
     property string prompt: Quickshell.env("MD_MENU_PROMPT") || ""
     property bool canDelete: (Quickshell.env("MD_MENU_CAN_DELETE") || "false") === "true"
     property bool canWipe: (Quickshell.env("MD_MENU_CAN_WIPE") || "false") === "true"
@@ -81,8 +83,8 @@ ShellRoot {
     }
 
     PanelWindow {
-        implicitWidth: 600
-        implicitHeight: 400
+        implicitWidth: root.menuWidth
+        implicitHeight: root.menuHeight
         color: "transparent"
 
         anchors.top: true

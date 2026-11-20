@@ -27,7 +27,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let keybinds = parse_keybinds(&json)?;
     let entries = to_menu_entries(&keybinds);
 
-    let _ = run_entries(&entries, "⌨️", false, false, false, None, None)?;
+    let _ = run_entries(&entries, "⌨️", false, false, false, None, None, None, None)?;
     let _ = texts;
     Ok(())
 }

@@ -35,6 +35,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             false,
             Some(&texts.t("escritorio.borrar_todo")),
             Some(&texts.t("escritorio.confirmar_borrar")),
+            None,
+            None,
         )? {
             MenuResult::Selected(index) => {
                 if let Some(entry) = entries.get(index) {

@@ -26,7 +26,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
     let _ = texts;
 
-    let choice = match run_entries(&entries, "🌐", false, false, false, None, None) {
+    let choice = match run_entries(&entries, "🌐", false, false, false, None, None, None, None) {
         Ok(MenuResult::Selected(index)) => languages.get(index).map(|(code, _)| code.clone()),
         _ => None,
     };

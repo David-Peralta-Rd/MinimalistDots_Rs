@@ -33,7 +33,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let _ = texts;
 
     if let MenuResult::Selected(index) =
-        run_entries(&entries, "🖼", false, false, false, None, None)?
+        run_entries(&entries, "🖼", false, false, false, None, None, None, None)?
         && let Some(wallpaper) = wallpapers.get(index)
     {
         apply(&wallpaper.path)?;
