@@ -138,7 +138,7 @@ ShellRoot {
                     }
                 }
 
-                Row {
+                Column {
                     anchors.right: parent.right
                     anchors.rightMargin: 4
                     spacing: 2
