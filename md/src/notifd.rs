@@ -38,26 +38,32 @@ struct ActiveNotification {
     progress: i32,
 }
 
+type ActiveList = Arc<Mutex<Vec<ActiveNotification>>>;
+type ExpiryList = Arc<Mutex<Vec<(u64, std::time::Instant, Option<Duration>)>>>;
+
 /// Estado compartido del demonio.
 #[derive(Clone)]
 struct DaemonState {
-    active: Arc<Mutex<Vec<ActiveNotification>>>,
-    expires: Arc<Mutex<Vec<(u64, std::time::Instant, Option<Duration>)>>>,
+    active: ActiveList,
+    expires: ExpiryList,
     next_id: Arc<std::sync::atomic::AtomicU64>,
     dnd: Arc<AtomicBool>,
 }
 
 const STATE_PATH: &str = "/tmp/md-notifications.json";
 
-fn write_state(active: &Arc<Mutex<Vec<ActiveNotification>>>) {
+fn write_state(active: &ActiveList) {
     let Ok(guard) = active.lock() else { return };
-    let _ = std::fs::write(STATE_PATH, serde_json::to_string(&*guard).unwrap_or_else(|_| "[]".to_owned()));
+    let _ = std::fs::write(
+        STATE_PATH,
+        serde_json::to_string(&*guard).unwrap_or_else(|_| "[]".to_owned()),
+    );
 }
 
 /// Arranca el demonio: sirve DBus y lanza QuickShell.
 pub fn serve() -> Result<(), Box<dyn std::error::Error>> {
-    let active: Arc<Mutex<Vec<ActiveNotification>>> = Arc::new(Mutex::new(Vec::new()));
-    let expires: Arc<Mutex<Vec<(u64, std::time::Instant, Option<Duration>)>>> = Arc::new(Mutex::new(Vec::new()));
+    let active: ActiveList = Arc::new(Mutex::new(Vec::new()));
+    let expires: ExpiryList = Arc::new(Mutex::new(Vec::new()));
     let next_id = Arc::new(std::sync::atomic::AtomicU64::new(1));
     let dnd = Arc::new(AtomicBool::new(false));
 
@@ -75,7 +81,10 @@ pub fn serve() -> Result<(), Box<dyn std::error::Error>> {
     // Lanza QuickShell residente.
     let _ = std::process::Command::new("qs")
         .arg("-p")
-        .arg(format!("{}/.local/bin/MinimalistDots_Rs/quickshell/Notifications.qml", std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_owned())))
+        .arg(format!(
+            "{}/.local/bin/MinimalistDots_Rs/quickshell/Notifications.qml",
+            std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_owned())
+        ))
         .env("MD_NOTIFICATIONS_STATE", STATE_PATH)
         .env("QML_XHR_ALLOW_FILE_READ", "1")
         .spawn();
@@ -171,8 +180,12 @@ impl NotificationsIface {
 
         // Reemplazo: cierra la notificación previa (si existía).
         if replaces_id > 0 {
-            self.state.active.lock().unwrap().retain(|n| n.id != replaces_id as u64);
-            self.state.expires.lock().unwrap().retain(|(nid, _, _)| *nid != replaces_id as u64);
+            if let Ok(mut guard) = self.state.active.lock() {
+                guard.retain(|n| n.id != replaces_id as u64);
+            }
+            if let Ok(mut guard) = self.state.expires.lock() {
+                guard.retain(|(nid, _, _)| *nid != replaces_id as u64);
+            }
         }
 
         let critical = urgency.is_critical();
@@ -253,9 +266,7 @@ impl ControlIface {
 
 /// Construye la conexión de sesión y sirve ambas interfaces bajo el nombre
 /// `org.freedesktop.Notifications` (la interfaz de control vive en otra ruta).
-fn build_connection(
-    state: &DaemonState,
-) -> Result<zbus::blocking::Connection, zbus::Error> {
+fn build_connection(state: &DaemonState) -> Result<zbus::blocking::Connection, zbus::Error> {
     Builder::session()?
         .name("org.freedesktop.Notifications")?
         .serve_at(

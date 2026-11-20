@@ -41,10 +41,15 @@ pub fn run_entries(
         .iter()
         .map(|e| serde_json::json!({ "label": e.label, "icon": crate::util::thumbnail(&e.icon) }))
         .collect();
-    let entries_path = std::env::temp_dir().join("md-menu-entries.json");
-    let result_path = std::env::temp_dir().join("md-menu-result.json");
+    let entries_path =
+        std::env::temp_dir().join(format!("md-menu-entries-{}.json", std::process::id()));
+    let result_path =
+        std::env::temp_dir().join(format!("md-menu-result-{}.json", std::process::id()));
     let _ = std::fs::remove_file(&result_path);
-    let _ = std::fs::write(&entries_path, serde_json::to_string(&json_entries).unwrap_or_default());
+    let _ = std::fs::write(
+        &entries_path,
+        serde_json::to_string(&json_entries).unwrap_or_default(),
+    );
 
     let can_delete_s = can_delete.to_string();
     let can_wipe_s = can_wipe.to_string();
@@ -52,24 +57,30 @@ pub fn run_entries(
     let wipe_label = wipe_label.unwrap_or("🧹 Borrar todo");
     let confirm_wipe_label = confirm_wipe_label.unwrap_or("¿Seguro? Pulsa otra vez");
 
-    let _ = quickshell::spawn_wait("Menu.qml", &[
-        ("MD_MENU_ENTRIES", entries_path.to_str().unwrap_or("")),
-        ("MD_MENU_RESULT", result_path.to_str().unwrap_or("")),
-        ("MD_MENU_PROMPT", prompt),
-        ("MD_MENU_CAN_DELETE", &can_delete_s),
-        ("MD_MENU_CAN_WIPE", &can_wipe_s),
-        ("MD_MENU_SUBMIT_EMPTY", &submit_empty_s),
-        ("MD_MENU_WIPE_LABEL", wipe_label),
-        ("MD_MENU_CONFIRM_WIPE_LABEL", confirm_wipe_label),
-        ("QML_XHR_ALLOW_FILE_READ", "1"),
-    ]);
+    let _ = quickshell::spawn_wait(
+        "Menu.qml",
+        &[
+            ("MD_MENU_ENTRIES", entries_path.to_str().unwrap_or("")),
+            ("MD_MENU_RESULT", result_path.to_str().unwrap_or("")),
+            ("MD_MENU_PROMPT", prompt),
+            ("MD_MENU_CAN_DELETE", &can_delete_s),
+            ("MD_MENU_CAN_WIPE", &can_wipe_s),
+            ("MD_MENU_SUBMIT_EMPTY", &submit_empty_s),
+            ("MD_MENU_WIPE_LABEL", wipe_label),
+            ("MD_MENU_CONFIRM_WIPE_LABEL", confirm_wipe_label),
+            ("QML_XHR_ALLOW_FILE_READ", "1"),
+        ],
+    );
 
     let raw = std::fs::read_to_string(&result_path).unwrap_or_default();
     let value: serde_json::Value = serde_json::from_str(&raw).unwrap_or(serde_json::json!({}));
     let _ = std::fs::remove_file(&entries_path);
     let _ = std::fs::remove_file(&result_path);
 
-    let kind = value.get("type").and_then(|v| v.as_str()).unwrap_or("cancelled");
+    let kind = value
+        .get("type")
+        .and_then(|v| v.as_str())
+        .unwrap_or("cancelled");
     match kind {
         "selected" => {
             let idx = value.get("index").and_then(|v| v.as_i64()).unwrap_or(-1);
@@ -80,7 +91,11 @@ pub fn run_entries(
             }
         }
         "typed" => {
-            let q = value.get("query").and_then(|v| v.as_str()).unwrap_or("").to_owned();
+            let q = value
+                .get("query")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_owned();
             Ok(MenuResult::Typed(q))
         }
         "delete" => {

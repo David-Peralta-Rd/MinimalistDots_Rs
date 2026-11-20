@@ -12,3 +12,8 @@ unsafe_code = "deny"
 unwrap_used = "deny"
 expect_used = "deny"
 panic = "deny"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

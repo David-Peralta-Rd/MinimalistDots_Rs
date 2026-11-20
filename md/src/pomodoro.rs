@@ -16,8 +16,8 @@ use std::process::{Command, Stdio};
 
 use clap::Subcommand;
 
-use md_core::MenuEntry;
 use crate::menu::{MenuResult, run_entries};
+use md_core::MenuEntry;
 
 use crate::i18n::Texts;
 use crate::util::notify_send;
@@ -183,7 +183,10 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
 
     let _child = std::process::Command::new("qs")
         .arg("-p")
-        .arg(format!("{}/.local/bin/MinimalistDots_Rs/quickshell/Pomodoro.qml", std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_owned())))
+        .arg(format!(
+            "{}/.local/bin/MinimalistDots_Rs/quickshell/Pomodoro.qml",
+            std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_owned())
+        ))
         .env("MD_POMODORO_FOCUS", (focus * 60).to_string())
         .env("MD_POMODORO_BREAK", (brk * 60).to_string())
         .env("MD_POMODORO_SESSIONS", sessions.to_string())
@@ -195,7 +198,7 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
     }
 }
 
-/// Texto "Sesión X de Y" con los marcadores ya sustituidos.
+// Texto "Sesión X de Y" con los marcadores ya sustituidos.
 // =============================================================================
 // Preguntas (menú dmenu reutilizado)
 // =============================================================================

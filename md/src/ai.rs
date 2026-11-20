@@ -19,8 +19,8 @@ use std::time::Duration;
 
 use clap::{Subcommand, ValueEnum};
 
-use md_core::MenuEntry;
 use crate::menu::{MenuResult, run_entries};
+use md_core::MenuEntry;
 
 use crate::i18n::Texts;
 use crate::util::notify_send;
@@ -1913,14 +1913,7 @@ fn new_project(
                 .env("NPM_CONFIG_YES", "true")
                 .stdin(std::process::Stdio::null())
                 .args([
-                    "--yes",
-                    "skills",
-                    "add",
-                    *package,
-                    "--skill",
-                    *skill,
-                    "--agent",
-                    "opencode",
+                    "--yes", "skills", "add", *package, "--skill", *skill, "--agent", "opencode",
                     "-y",
                 ])
                 .status();

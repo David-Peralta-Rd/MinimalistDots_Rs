@@ -26,7 +26,10 @@ pub fn kill(qml_file: &str) {
 }
 
 /// Lanza un archivo QML y espera a que termine. Útil para menús modales.
-pub fn spawn_wait(qml_file: &str, envs: &[(&str, &str)]) -> std::io::Result<std::process::ExitStatus> {
+pub fn spawn_wait(
+    qml_file: &str,
+    envs: &[(&str, &str)],
+) -> std::io::Result<std::process::ExitStatus> {
     let home = std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_owned());
     let qml_path = format!("{home}/.local/bin/MinimalistDots_Rs/quickshell/{qml_file}");
 

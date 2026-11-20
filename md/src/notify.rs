@@ -27,9 +27,7 @@ pub enum NotifyCommand {
     Dismiss,
 
     /// Cierra una notificación por id.
-    Close {
-        id: u32,
-    },
+    Close { id: u32 },
 
     /// Borra el historial.
     Clear,
@@ -185,7 +183,15 @@ fn history() -> Result<(), Box<dyn std::error::Error>> {
 
     let _ = texts;
 
-    if let MenuResult::Selected(index) = run_entries(&entries, &texts.t("escritorio.notificaciones_prompt"), false, false, false, None, None)? {
+    if let MenuResult::Selected(index) = run_entries(
+        &entries,
+        &texts.t("escritorio.notificaciones_prompt"),
+        false,
+        false,
+        false,
+        None,
+        None,
+    )? {
         if index == 0 {
             return dnd();
         }

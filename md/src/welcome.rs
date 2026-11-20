@@ -4,7 +4,6 @@ use std::fs;
 
 use md_core::Update;
 
-
 use crate::i18n::{Texts, minimalistdots_dir, settings_path};
 
 fn read_bool(key: &str, default: bool) -> bool {
@@ -55,39 +54,48 @@ pub fn run(toggle: bool) -> Result<(), Box<dyn std::error::Error>> {
     let texts = Texts::load();
     let github_url = "https://github.com/David-Peralta-Rd/MinimalistDots_Rs";
 
-    loop {
-        let updates_path = minimalistdots_dir().join("updates.toml");
-        let updates: Vec<Update> = md_core::load_updates(&updates_path);
-        let mut changelog: Vec<String> = Vec::new();
-        for update in &updates {
-            changelog.push(format!("📦 {}", update.titulo));
-            if !update.descripcion.is_empty() {
-                for line in update.descripcion.lines() {
-                    changelog.push(format!("   {}", line));
-                }
+    let updates_path = minimalistdots_dir().join("updates.toml");
+    let updates: Vec<Update> = md_core::load_updates(&updates_path);
+    let mut changelog: Vec<String> = Vec::new();
+    for update in &updates {
+        changelog.push(format!("📦 {}", update.titulo));
+        if !update.descripcion.is_empty() {
+            for line in update.descripcion.lines() {
+                changelog.push(format!("   {}", line));
             }
         }
-        if changelog.is_empty() {
-            changelog.push("Sin novedades registradas.".to_owned());
-        }
+    }
+    if changelog.is_empty() {
+        changelog.push("Sin novedades registradas.".to_owned());
+    }
 
-        let bienvenida_on = read_bool("bienvenida", true);
+    let bienvenida_on = read_bool("bienvenida", true);
 
-        use crate::quickshell;
-        quickshell::spawn("Welcome.qml", &[
+    use crate::quickshell;
+    quickshell::spawn(
+        "Welcome.qml",
+        &[
             ("MD_WELCOME_TITLE", &texts.t("escritorio.welcome_titulo")),
-            ("MD_WELCOME_SUBTITLE", "⚡ Velocidad  ·  🛠️ Utilidad  ·  🦀 Rust"),
+            (
+                "MD_WELCOME_SUBTITLE",
+                "⚡ Velocidad  ·  🛠️ Utilidad  ·  🦀 Rust",
+            ),
             ("MD_WELCOME_CHANGELOG", &changelog.join("\n")),
             ("MD_WELCOME_LANGUAGE", &texts.t("escritorio.welcome_idioma")),
             ("MD_WELCOME_BINDS", &texts.t("escritorio.welcome_atajos")),
             ("MD_WELCOME_GITHUB", &texts.t("escritorio.welcome_github")),
-            ("MD_WELCOME_TOGGLE", &texts.t("escritorio.welcome_desactivar")),
+            (
+                "MD_WELCOME_TOGGLE",
+                &texts.t("escritorio.welcome_desactivar"),
+            ),
             ("MD_WELCOME_EXIT", &texts.t("escritorio.welcome_salir")),
-            ("MD_WELCOME_BIENVENIDA", if bienvenida_on { "true" } else { "false" }),
+            (
+                "MD_WELCOME_BIENVENIDA",
+                if bienvenida_on { "true" } else { "false" },
+            ),
             ("MD_WELCOME_GITHUB_URL", github_url),
-        ])?;
+        ],
+    )?;
 
-        break;
-    }
     Ok(())
 }

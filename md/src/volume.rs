@@ -35,10 +35,13 @@ pub fn run(action: Action) -> Result<(), Box<dyn std::error::Error>> {
 
     // OSD minimalista con QuickShell: solo el porcentaje (o "Mute").
     quickshell::kill("Osd.qml");
-    quickshell::spawn("Osd.qml", &[
-        ("MD_OSD_LABEL", &state.label()),
-        ("MD_OSD_MUTED", &state.muted.to_string()),
-    ])?;
+    quickshell::spawn(
+        "Osd.qml",
+        &[
+            ("MD_OSD_LABEL", &state.label()),
+            ("MD_OSD_MUTED", &state.muted.to_string()),
+        ],
+    )?;
 
     Ok(())
 }

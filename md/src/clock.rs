@@ -7,7 +7,6 @@
 
 use crate::quickshell;
 
-
 /// Ejecuta el reloj (QuickShell, residente).
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     quickshell::spawn("clock.qml", &[])?;
@@ -28,13 +27,12 @@ pub fn print_color() -> Result<(), Box<dyn std::error::Error>> {
                 let mut sum: u64 = 0;
                 let mut count: u64 = 0;
                 for px in rgb.pixels() {
-                    let l = (0.299 * px[0] as f64
-                        + 0.587 * px[1] as f64
-                        + 0.114 * px[2] as f64) as u64;
+                    let l =
+                        (0.299 * px[0] as f64 + 0.587 * px[1] as f64 + 0.114 * px[2] as f64) as u64;
                     sum += l;
                     count += 1;
                 }
-                let avg = if count > 0 { sum / count } else { 128 };
+                let avg = sum.checked_div(count).unwrap_or(128);
                 text = if avg < 128 {
                     palette.contrast_light.hex()
                 } else {

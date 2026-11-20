@@ -20,7 +20,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let _ = texts;
 
-    if let MenuResult::Selected(index) = run_entries(&entries, "⚙️", false, false, false, None, None)?
+    if let MenuResult::Selected(index) =
+        run_entries(&entries, "⚙️", false, false, false, None, None)?
         && let Some(process) = processes.get(index)
     {
         kill(process.pid)?;

@@ -5,6 +5,7 @@ use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
 /// Carga la paleta instalada (o la del repo en desarrollo), con respaldo embebido.
+#[allow(clippy::unwrap_used)]
 pub fn load_palette() -> md_core::Palette {
     if let Ok(path) = std::env::var("MD_PALETTE") {
         let path = PathBuf::from(path);
@@ -94,18 +95,25 @@ pub fn thumbnail(path: &str) -> String {
     use std::hash::{Hash, Hasher};
     let mut hasher = std::collections::hash_map::DefaultHasher::new();
     path.hash(&mut hasher);
+    // Incluye metadatos del archivo para invalidar la miniatura si cambia.
+    if let Ok(meta) = std::fs::metadata(source) {
+        meta.len().hash(&mut hasher);
+        if let Ok(mtime) = meta.modified() {
+            mtime.hash(&mut hasher);
+        }
+    }
     let key = format!("{:x}", hasher.finish());
     let cache_path = cache_dir.join(format!("{key}.png"));
     if cache_path.exists() {
         return cache_path.to_string_lossy().into_owned();
     }
-    if let Ok(reader) = image::ImageReader::open(source) {
-        if let Ok(decoded) = reader.decode() {
-            let thumb = decoded.thumbnail(128, 128);
-            let _ = std::fs::create_dir_all(&cache_dir);
-            if thumb.save(&cache_path).is_ok() {
-                return cache_path.to_string_lossy().into_owned();
-            }
+    if let Ok(reader) = image::ImageReader::open(source)
+        && let Ok(decoded) = reader.decode()
+    {
+        let thumb = decoded.thumbnail(128, 128);
+        let _ = std::fs::create_dir_all(&cache_dir);
+        if thumb.save(&cache_path).is_ok() {
+            return cache_path.to_string_lossy().into_owned();
         }
     }
     path.to_owned()

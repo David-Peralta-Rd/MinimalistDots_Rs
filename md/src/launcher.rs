@@ -40,29 +40,35 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             })
         })
         .collect();
-    let entries_path = std::env::temp_dir().join("md-launcher-entries.json");
-    let result_path = std::env::temp_dir().join("md-launcher-result.json");
+    let entries_path =
+        std::env::temp_dir().join(format!("md-launcher-entries-{}.json", std::process::id()));
+    let result_path =
+        std::env::temp_dir().join(format!("md-launcher-result-{}.json", std::process::id()));
     let _ = fs::remove_file(&result_path);
-    fs::write(&entries_path, serde_json::to_string(&json_entries).unwrap_or_default())?;
+    fs::write(
+        &entries_path,
+        serde_json::to_string(&json_entries).unwrap_or_default(),
+    )?;
 
-    let _ = quickshell::spawn_wait("Launcher.qml", &[
-        ("MD_LAUNCHER_ENTRIES", entries_path.to_str().unwrap_or("")),
-        ("MD_LAUNCHER_RESULT", result_path.to_str().unwrap_or("")),
-        ("MD_LAUNCHER_PROMPT", "🚀"),
-        ("QML_XHR_ALLOW_FILE_READ", "1"),
-    ]);
+    let _ = quickshell::spawn_wait(
+        "Launcher.qml",
+        &[
+            ("MD_LAUNCHER_ENTRIES", entries_path.to_str().unwrap_or("")),
+            ("MD_LAUNCHER_RESULT", result_path.to_str().unwrap_or("")),
+            ("MD_LAUNCHER_PROMPT", "🚀"),
+            ("QML_XHR_ALLOW_FILE_READ", "1"),
+        ],
+    );
 
     // Lee la selección.
-    if let Ok(raw) = fs::read_to_string(&result_path) {
-        if let Ok(value) = serde_json::from_str::<serde_json::Value>(&raw) {
-            if let Some(index) = value.get("selected").and_then(|v| v.as_i64()) {
-                if index >= 0 {
-                    let index = index as usize;
-                    if let Some(app) = apps.get(index) {
-                        launch(app)?;
-                    }
-                }
-            }
+    if let Ok(raw) = fs::read_to_string(&result_path)
+        && let Ok(value) = serde_json::from_str::<serde_json::Value>(&raw)
+        && let Some(index) = value.get("selected").and_then(|v| v.as_i64())
+        && index >= 0
+    {
+        let index = index as usize;
+        if let Some(app) = apps.get(index) {
+            launch(app)?;
         }
     }
 
