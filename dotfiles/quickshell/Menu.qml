@@ -128,6 +128,8 @@ ShellRoot {
                             width: parent.width - (wipeBtn.visible ? wipeBtn.width + 8 : 0)
                             height: parent.height
                             text: root.query
+                            color: Theme.texto
+                            placeholderTextColor: Theme.textoSuave
                             onTextChanged: { root.query = text; root.updateFilter() }
                             onAccepted: root.selectCurrent()
                             Keys.onEscapePressed: root.writeResult('{"type":"cancelled"}')

@@ -88,6 +88,8 @@ ShellRoot {
                     id: search
                     width: parent.width
                     placeholderText: root.prompt
+                    color: Theme.texto
+                    placeholderTextColor: Theme.textoSuave
                     onTextChanged: { root.query = text; root.updateFilter() }
                     onAccepted: {
                         if (root.filtered.length > 0) root.select(root.entries.indexOf(root.filtered[0]))

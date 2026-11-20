@@ -13,8 +13,8 @@ ShellRoot {
     property var wallpapers: []
     property var filteredWallpapers: []
     property string selectedPath: ""
-    property string titleText: "Fondos de pantalla"
-    property string searchPlaceholder: "Buscar fondo…"
+    property string titleText: Quickshell.env("MD_WALLPAPER_TITLE") || "Fondos de pantalla"
+    property string searchPlaceholder: Quickshell.env("MD_WALLPAPER_SEARCH") || "Buscar fondo…"
     property string searchText: ""
 
     function updateFilter() {
@@ -185,11 +185,10 @@ ShellRoot {
                             anchors.verticalCenter: parent.verticalCenter
                             width: parent.width - 28
                             placeholderText: root.searchPlaceholder
-                            color: "#ffffff"
-                            placeholderTextColor: "#ffffff"
+                            color: Theme.texto
+                            placeholderTextColor: Theme.textoSuave
                             font.pixelSize: 13
                             background: null
-                            palette { text: "#ffffff"; placeholderText: "#ffffff" }
                             onTextChanged: root.searchText = text
                             Keys.onEscapePressed: Qt.quit()
                         }
