@@ -31,6 +31,8 @@ ShellRoot {
         }
     }
 
+    Component.onCompleted: search.forceActiveFocus()
+
     function updateFilter() {
         var q = query.toLowerCase()
         filtered = entries.filter(function(e) {
@@ -64,6 +66,11 @@ ShellRoot {
         WlrLayershell.namespace: "md.launcher"
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: root.cancel()
+        }
 
         Rectangle {
             anchors.fill: parent
