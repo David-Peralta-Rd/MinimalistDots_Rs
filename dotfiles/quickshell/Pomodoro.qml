@@ -139,7 +139,8 @@ ShellRoot {
                 }
 
                 Row {
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 4
                     spacing: 2
 
                     Rectangle {
@@ -152,7 +153,7 @@ ShellRoot {
                             anchors.centerIn: parent
                             text: root.paused ? "▶" : "❚❚"
                             color: Theme.texto
-                            font.pixelSize: 9
+                            font.pixelSize: 5
                         }
 
                         MouseArea {
@@ -173,7 +174,7 @@ ShellRoot {
                             anchors.centerIn: parent
                             text: "↻"
                             color: Theme.texto
-                            font.pixelSize: 9
+                            font.pixelSize: 5
                         }
 
                         MouseArea {
@@ -194,7 +195,7 @@ ShellRoot {
                             anchors.centerIn: parent
                             text: "✕"
                             color: Theme.texto
-                            font.pixelSize: 9
+                            font.pixelSize: 5
                         }
 
                         MouseArea {
