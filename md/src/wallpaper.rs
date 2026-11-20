@@ -85,6 +85,7 @@ pub fn list_json() -> Result<(), Box<dyn std::error::Error>> {
             json!({
                 "name": wallpaper.name,
                 "path": wallpaper.path.to_string_lossy(),
+                "thumb": crate::util::thumbnail(&wallpaper.path.to_string_lossy()),
             })
         })
         .collect();

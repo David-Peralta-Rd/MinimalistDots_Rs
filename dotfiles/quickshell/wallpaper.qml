@@ -227,7 +227,7 @@ ShellRoot {
 
                                 Image {
                                     anchors.fill: parent
-                                    source: "file://" + (modelData.path || "")
+                                    source: "file://" + (modelData.thumb || modelData.path || "")
                                     fillMode: Image.PreserveAspectCrop
                                     smooth: true
                                     asynchronous: true
