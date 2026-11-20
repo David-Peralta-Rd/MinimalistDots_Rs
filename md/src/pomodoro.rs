@@ -194,12 +194,15 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
         .env("MD_POMODORO_BREAK", brk.to_string())
         .env("MD_POMODORO_SESSIONS", sessions.to_string())
         .env("MD_POMODORO_FOCUS_LABEL", texts.t("escritorio.pomodoro_a_concentrarse"))
-        .env("MD_POMODORO_BREAK_LABEL", texts.t("escritorio.pomodoro_descanso_titulo"))
+        .env("MD_POMODORO_BREAK_LABEL", texts.t("escritorio.pomodoro_descansar"))
         .env("MD_POMODORO_PAUSED_LABEL", texts.t("escritorio.pomodoro_en_pausa"))
         .env("MD_POMODORO_PAUSE_LABEL", texts.t("escritorio.pomodoro_pausar"))
         .env("MD_POMODORO_RESUME_LABEL", texts.t("escritorio.pomodoro_reanudar"))
         .env("MD_POMODORO_RESTART_LABEL", texts.t("escritorio.pomodoro_reiniciar"))
-        .env("MD_POMODORO_CLOSE_LABEL", texts.t("escritorio.pomodoro_cerrar"))
+        .env("MD_POMODORO_CLOSE_LABEL", texts.t("escritorio.pomodoro_detener"))
+        .env("MD_POMODORO_MINIMIZE_LABEL", texts.t("escritorio.pomodoro_minimizar"))
+        .env("MD_POMODORO_TIP_LABEL", texts.t("escritorio.pomodoro_levantate"))
+        .env("MD_POMODORO_COMPLETED_LABEL", texts.t("escritorio.pomodoro_completado"))
         .spawn()?;
 
     // El proceso vive mientras el widget (QuickShell) esté abierto.

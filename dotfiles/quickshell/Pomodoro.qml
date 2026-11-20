@@ -12,6 +12,17 @@ ShellRoot {
     property int breakSec: parseInt(Quickshell.env("MD_POMODORO_BREAK") || "300")
     property int sessions: parseInt(Quickshell.env("MD_POMODORO_SESSIONS") || "4")
 
+    property string focusLabel: Quickshell.env("MD_POMODORO_FOCUS_LABEL") || "Concentración"
+    property string breakLabel: Quickshell.env("MD_POMODORO_BREAK_LABEL") || "☕  Hora de descansar"
+    property string pausedLabel: Quickshell.env("MD_POMODORO_PAUSED_LABEL") || "⏸  En pausa"
+    property string pauseLabel: Quickshell.env("MD_POMODORO_PAUSE_LABEL") || "❚❚ Pausar"
+    property string resumeLabel: Quickshell.env("MD_POMODORO_RESUME_LABEL") || "▶ Reanudar"
+    property string restartLabel: Quickshell.env("MD_POMODORO_RESTART_LABEL") || "↻ Reiniciar"
+    property string closeLabel: Quickshell.env("MD_POMODORO_CLOSE_LABEL") || "✕ Detener"
+    property string minimizeLabel: Quickshell.env("MD_POMODORO_MINIMIZE_LABEL") || "▾ Minimizar"
+    property string tipLabel: Quickshell.env("MD_POMODORO_TIP_LABEL") || "Levántate, estírate y mira a lo lejos."
+    property string completedLabel: Quickshell.env("MD_POMODORO_COMPLETED_LABEL") || "Pomodoro completado"
+
     property int currentSession: 1
     property int remaining: focusSec
     property string phase: "focus" // focus | break
@@ -50,20 +61,20 @@ ShellRoot {
         if (phase === "focus") {
             phase = "break"
             remaining = breakSec
-            notifyProc.command = ["notify-send", "Pomodoro", "Descanso"]
+            notifyProc.command = ["notify-send", "Pomodoro", root.breakLabel]
             notifyProc.running = true
         } else {
             currentSession++
             if (currentSession > sessions) {
                 finished = true
-                notifyProc.command = ["notify-send", "Pomodoro", "Completado"]
+                notifyProc.command = ["notify-send", "Pomodoro", root.completedLabel]
                 notifyProc.running = true
                 Qt.quit()
                 return
             }
             phase = "focus"
             remaining = focusSec
-            notifyProc.command = ["notify-send", "Pomodoro", "Concentración"]
+            notifyProc.command = ["notify-send", "Pomodoro", root.focusLabel]
             notifyProc.running = true
         }
     }
@@ -254,7 +265,7 @@ ShellRoot {
 
                 Text {
                     width: parent.width
-                    text: root.paused ? "⏸  En pausa" : "☕  Hora de descansar"
+                    text: root.paused ? root.pausedLabel : root.breakLabel
                     color: root.paused ? Theme.textoSuave : Theme.acentoRojo
                     font.pixelSize: 24
                     font.weight: Font.Bold
@@ -280,7 +291,7 @@ ShellRoot {
 
                 Text {
                     width: parent.width
-                    text: "Levántate, estírate y mira a lo lejos."
+                    text: root.tipLabel
                     color: Theme.textoSuave
                     font.pixelSize: 13
                     horizontalAlignment: Text.AlignHCenter
@@ -312,7 +323,7 @@ ShellRoot {
 
                         Text {
                             anchors.centerIn: parent
-                            text: root.paused ? "▶ Reanudar" : "❚❚ Pausar"
+                            text: root.paused ? root.resumeLabel : root.pauseLabel
                             color: Theme.texto
                             font.pixelSize: 12
                         }
@@ -333,7 +344,7 @@ ShellRoot {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "↻ Reiniciar"
+                            text: root.restartLabel
                             color: Theme.texto
                             font.pixelSize: 12
                         }
@@ -354,7 +365,7 @@ ShellRoot {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "▾ Minimizar"
+                            text: root.minimizeLabel
                             color: Theme.texto
                             font.pixelSize: 12
                         }
@@ -375,7 +386,7 @@ ShellRoot {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "✕ Detener"
+                            text: root.closeLabel
                             color: Theme.texto
                             font.pixelSize: 12
                         }
