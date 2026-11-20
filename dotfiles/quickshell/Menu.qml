@@ -178,14 +178,17 @@ ShellRoot {
 
                     delegate: Rectangle {
                         width: ListView.view.width
-                        height: 40
+                        height: Math.max(40, label.implicitHeight + 16)
                         radius: 4
                         color: index === root.currentIndex ? Theme.seleccion : "transparent"
 
                         Row {
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.top: parent.top
+                            anchors.topMargin: 8
                             anchors.left: parent.left
                             anchors.leftMargin: 8
+                            anchors.right: parent.right
+                            anchors.rightMargin: 8
                             spacing: 8
 
                             Image {
@@ -195,10 +198,13 @@ ShellRoot {
                                 visible: !!modelData.icon
                             }
                             Text {
+                                id: label
+                                width: parent.width - (modelData.icon ? 32 : 0) - (root.canDelete && index === root.currentIndex ? 34 : 0)
                                 text: modelData.label || ""
                                 color: index === root.currentIndex ? Theme.acentoVerde : Theme.texto
                                 font.pixelSize: 14
                                 font.weight: index === root.currentIndex ? Font.DemiBold : Font.Normal
+                                wrapMode: Text.WordWrap
                                 verticalAlignment: Text.AlignVCenter
                             }
                         }
