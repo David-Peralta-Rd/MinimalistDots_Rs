@@ -20,6 +20,11 @@ ShellRoot {
     property bool bienvenidaOn: (Quickshell.env("MD_WELCOME_BIENVENIDA") || "true") === "true"
     property var changelog: (labelChangelog || "").split("\n")
 
+    Shortcut {
+        sequence: "Escape"
+        onActivated: Qt.quit()
+    }
+
     PanelWindow {
         implicitWidth: 760
         implicitHeight: 600

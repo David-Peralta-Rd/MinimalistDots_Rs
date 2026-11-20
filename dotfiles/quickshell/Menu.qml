@@ -23,6 +23,11 @@ ShellRoot {
     property int currentIndex: 0
     property bool confirmWipe: false
 
+    Shortcut {
+        sequence: "Escape"
+        onActivated: root.writeResult('{"type":"cancelled"}')
+    }
+
     Component.onCompleted: loadEntries()
 
     function loadEntries() {
@@ -217,6 +222,29 @@ ShellRoot {
                             }
                         }
                     }
+                }
+            }
+
+            Rectangle {
+                width: 22
+                height: 22
+                radius: 4
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.margins: 6
+                color: menuCloseArea.pressed ? Theme.seleccion : "transparent"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "✕"
+                    color: Theme.texto
+                    font.pixelSize: 12
+                }
+
+                MouseArea {
+                    id: menuCloseArea
+                    anchors.fill: parent
+                    onClicked: root.writeResult('{"type":"cancelled"}')
                 }
             }
         }

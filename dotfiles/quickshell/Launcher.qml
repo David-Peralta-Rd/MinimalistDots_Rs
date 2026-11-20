@@ -15,6 +15,11 @@ ShellRoot {
     property string query: ""
     property var filtered: []
 
+    Shortcut {
+        sequence: "Escape"
+        onActivated: root.cancel()
+    }
+
     Component.onCompleted: loadEntries()
 
     function loadEntries() {
@@ -125,6 +130,29 @@ ShellRoot {
                             onClicked: root.select(root.entries.indexOf(modelData))
                         }
                     }
+                }
+            }
+
+            Rectangle {
+                width: 22
+                height: 22
+                radius: 4
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.margins: 6
+                color: launcherCloseArea.pressed ? Theme.seleccion : "transparent"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "✕"
+                    color: Theme.texto
+                    font.pixelSize: 12
+                }
+
+                MouseArea {
+                    id: launcherCloseArea
+                    anchors.fill: parent
+                    onClicked: root.cancel()
                 }
             }
         }

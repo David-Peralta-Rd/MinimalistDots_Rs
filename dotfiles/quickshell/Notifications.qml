@@ -11,6 +11,11 @@ ShellRoot {
     property string statePath: Quickshell.env("MD_NOTIFICATIONS_STATE") || "/tmp/md-notifications.json"
     property var notifications: []
 
+    Shortcut {
+        sequence: "Escape"
+        onActivated: closeAllProc.running = true
+    }
+
     Component.onCompleted: loadState()
     Timer {
         interval: 300
@@ -134,5 +139,9 @@ ShellRoot {
 
     Process {
         id: closeProc
+    }
+    Process {
+        id: closeAllProc
+        command: ["md", "notify", "dismiss"]
     }
 }
