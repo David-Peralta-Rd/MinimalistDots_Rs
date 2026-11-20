@@ -98,56 +98,64 @@ ShellRoot {
         Rectangle {
             anchors.fill: parent
             color: Theme.fondo
+            opacity: 0.6
             radius: Theme.radiusCard
             border.width: Theme.borderWidth
             border.color: Theme.bordeInactivo
 
-            Column {
+            Row {
                 anchors.fill: parent
                 anchors.margins: 4
-                spacing: 2
+                spacing: 4
 
-                Text {
-                    width: parent.width
-                    text: root.mmss(root.remaining)
-                    color: root.paused ? Theme.textoSuave : Theme.texto
-                    font.pixelSize: 12
-                    font.weight: Font.Bold
-                    horizontalAlignment: Text.AlignHCenter
-                }
+                Column {
+                    width: parent.width - 22
+                    spacing: 2
 
-                Text {
-                    width: parent.width
-                    text: root.currentSession + "/" + root.sessions
-                    color: Theme.textoSuave
-                    font.pixelSize: 8
-                    horizontalAlignment: Text.AlignHCenter
-                }
+                    Text {
+                        width: parent.width
+                        text: root.mmss(root.remaining)
+                        color: root.paused ? Theme.textoSuave : Theme.texto
+                        font.pixelSize: 12
+                        font.weight: Font.Bold
+                        horizontalAlignment: Text.AlignHCenter
+                    }
 
-                Rectangle {
-                    width: parent.width
-                    height: 2
-                    radius: 1
-                    color: Theme.seleccion
+                    Text {
+                        width: parent.width
+                        text: root.currentSession + "/" + root.sessions
+                        color: Theme.texto
+                        font.pixelSize: 10
+                        font.weight: Font.Bold
+                        horizontalAlignment: Text.AlignHCenter
+                    }
 
                     Rectangle {
-                        width: parent.width * root.pct / 100
-                        height: parent.height
+                        width: parent.width * 0.6
+                        height: 1
                         radius: 1
-                        color: Theme.acentoRojo
+                        color: Theme.seleccion
+                        anchors.horizontalCenter: parent.horizontalCenter
+
+                        Rectangle {
+                            width: parent.width * root.pct / 100
+                            height: parent.height
+                            radius: 1
+                            color: Theme.acentoRojo
+                        }
                     }
                 }
 
                 Column {
-                    anchors.right: parent.right
-                    anchors.rightMargin: 4
+                    width: 18
                     spacing: 2
+                    anchors.verticalCenter: parent.verticalCenter
 
-                    Rectangle {
-                        width: 20
-                        height: 16
-                        radius: 3
-                        color: pa.hasHover ? Theme.hover : "transparent"
+                    SoftButton {
+                        width: 18
+                        height: 14
+                        softRadius: 3
+                        softColor: pa.hasHover ? Theme.hover : "transparent"
 
                         Text {
                             anchors.centerIn: parent
@@ -164,11 +172,11 @@ ShellRoot {
                         }
                     }
 
-                    Rectangle {
-                        width: 20
-                        height: 16
-                        radius: 3
-                        color: ra.hasHover ? Theme.hover : "transparent"
+                    SoftButton {
+                        width: 18
+                        height: 14
+                        softRadius: 3
+                        softColor: ra.hasHover ? Theme.hover : "transparent"
 
                         Text {
                             anchors.centerIn: parent
@@ -185,11 +193,11 @@ ShellRoot {
                         }
                     }
 
-                    Rectangle {
-                        width: 20
-                        height: 16
-                        radius: 3
-                        color: sa.hasHover ? Theme.hover : "transparent"
+                    SoftButton {
+                        width: 18
+                        height: 14
+                        softRadius: 3
+                        softColor: sa.hasHover ? Theme.hover : "transparent"
 
                         Text {
                             anchors.centerIn: parent
