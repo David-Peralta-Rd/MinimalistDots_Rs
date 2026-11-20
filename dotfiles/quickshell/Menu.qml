@@ -99,12 +99,11 @@ ShellRoot {
             onClicked: root.writeResult('{"type":"cancelled"}')
         }
 
-        Rectangle {
+        SoftCard {
             anchors.fill: parent
-            radius: Theme.radiusCard
-            color: Theme.fondo
-            border.width: Theme.borderWidth
-            border.color: Theme.bordeActivo
+            softRadius: Theme.radiusCard
+            softColor: Theme.fondo
+            softBorder: Theme.bordeActivo
 
             Column {
                 anchors.fill: parent
@@ -250,4 +249,4 @@ ShellRoot {
         repeat: false
         onTriggered: root.confirmWipe = false
     }
-}%      
+}

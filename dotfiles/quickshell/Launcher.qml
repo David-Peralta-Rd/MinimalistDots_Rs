@@ -72,12 +72,11 @@ ShellRoot {
             onClicked: root.cancel()
         }
 
-        Rectangle {
+        SoftCard {
             anchors.fill: parent
-            radius: Theme.radiusCard
-            color: Theme.fondo
-            border.width: Theme.borderWidth
-            border.color: Theme.bordeActivo
+            softRadius: Theme.radiusCard
+            softColor: Theme.fondo
+            softBorder: Theme.bordeActivo
 
             Column {
                 anchors.fill: parent

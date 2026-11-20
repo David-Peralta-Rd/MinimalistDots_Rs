@@ -50,13 +50,12 @@ ShellRoot {
 
             Repeater {
                 model: root.notifications
-                Rectangle {
+                SoftCard {
                     width: 420
                     height: 72
-                    radius: Theme.radiusCard
-                    color: Theme.fondo
-                    border.width: 1
-                    border.color: modelData.urgency === "critical" ? Theme.acentoRojo : Theme.bordeInactivo
+                    softRadius: Theme.radiusCard
+                    softColor: Theme.fondo
+                    softBorder: modelData.urgency === "critical" ? Theme.acentoRojo : Theme.bordeInactivo
 
                     Column {
                         anchors.fill: parent
