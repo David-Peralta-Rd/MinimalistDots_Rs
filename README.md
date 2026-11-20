@@ -4,7 +4,7 @@ Dotfiles para Hyprland sobre CachyOS/Arch con una capa de desarrollo asistido po
 
 ## Características
 
-- **Entorno de escritorio**: Hyprland + Slint (Rust) para menús, notificaciones, reloj y OSD. Waybar/Quickshell sustituidos por `md` (un único binario).
+- **Entorno de escritorio**: Hyprland + QuickShell (QML) para menús, notificaciones, reloj y OSD. Waybar sustituido por `md` (un único binario) y QuickShell como capa visual.
 - **IA local**: `md ai` levanta modelos con llama.cpp (`llama-server`) y los expone con una API compatible con OpenAI + tool calling. Mide rendimiento real con `llama-bench` y conecta OpenCode al modelo local.
 - **Plantillas**: `AGENTS.md`, `SPEC.md` y `tasks.md` que separan lo que escribo yo de lo que delego al agente, con revisión humana de cada cambio.
 - **Instalador modular** en Python (uv) con pasos ordenados, menús fuzzy y 7 idiomas (es, en, fr, pt, de, it, zh). Catálogos TOML en `lang/`.
@@ -29,7 +29,7 @@ Dotfiles para Hyprland sobre CachyOS/Arch con una capa de desarrollo asistido po
 
 - `md-core/` — lógica pura (sin I/O).
 - `md/` — orquestación y subcomandos.
-- `md-ui/` — componentes Slint + wrappers Rust.
+- `dotfiles/quickshell/` — componentes QML (QuickShell) + singleton visual.
 - `lang/` — catálogos i18n (175 keys, mismas en todos los idiomas).
 - `dotfiles/` — configuraciones de Hyprland, servicios Lua, quickshell.
 - `installer/` — instalador Python (pasos en `steps/`, rutas en `paths.py`).
