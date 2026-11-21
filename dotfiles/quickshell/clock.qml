@@ -50,8 +50,12 @@ ShellRoot {
         WlrLayershell.namespace: "md-clock"
         WlrLayershell.layer: WlrLayer.Bottom
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+        WlrLayershell.exclusiveZone: 0
+
+        mask: Region { item: clockColumn }
 
         Column {
+            id: clockColumn
             anchors { right: parent.right; rightMargin: 12; verticalCenter: parent.verticalCenter }
             spacing: 4
 

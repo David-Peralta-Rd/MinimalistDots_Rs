@@ -32,7 +32,8 @@ ShellRoot {
 
     PanelWindow {
         implicitWidth: 340
-        implicitHeight: 320
+        implicitHeight: notifColumn.implicitHeight
+        visible: root.notifications.length > 0
         color: "transparent"
 
         anchors.top: true
@@ -43,9 +44,15 @@ ShellRoot {
         WlrLayershell.namespace: "md.notifications"
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+        WlrLayershell.exclusiveZone: 0
+
+        mask: Region { item: notifColumn }
 
         Column {
-            anchors.fill: parent
+            id: notifColumn
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
             spacing: 8
 
             Repeater {

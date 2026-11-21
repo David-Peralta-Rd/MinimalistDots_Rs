@@ -32,10 +32,4 @@ Rules.forClass("programing-terminal-opencode"):custom({
     float = true,
 })
 
--- Glassmorphism solo para las ventanas Slint (md.*): blur + transparencia.
-Rules.forClass("^md%..*$"):custom({
-    float       = true,
-    pin         = true,
-    border_size = 0,
-    no_anim     = true,
-})
+-- (Las ventanas md.* eran de Slint y ya no existen: la UI es QuickShell/layer-shell.)
