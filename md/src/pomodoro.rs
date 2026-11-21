@@ -216,14 +216,13 @@ fn serve(focus: u32, brk: u32, sessions: u32) -> Result<(), Box<dyn std::error::
 // =============================================================================
 
 /// Pregunta un número eligiendo entre `options` (o tecleándolo). `None` al cancelar.
-fn ask(texts: &Texts, _key: &str, options: &[u32]) -> Option<u32> {
+fn ask(texts: &Texts, key: &str, options: &[u32]) -> Option<u32> {
     let entries: Vec<MenuEntry> = options
         .iter()
         .map(|n| MenuEntry::new(n.to_string()))
         .collect();
-    let _ = texts;
 
-    match run_entries(&entries, "🍅", false, false, true, None, None, Some(400), Some(300)).ok()? {
+    match run_entries(&entries, &texts.t(key), false, false, true, None, None, Some(400), Some(300)).ok()? {
         MenuResult::Selected(index) => options.get(index).copied(),
         MenuResult::Typed(query) => query.trim().parse().ok().filter(|n| (1..=999).contains(n)),
         _ => None,
