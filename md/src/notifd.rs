@@ -12,7 +12,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 use md_core::Urgency;
-use md_ui::{NotificationData, Notifications};
+use std::sync::Mutex;
 use zbus::blocking::connection::Builder;
 use zbus::interface;
 use zbus::zvariant::OwnedValue;
@@ -27,25 +27,107 @@ const HISTORY_KEEP: usize = 300;
 /// Aplicación cuyos avisos no se guardan en el historial (el propio menú).
 const IGNORED_APP: &str = "Historial";
 
-/// Arranca el demonio: construye la ventana, sirve DBus y entra en el bucle.
-pub fn serve() -> Result<(), Box<dyn std::error::Error>> {
-    let (notifications, component) = Notifications::create(MAX_POPUPS)?;
+/// Estado de una notificación activa.
+#[derive(Clone, serde::Serialize)]
+struct ActiveNotification {
+    id: u64,
+    app: String,
+    summary: String,
+    body: String,
+    urgency: String,
+    progress: i32,
+}
 
+type ActiveList = Arc<Mutex<Vec<ActiveNotification>>>;
+type ExpiryList = Arc<Mutex<Vec<(u64, std::time::Instant, Option<Duration>)>>>;
+
+/// Estado compartido del demonio.
+#[derive(Clone)]
+struct DaemonState {
+    active: ActiveList,
+    expires: ExpiryList,
+    next_id: Arc<std::sync::atomic::AtomicU64>,
+    dnd: Arc<AtomicBool>,
+}
+
+const STATE_PATH: &str = "/tmp/md-notifications.json";
+
+fn write_state(active: &ActiveList) {
+    let Ok(guard) = active.lock() else { return };
+    let _ = std::fs::write(
+        STATE_PATH,
+        serde_json::to_string(&*guard).unwrap_or_else(|_| "[]".to_owned()),
+    );
+}
+
+/// Arranca el demonio: sirve DBus y lanza QuickShell.
+pub fn serve() -> Result<(), Box<dyn std::error::Error>> {
+    let active: ActiveList = Arc::new(Mutex::new(Vec::new()));
+    let expires: ExpiryList = Arc::new(Mutex::new(Vec::new()));
+    let next_id = Arc::new(std::sync::atomic::AtomicU64::new(1));
     let dnd = Arc::new(AtomicBool::new(false));
-    let _connection = build_connection(&notifications, dnd.clone())?;
+
+    let state = DaemonState {
+        active: active.clone(),
+        expires: expires.clone(),
+        next_id: next_id.clone(),
+        dnd: dnd.clone(),
+    };
+
+    let _connection = build_connection(&state)?;
 
     truncate_history(HISTORY_KEEP);
 
-    // Bloquea hasta que se cierra la ventana (el demonio es residente). El
-    // `_connection` sigue vivo durante el bucle, sirviendo DBus en su hilo.
-    Notifications::run(component)?;
-    Ok(())
+    // Lanza QuickShell residente.
+    let _ = std::process::Command::new("qs")
+        .arg("-p")
+        .arg(format!(
+            "{}/.local/bin/MinimalistDots_Rs/quickshell/Notifications.qml",
+            std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_owned())
+        ))
+        .env("MD_NOTIFICATIONS_STATE", STATE_PATH)
+        .env("QML_XHR_ALLOW_FILE_READ", "1")
+        .spawn();
+
+    write_state(&active);
+
+    // Hilo de expiración.
+    let active_exp = active.clone();
+    let expires_exp = expires.clone();
+    std::thread::spawn(move || {
+        loop {
+            std::thread::sleep(Duration::from_millis(200));
+            let now = std::time::Instant::now();
+            let mut changed = false;
+            if let Ok(mut guard) = expires_exp.lock() {
+                let expired: Vec<u64> = guard
+                    .iter()
+                    .filter(|(_, t, timeout)| timeout.is_some_and(|d| *t + d < now))
+                    .map(|(id, _, _)| *id)
+                    .collect();
+                if !expired.is_empty() {
+                    changed = true;
+                    guard.retain(|(id, _, _)| !expired.contains(id));
+                    if let Ok(mut a) = active_exp.lock() {
+                        a.retain(|n| !expired.contains(&n.id));
+                    }
+                }
+            }
+            if changed {
+                write_state(&active_exp);
+            }
+        }
+    });
+
+    // Mantiene el proceso vivo.
+    loop {
+        std::thread::sleep(Duration::from_secs(3600));
+    }
 }
 
 /// Interfaz `org.freedesktop.Notifications`.
 struct NotificationsIface {
-    notifications: Notifications,
-    dnd: Arc<AtomicBool>,
+    state: DaemonState,
     default_timeout: Duration,
 }
 
@@ -94,51 +176,76 @@ impl NotificationsIface {
             let _ = append_history(&notification);
         }
 
+        let id = self.state.next_id.fetch_add(1, Ordering::Relaxed);
+
         // Reemplazo: cierra la notificación previa (si existía).
         if replaces_id > 0 {
-            self.notifications.close(u64::from(replaces_id));
+            if let Ok(mut guard) = self.state.active.lock() {
+                guard.retain(|n| n.id != replaces_id as u64);
+            }
+            if let Ok(mut guard) = self.state.expires.lock() {
+                guard.retain(|(nid, _, _)| *nid != replaces_id as u64);
+            }
         }
 
         let critical = urgency.is_critical();
-        let dnd = self.dnd.load(Ordering::SeqCst);
+        let dnd = self.state.dnd.load(Ordering::SeqCst);
 
         // En "no molestar" solo se muestran las críticas; el resto se registra
         // sin mostrarse (pero devolvemos un id válido).
         if dnd && !critical {
-            return self.notifications.reserve_id() as u32;
+            return id as u32;
         }
 
-        let data = NotificationData {
+        let progress = progress_from_hints(&hints);
+        let timeout = timeout_for(urgency, expire_timeout, self.default_timeout);
+
+        let item = ActiveNotification {
+            id,
             app: app_name,
             summary,
             body,
-            urgency,
-            progress: progress_from_hints(&hints),
+            urgency: urgency.as_str().to_owned(),
+            progress,
         };
-        let timeout = timeout_for(urgency, expire_timeout, self.default_timeout);
-        self.notifications.push(data, timeout) as u32
+        if let Ok(mut guard) = self.state.active.lock() {
+            guard.insert(0, item);
+            if guard.len() > MAX_POPUPS {
+                guard.truncate(MAX_POPUPS);
+            }
+        }
+        if let Ok(mut guard) = self.state.expires.lock() {
+            guard.push((id, std::time::Instant::now(), timeout));
+        }
+        write_state(&self.state.active);
+        id as u32
     }
 
     fn close_notification(&self, id: u32) {
-        self.notifications.close(u64::from(id));
+        if let Ok(mut guard) = self.state.active.lock() {
+            guard.retain(|n| n.id != id as u64);
+        }
+        if let Ok(mut guard) = self.state.expires.lock() {
+            guard.retain(|(nid, _, _)| *nid != id as u64);
+        }
+        write_state(&self.state.active);
     }
 }
 
 /// Interfaz de control propia (toggle/status/limpiar popups).
 struct ControlIface {
-    notifications: Notifications,
-    dnd: Arc<AtomicBool>,
+    state: DaemonState,
 }
 
 #[interface(name = "com.github.MinimalistDots.Notifd")]
 impl ControlIface {
     fn toggle_dnd(&self) -> String {
-        let now_on = !self.dnd.fetch_xor(true, Ordering::SeqCst);
+        let now_on = !self.state.dnd.fetch_xor(true, Ordering::SeqCst);
         if now_on { "on" } else { "off" }.to_owned()
     }
 
     fn status(&self) -> String {
-        if self.dnd.load(Ordering::SeqCst) {
+        if self.state.dnd.load(Ordering::SeqCst) {
             "dnd"
         } else {
             "normal"
@@ -147,31 +254,32 @@ impl ControlIface {
     }
 
     fn clear_popups(&self) {
-        self.notifications.dismiss_all();
+        if let Ok(mut guard) = self.state.active.lock() {
+            guard.clear();
+        }
+        if let Ok(mut guard) = self.state.expires.lock() {
+            guard.clear();
+        }
+        write_state(&self.state.active);
     }
 }
 
 /// Construye la conexión de sesión y sirve ambas interfaces bajo el nombre
 /// `org.freedesktop.Notifications` (la interfaz de control vive en otra ruta).
-fn build_connection(
-    notifications: &Notifications,
-    dnd: Arc<AtomicBool>,
-) -> Result<zbus::blocking::Connection, zbus::Error> {
+fn build_connection(state: &DaemonState) -> Result<zbus::blocking::Connection, zbus::Error> {
     Builder::session()?
         .name("org.freedesktop.Notifications")?
         .serve_at(
             "/org/freedesktop/Notifications",
             NotificationsIface {
-                notifications: notifications.clone(),
-                dnd: dnd.clone(),
+                state: state.clone(),
                 default_timeout: DEFAULT_TIMEOUT,
             },
         )?
         .serve_at(
             "/com/github/MinimalistDots/Notifd",
             ControlIface {
-                notifications: notifications.clone(),
-                dnd,
+                state: state.clone(),
             },
         )?
         .build()

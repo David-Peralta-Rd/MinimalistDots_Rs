@@ -123,6 +123,7 @@ siguiente = "下一步（在新终端中）：ai-doctor  →  ai-up chat  →  a
 # Desktop tools (`md`): menus, OSD and notifications (H7).
 [escritorio]
 lanzador = "启动器"
+buscar_app = "搜索应用…"
 portapapeles = "剪贴板"
 atajos = "键盘快捷键"
 gestor_procesos = "进程管理器"
@@ -168,6 +169,8 @@ pomodoro_descanso_titulo = "休息"
 pomodoro_sesion_terminada = "第 {session} / {total} 会话结束"
 pomodoro_a_concentrarse = "开始专注"
 pomodoro_completado = "番茄钟完成 🎉"
+pomodoro_cerrar = "关闭"
+pomodoro_consejo = "起身、伸展并远眺。"
 pomodoro_terminaste = "已完成 {total} 个会话"
 pomodoro_detenido = "番茄钟已停止"
 pomodoro_ya_activo = "已在运行"

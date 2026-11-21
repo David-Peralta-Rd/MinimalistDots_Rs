@@ -5,6 +5,7 @@ use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
 /// Carga la paleta instalada (o la del repo en desarrollo), con respaldo embebido.
+#[allow(clippy::unwrap_used)]
 pub fn load_palette() -> md_core::Palette {
     if let Ok(path) = std::env::var("MD_PALETTE") {
         let path = PathBuf::from(path);
@@ -77,6 +78,47 @@ pub fn copy_to_clipboard(text: &str) -> Result<(), std::io::Error> {
 
 /// Envía una notificación con `notify-send` (la recibe nuestro propio demonio).
 /// Los fallos se ignoran: si el demonio no está corriendo no hay a quién avisar.
+/// Devuelve la ruta de una miniatura en caché (128 px) para `path`.
+/// Si no es una imagen válida o falla, devuelve la ruta original.
+pub fn thumbnail(path: &str) -> String {
+    if path.is_empty() {
+        return String::new();
+    }
+    let source = std::path::Path::new(path);
+    let cache_dir = std::env::var_os("XDG_CACHE_HOME")
+        .map(std::path::PathBuf::from)
+        .or_else(|| std::env::var_os("HOME").map(|h| std::path::PathBuf::from(h).join(".cache")))
+        .map(|base| base.join("md").join("thumbs"));
+    let Some(cache_dir) = cache_dir else {
+        return path.to_owned();
+    };
+    use std::hash::{Hash, Hasher};
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    path.hash(&mut hasher);
+    // Incluye metadatos del archivo para invalidar la miniatura si cambia.
+    if let Ok(meta) = std::fs::metadata(source) {
+        meta.len().hash(&mut hasher);
+        if let Ok(mtime) = meta.modified() {
+            mtime.hash(&mut hasher);
+        }
+    }
+    let key = format!("{:x}", hasher.finish());
+    let cache_path = cache_dir.join(format!("{key}.png"));
+    if cache_path.exists() {
+        return cache_path.to_string_lossy().into_owned();
+    }
+    if let Ok(reader) = image::ImageReader::open(source)
+        && let Ok(decoded) = reader.decode()
+    {
+        let thumb = decoded.thumbnail(128, 128);
+        let _ = std::fs::create_dir_all(&cache_dir);
+        if thumb.save(&cache_path).is_ok() {
+            return cache_path.to_string_lossy().into_owned();
+        }
+    }
+    path.to_owned()
+}
+
 pub fn notify_send(app: &str, timeout_ms: u32, summary: &str, body: &str) {
     let timeout = timeout_ms.to_string();
     let mut command = Command::new("notify-send");

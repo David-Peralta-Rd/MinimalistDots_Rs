@@ -6,8 +6,9 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use md_core::{MenuEntry, MenuMode, discover_wallpapers};
-use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
+use md_core::{MenuEntry, discover_wallpapers};
+
+use crate::menu::{MenuResult, run_entries};
 
 use crate::i18n::Texts;
 
@@ -29,22 +30,10 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         })
         .collect();
 
-    let config = MenuConfig {
-        app_id: "md.wallpaper".to_owned(),
-        title: texts.t("escritorio.fondo_pantalla"),
-        prompt: "🖼".to_owned(),
-        accent: crate::util::load_palette().accent_blue,
-        row_height: 56.0,                              // filas altas para la miniatura
-        width: 560.0,
-        height: 520.0,
-        can_delete: false,
-        can_wipe: false,
-        submit_empty: false,
-        wipe_label: None,
-        confirm_wipe_label: None,
-    };
+    let _ = texts;
 
-    if let MenuEvent::Selected(index) = run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config)?
+    if let MenuResult::Selected(index) =
+        run_entries(&entries, "🖼", false, false, false, None, None, None, None)?
         && let Some(wallpaper) = wallpapers.get(index)
     {
         apply(&wallpaper.path)?;
@@ -97,6 +86,7 @@ pub fn list_json() -> Result<(), Box<dyn std::error::Error>> {
             json!({
                 "name": wallpaper.name,
                 "path": wallpaper.path.to_string_lossy(),
+                "thumb": crate::util::thumbnail(&wallpaper.path.to_string_lossy()),
             })
         })
         .collect();

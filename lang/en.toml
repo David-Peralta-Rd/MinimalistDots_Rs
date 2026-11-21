@@ -122,6 +122,7 @@ siguiente = "NEXT (IN A NEW TERMINAL): ai-doctor  →  ai-up chat  →  ai-bench
 # Desktop tools (`md`): menus, OSD and notifications (H7).
 [escritorio]
 lanzador = "Launcher"
+buscar_app = "Search application…"
 portapapeles = "Clipboard"
 atajos = "Keyboard shortcuts"
 gestor_procesos = "Process manager"
@@ -167,6 +168,8 @@ pomodoro_descanso_titulo = "Break"
 pomodoro_sesion_terminada = "Session {session} of {total} finished"
 pomodoro_a_concentrarse = "Time to focus"
 pomodoro_completado = "Pomodoro completed 🎉"
+pomodoro_cerrar = "Close"
+pomodoro_consejo = "Stand up, stretch and look into the distance."
 pomodoro_terminaste = "You finished all {total} sessions"
 pomodoro_detenido = "Pomodoro stopped"
 pomodoro_ya_activo = "Already running"

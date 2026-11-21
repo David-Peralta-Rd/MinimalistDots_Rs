@@ -409,7 +409,11 @@ fn save_desktop_cache(fingerprint: u64, entries: &[DesktopEntry]) {
         entries: entries.to_vec(),
     };
     if let Ok(text) = serde_json::to_string(&cache) {
-        let _ = fs::write(dir.join("desktop_entries.json"), text);
+        let target = dir.join("desktop_entries.json");
+        let tmp = dir.join("desktop_entries.json.tmp");
+        if fs::write(&tmp, &text).is_ok() {
+            let _ = fs::rename(&tmp, &target);
+        }
     }
 }
 
@@ -467,7 +471,11 @@ fn save_icon_cache(fingerprint: u64, by_name: &HashMap<String, PathBuf>) {
         by_name: by_name.clone(),
     };
     if let Ok(text) = serde_json::to_string(&cache) {
-        let _ = fs::write(dir.join("icon_index.json"), text);
+        let target = dir.join("icon_index.json");
+        let tmp = dir.join("icon_index.json.tmp");
+        if fs::write(&tmp, &text).is_ok() {
+            let _ = fs::rename(&tmp, &target);
+        }
     }
 }
 

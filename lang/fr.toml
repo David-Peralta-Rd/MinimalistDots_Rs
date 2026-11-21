@@ -123,6 +123,7 @@ siguiente = "SUIVANT (DANS UN NOUVEAU TERMINAL) : ai-doctor  →  ai-up chat  �
 # Outils de bureau (`md`) : menus, OSD et notifications (H7).
 [escritorio]
 lanzador = "Lanceur"
+buscar_app = "Rechercher une application…"
 portapapeles = "Presse-papiers"
 atajos = "Raccourcis clavier"
 gestor_procesos = "Gestionnaire de processus"
@@ -168,6 +169,8 @@ pomodoro_descanso_titulo = "Pause"
 pomodoro_sesion_terminada = "Session {session} sur {total} terminée"
 pomodoro_a_concentrarse = "À se concentrer"
 pomodoro_completado = "Pomodoro terminé 🎉"
+pomodoro_cerrar = "Fermer"
+pomodoro_consejo = "Levez-vous, étirez-vous et regardez au loin."
 pomodoro_terminaste = "Vous avez terminé les {total} sessions"
 pomodoro_detenido = "Pomodoro arrêté"
 pomodoro_ya_activo = "Déjà actif"

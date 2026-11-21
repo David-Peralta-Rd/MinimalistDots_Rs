@@ -122,6 +122,7 @@ siguiente = "SIGUIENTE (EN UNA TERMINAL NUEVA): ai-doctor  →  ai-up chat  → 
 # Herramientas de escritorio (`md`): menús, OSD y notificaciones (H7).
 [escritorio]
 lanzador = "Lanzador"
+buscar_app = "Buscar aplicación…"
 portapapeles = "Portapapeles"
 atajos = "Atajos de teclado"
 gestor_procesos = "Gestor de procesos"
@@ -167,6 +168,8 @@ pomodoro_descanso_titulo = "Descanso"
 pomodoro_sesion_terminada = "Sesión {session} de {total} terminada"
 pomodoro_a_concentrarse = "A concentrarse"
 pomodoro_completado = "Pomodoro completado 🎉"
+pomodoro_cerrar = "Cerrar"
+pomodoro_consejo = "Levántate, estírate y mira a lo lejos."
 pomodoro_terminaste = "Terminaste las {total} sesiones"
 pomodoro_detenido = "Pomodoro detenido"
 pomodoro_ya_activo = "Ya está activo"

@@ -19,8 +19,8 @@ use std::time::Duration;
 
 use clap::{Subcommand, ValueEnum};
 
-use md_core::{MenuEntry, MenuMode};
-use md_ui::{MenuConfig, MenuEvent, SlintHost, run_menu};
+use crate::menu::{MenuResult, run_entries};
+use md_core::MenuEntry;
 
 use crate::i18n::Texts;
 use crate::util::notify_send;
@@ -262,22 +262,9 @@ fn choose(title: &str, labels: &[String]) -> Option<String> {
         .iter()
         .map(|label| MenuEntry::new(label.clone()))
         .collect();
-    let config = MenuConfig {
-        app_id: "md.ai.ask".to_owned(),
-        title: title.to_owned(),
-        prompt: "🤖".to_owned(),
-        accent: crate::util::load_palette().accent_cyan,
-        row_height: 40.0,
-        width: 680.0,
-        height: 440.0,
-        can_delete: false,
-        can_wipe: false,
-        submit_empty: false,
-        wipe_label: None,
-        confirm_wipe_label: None,
-    };
-    match run_menu(&SlintHost, &entries, MenuMode::Dmenu, &config).ok()? {
-        MenuEvent::Selected(index) => labels.get(index).cloned(),
+    let _ = title;
+    match run_entries(&entries, "🤖", false, false, false, None, None, None, None).ok()? {
+        MenuResult::Selected(index) => labels.get(index).cloned(),
         _ => None,
     }
 }
@@ -1926,14 +1913,7 @@ fn new_project(
                 .env("NPM_CONFIG_YES", "true")
                 .stdin(std::process::Stdio::null())
                 .args([
-                    "--yes",
-                    "skills",
-                    "add",
-                    *package,
-                    "--skill",
-                    *skill,
-                    "--agent",
-                    "opencode",
+                    "--yes", "skills", "add", *package, "--skill", *skill, "--agent", "opencode",
                     "-y",
                 ])
                 .status();

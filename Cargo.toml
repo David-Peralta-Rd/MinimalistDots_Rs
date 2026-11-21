@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["md","md-core", "md-ui"]
+members = ["md", "md-core"]
 
 [workspace.lints.rust]
 # `deny` (y no `forbid`) porque el código generado por Slint usa `unsafe` interno
@@ -12,3 +12,8 @@ unsafe_code = "deny"
 unwrap_used = "deny"
 expect_used = "deny"
 panic = "deny"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

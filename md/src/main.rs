@@ -14,6 +14,7 @@ mod notifd;
 mod notify;
 mod pomodoro;
 mod process;
+mod quickshell;
 mod record;
 mod shot;
 mod util;
@@ -34,9 +35,6 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
-    /// Diálogo "Acerca de" (AboutSlint).
-    About,
-
     /// Lanzador de aplicaciones (lista los `.desktop` instalados).
     Launcher,
 
@@ -105,7 +103,11 @@ enum Command {
     Language,
 
     /// Pantalla de bienvenida (idioma, atajos, novedades, GitHub).
-    Welcome,
+    Welcome {
+        /// Alterna el estado de bienvenida y sale.
+        #[arg(long)]
+        toggle: bool,
+    },
 
     /// IA local: menú de modelos, servidores `llama-server`, diagnóstico.
     Ai {
@@ -139,7 +141,6 @@ enum Command {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
     match cli.command {
-        Command::About => md_ui::about(&md_ui::SlintHost)?,
         Command::Launcher => launcher::run()?,
         Command::Clip => clip::run()?,
         Command::Binds => binds::run()?,
@@ -168,7 +169,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         Command::Language => language::run()?,
-        Command::Welcome => welcome::run()?,
+        Command::Welcome { toggle } => welcome::run(toggle)?,
         Command::Ai { command } => ai::run(command)?,
         Command::Menu {
             name,
@@ -177,8 +178,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             delete_cmd,
             wipe_cmd,
         } => {
+            let _ = name;
             menu::run(&menu::Args {
-                name,
                 prompt: prompt.unwrap_or_default(),
                 raw,
                 delete_cmd,

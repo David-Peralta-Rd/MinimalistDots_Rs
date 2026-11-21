@@ -6,10 +6,9 @@
 #   obligatorio : true si es imprescindible para un escritorio mínimo
 #                 (perfil mínimo futuro; la v1 instala todos los grupos)
 #
-# Nota: se eliminaron `quickshell` y `qt6-declarative` del antiguo grupo
-# "quickshell" (ahora "ui"): Quickshell queda reemplazado por las herramientas
-# Rust/Slint. Los duplicados entre grupos (git, jq, libnotify, slurp…) son
-# intencionales (cada grupo es autocontenido) y se deduplican al instalar.
+# Nota: la UI ahora es QuickShell (QML). Se mantienen `quickshell` y las
+# dependencias Qt6 necesarias. Los duplicados entre grupos (git, jq, libnotify,
+# slurp…) son intencionales (cada grupo es autocontenido) y se deduplican al instalar.
 
 [[grupo]]
 nombre = "zsh"
@@ -21,7 +20,7 @@ paquetes = ["zsh", "git", "zsh-completions", "zsh-autocomplete", "zsh-autosugges
 nombre = "core"
 origen = "repo"
 obligatorio = true
-paquetes = ["extra/mpv", "git", "sddm", "qt6ct", "flatpak", "udisks2", "cliphist", "hypridle", "hyprland", "hyprlock", "hyprpaper", "reflector", "fastfetch", "hyprpolkitagent", "xdg-desktop-portal-hyprland", "quickshell"]
+paquetes = ["extra/mpv", "git", "sddm", "qt6ct", "flatpak", "udisks2", "cliphist", "hypridle", "hyprland", "hyprlock", "hyprpaper", "reflector", "fastfetch", "hyprpolkitagent", "xdg-desktop-portal-hyprland", "quickshell", "qt6-declarative"]
 
 [[grupo]]
 nombre = "apps"

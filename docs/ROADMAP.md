@@ -24,4 +24,4 @@ Hitos 0-7 de docs/MIGRATION.md: instalador Python con paridad, `md` con menús, 
 | Vista previa de idioma en el menú | Pulido | Catálogos ya cargables en md_core |
 | Actualizador de modelos (`md ai pull`) | Depende de H6 | models.env ya es contrato |
 | Empaquetar para el AUR | Requiere releases | `cargo install --locked` ya funciona |
-| Pruebas de captura de pantalla (UI) | Backend de pruebas Slint inmaduro | md_ui separa lógica de vista |
+| Pruebas de captura de pantalla (UI) | Backend QuickShell/QML | lógica en Rust, vista en QML |

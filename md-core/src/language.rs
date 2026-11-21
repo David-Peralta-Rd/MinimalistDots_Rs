@@ -114,16 +114,12 @@ impl Translator {
 /// invalidada por los mtimes de los archivos `.toml` del directorio.
 pub fn load_chain(dir: &Path, codigo: &str) -> Result<Translator, CatalogError> {
     let fingerprint = lang_cache_fingerprint(dir);
-    if let Some(path) = lang_cache_path(codigo) {
-        if let Ok(text) = std::fs::read_to_string(&path) {
-            if let Ok(cache) = serde_json::from_str::<LangCache>(&text) {
-                if cache.fingerprint == fingerprint {
-                    return Ok(Translator {
-                        chain: cache.chain,
-                    });
-                }
-            }
-        }
+    if let Some(path) = lang_cache_path(codigo)
+        && let Ok(text) = std::fs::read_to_string(&path)
+        && let Ok(cache) = serde_json::from_str::<LangCache>(&text)
+        && cache.fingerprint == fingerprint
+    {
+        return Ok(Translator { chain: cache.chain });
     }
 
     let translator = load_chain_uncached(dir, codigo)?;
@@ -137,7 +133,10 @@ pub fn load_chain(dir: &Path, codigo: &str) -> Result<Translator, CatalogError> 
             chain: translator.chain.clone(),
         };
         if let Ok(text) = serde_json::to_string(&cache) {
-            let _ = std::fs::write(path, text);
+            let tmp = path.with_extension("json.tmp");
+            if std::fs::write(&tmp, &text).is_ok() {
+                let _ = std::fs::rename(&tmp, path);
+            }
         }
     }
 

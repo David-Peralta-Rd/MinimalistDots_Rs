@@ -36,7 +36,7 @@ marcable. El origen de cada tarea está en `temporal-antigua-config/` (que se bo
 
 | | Tarea | Origen → Destino |
 |---|---|---|
-| ✅ | **`packages.toml` completo**: 14 grupos de paquetes con `origen` y `obligatorio` (se eliminó `quickshell`/`qt6-declarative`, reemplazados por Rust/Slint) | `c2_install_packages.sh` → `packages.toml` |
+| ✅ | **`packages.toml` completo**: grupos de paquetes con `origen` y `obligatorio` (UI visual por defecto: QuickShell) | `c2_install_packages.sh` → `packages.toml` |
 | ✅ | **`lang/es.toml` + `lang/en.toml` completos**: 71 claves del instalador (paridad verificada; `validate_language_catalogs` → válido) | `src/setup/lang/options/lg*.cfg` → `lang/` |
 | ✅ | **`installer/language.py`**: descubrir catálogos, cadena de respaldo (código→base→es→clave), búsqueda difusa, selección y guardado en `settings.toml` | `load_lang.sh` → `language.py` |
 | ✅ | Tests de `language.py` (catálogos, respaldo, selección, búsqueda) + integración en `context.py` (`Context.t` con cadena de respaldo) | `installer/tests/` |

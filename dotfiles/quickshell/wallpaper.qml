@@ -8,13 +8,11 @@ import Quickshell.Wayland
 ShellRoot {
     id: root
 
-    Palette { id: palette }
-
     property var wallpapers: []
     property var filteredWallpapers: []
     property string selectedPath: ""
-    property string titleText: "Fondos de pantalla"
-    property string searchPlaceholder: "Buscar fondo…"
+    property string titleText: Quickshell.env("MD_WALLPAPER_TITLE") || "Fondos de pantalla"
+    property string searchPlaceholder: Quickshell.env("MD_WALLPAPER_SEARCH") || "Buscar fondo…"
     property string searchText: ""
 
     function updateFilter() {
@@ -53,16 +51,16 @@ ShellRoot {
     }
 
     // Paleta normal (sin espejo)
-    readonly property color cFondo: palette.fondo
-    readonly property color cTarjeta: palette.tarjeta
-    readonly property color cSuperficie: palette.superficie
-    readonly property color cHover: palette.hover
-    readonly property color cSeleccion: palette.seleccion
-    readonly property color cBorde: palette.seleccion
-    readonly property color cBordeFuerte: palette.bordeInactivo
-    readonly property color cTexto: palette.texto
-    readonly property color cTextoSuave: palette.textoSuave
-    readonly property color cAcento: palette.acentoAzul
+    readonly property color cFondo: Theme.fondo
+    readonly property color cTarjeta: Theme.tarjeta
+    readonly property color cSuperficie: Theme.superficie
+    readonly property color cHover: Theme.hover
+    readonly property color cSeleccion: Theme.seleccion
+    readonly property color cBorde: Theme.seleccion
+    readonly property color cBordeFuerte: Theme.bordeInactivo
+    readonly property color cTexto: Theme.texto
+    readonly property color cTextoSuave: Theme.textoSuave
+    readonly property color cAcento: Theme.acentoAzul
 
     onWallpapersChanged: updateFilter()
     onSearchTextChanged: updateFilter()
@@ -185,11 +183,10 @@ ShellRoot {
                             anchors.verticalCenter: parent.verticalCenter
                             width: parent.width - 28
                             placeholderText: root.searchPlaceholder
-                            color: "#ffffff"
-                            placeholderTextColor: "#ffffff"
+                            color: Theme.texto
+                            placeholderTextColor: Theme.textoSuave
                             font.pixelSize: 13
                             background: null
-                            palette { text: "#ffffff"; placeholderText: "#ffffff" }
                             onTextChanged: root.searchText = text
                             Keys.onEscapePressed: Qt.quit()
                         }
@@ -230,7 +227,7 @@ ShellRoot {
 
                                 Image {
                                     anchors.fill: parent
-                                    source: "file://" + (modelData.path || "")
+                                    source: "file://" + (modelData.thumb || modelData.path || "")
                                     fillMode: Image.PreserveAspectCrop
                                     smooth: true
                                     asynchronous: true

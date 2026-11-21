@@ -8,7 +8,7 @@ Dotfiles + instalador + herramientas de escritorio. Sin servidor ni BD. El autor
 ## Decisión
 - Arquetipo 4 (CLI), con idempotencia y registro del 5.
 - Instalador: Python 3.14 + uv (backend maturin por el puente PyO3).
-- Herramientas y UI: Rust (workspace) + Slint.
+- Herramientas: Rust (workspace). UI: QuickShell (QML).
 - Datos: TOML tipado (palette, lang, packages).
 - Raíz: se añaden `install.sh` (entrada pública, ~10 líneas) y `LICENSE` (MIT); `BACKLOG.md` pasa a docs/ROADMAP.md.
 
