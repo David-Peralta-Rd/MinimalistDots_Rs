@@ -112,6 +112,16 @@ ShellRoot {
                 anchors.margins: 10
                 spacing: 8
 
+                Text {
+                    visible: root.prompt !== ""
+                    width: parent.width
+                    text: root.prompt
+                    color: Theme.textoSuave
+                    font.pixelSize: 12
+                    font.weight: Font.DemiBold
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
                 // Barra de búsqueda
                 Rectangle {
                     width: parent.width
@@ -170,7 +180,7 @@ ShellRoot {
                 ListView {
                     id: listView
                     width: parent.width
-                    height: parent.height - 48
+                    height: parent.height - 68
                     clip: true
                     model: root.filtered
                     currentIndex: root.currentIndex
