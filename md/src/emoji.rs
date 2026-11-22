@@ -1,7 +1,10 @@
 //! Subcomando `emoji`: selector de emojis que copia la elección al portapapeles.
 
+use std::collections::HashMap;
+
 use md_core::MenuEntry;
 
+use crate::i18n::Texts;
 use crate::menu::{MenuResult, run_entries};
 use crate::util;
 
@@ -154,17 +157,178 @@ const EMOJIS: &[(&str, &str)] = &[
     ("🗯️", "bocadillo enfado"),
     ("💭", "pensamiento"),
     (" ", "espacio"),
+    ("🍕", "pizza"),
+    ("🍔", "hamburger"),
+    ("🍟", "fries"),
+    ("🌭", "hot dog"),
+    ("🍿", "popcorn"),
+    ("🧂", "salt"),
+    ("🥚", "egg"),
+    ("🍳", "cooking"),
+    ("🧇", "waffle"),
+    ("🥞", "pancakes"),
+    ("🧈", "butter"),
+    ("🍞", "bread"),
+    ("🥐", "croissant"),
+    ("🥖", "baguette"),
+    ("🥨", "pretzel"),
+    ("🧀", "cheese"),
+    ("🥗", "salad"),
+    ("🥙", "stuffed flatbread"),
+    ("🧆", "falafel"),
+    ("🌮", "taco"),
+    ("🌯", "burrito"),
+    ("🥫", "canned food"),
+    ("🍝", "spaghetti"),
+    ("🍜", "ramen"),
+    ("🍲", "pot of food"),
+    ("🍛", "curry rice"),
+    ("🍣", "sushi"),
+    ("🍱", "bento"),
+    ("🥟", "dumpling"),
+    ("🦪", "oyster"),
+    ("🍤", "fried shrimp"),
+    ("🍙", "rice ball"),
+    ("🍚", "cooked rice"),
+    ("🍘", "rice cracker"),
+    ("🍥", "fish cake"),
+    ("🥠", "fortune cookie"),
+    ("🥮", "moon cake"),
+    ("🍢", "oden"),
+    ("🍡", "dango"),
+    ("🍧", "shaved ice"),
+    ("🍨", "ice cream"),
+    ("🍦", "soft ice cream"),
+    ("🥧", "pie"),
+    ("🧁", "cupcake"),
+    ("🍰", "shortcake"),
+    ("🎂", "birthday cake"),
+    ("🍮", "custard"),
+    ("🍭", "lollipop"),
+    ("🍬", "candy"),
+    ("🍫", "chocolate"),
+    ("🍩", "doughnut"),
+    ("🍪", "cookie"),
+    ("🌰", "chestnut"),
+    ("🥜", "peanuts"),
+    ("🍯", "honey pot"),
+    ("🥛", "milk"),
+    ("🍼", "baby bottle"),
+    ("🫖", "teapot"),
+    ("☕", "hot beverage"),
+    ("🍵", "tea"),
+    ("🧃", "beverage box"),
+    ("🥤", "cup with straw"),
+    ("🧋", "bubble tea"),
+    ("🍶", "sake"),
+    ("🍺", "beer"),
+    ("🍻", "clinking beers"),
+    ("🥂", "clinking glasses"),
+    ("🍷", "wine"),
+    ("🍸", "cocktail"),
+    ("🍹", "tropical drink"),
+    ("🍾", "bottle popping"),
+    ("🧊", "ice"),
+    ("🥄", "spoon"),
+    ("🍴", "fork and knife"),
+    ("🍽️", "fork and knife plate"),
+    ("🥢", "chopsticks"),
+    ("🧺", "basket"),
+    ("🧼", "soap"),
+    ("🧽", "sponge"),
+    ("🧻", "roll of paper"),
+    ("🪒", "razor"),
+    ("🪮", "hair pick"),
+    ("🪥", "toothbrush"),
+    ("🧏", "deaf person"),
+    ("🧍", "standing person"),
+    ("🧎", "kneeling person"),
+    ("🧏‍♂️", "deaf man"),
+    ("🧏‍♀️", "deaf woman"),
+    ("🧍‍♂️", "standing man"),
+    ("🧍‍♀️", "standing woman"),
+    ("🧎‍♂️", "kneeling man"),
+    ("🧎‍♀️", "kneeling woman"),
+    ("🧑‍🤝‍🧑", "people holding hands"),
+    ("👩‍❤️‍👨", "couple with heart"),
+    ("👩‍❤️‍👩", "couple with heart ww"),
+    ("👨‍❤️‍👨", "couple with heart mm"),
+    ("👩‍❤️‍💋‍👨", "kiss"),
+    ("👩‍❤️‍💋‍👩", "kiss ww"),
+    ("👨‍❤️‍💋‍👨", "kiss mm"),
+    ("👨‍👩‍👦", "family"),
+    ("👨‍👩‍👧", "family"),
+    ("👨‍👩‍👧‍👦", "family"),
+    ("👨‍👩‍👦‍👦", "family"),
+    ("👨‍👩‍👧‍👧", "family"),
+    ("👩‍👩‍👦", "family"),
+    ("👩‍👩‍👧", "family"),
+    ("👨‍👨‍👦", "family"),
+    ("👨‍👨‍👧", "family"),
+    ("👩‍👦", "family"),
+    ("👩‍👧", "family"),
+    ("👨‍👦", "family"),
+    ("👨‍👧", "family"),
+    ("🧓", "older adult"),
+    ("👴", "old man"),
+    ("👵", "old woman"),
+    ("👤", "bust in silhouette"),
+    ("👥", "busts in silhouette"),
+    ("🫂", "people hugging"),
+    ("🗣️", "speaking head"),
+    ("👤", "bust"),
+    ("👥", "busts"),
 ];
+
+/// Carga nombres localizados desde la variable de idioma `escritorio.emoji_nombres`.
+/// Formato esperado: una línea por emoji, `emoji nombre` (el nombre puede contener espacios).
+fn localized_names() -> HashMap<String, String> {
+    let texts = Texts::load();
+    let raw = texts.t("escritorio.emoji_nombres");
+    // Si no hay traducción, `t` devuelve la propia clave: la ignoramos.
+    if raw == "escritorio.emoji_nombres" || raw.trim().is_empty() {
+        return HashMap::new();
+    }
+    let mut map = HashMap::new();
+    for line in raw.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+        // Separa por el primer espacio: emoji + resto (nombre).
+        if let Some((emoji, name)) = line.split_once(char::is_whitespace) {
+            let emoji = emoji.trim();
+            let name = name.trim();
+            if !emoji.is_empty() && !name.is_empty() {
+                map.insert(emoji.to_owned(), name.to_owned());
+            }
+        }
+    }
+    map
+}
 
 /// Ejecuta el selector de emojis.
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    let texts = Texts::load();
+    let prompt = texts.t("escritorio.emoji_prompt");
+    let prompt = if prompt == "escritorio.emoji_prompt" || prompt.trim().is_empty() {
+        "😀".to_owned()
+    } else {
+        prompt
+    };
+
+    let names = localized_names();
+
     let emojis: Vec<&str> = EMOJIS.iter().map(|(e, _)| *e).collect();
     let entries: Vec<MenuEntry> = EMOJIS
         .iter()
-        .map(|(e, name)| MenuEntry::new(format!("{e}  {name}")))
+        .map(|(e, fallback)| {
+            let name = names.get(*e).cloned().unwrap_or_else(|| (*fallback).to_owned());
+            MenuEntry::new(format!("{e}  {name}"))
+        })
         .collect();
 
-    match run_entries(&entries, "😀", false, false, false, None, None, None, None)? {
+    match run_entries(&entries, &prompt, false, false, false, None, None, None, None)? {
         MenuResult::Selected(index) => {
             if let Some(emoji) = emojis.get(index) {
                 util::copy_to_clipboard(emoji)?;
