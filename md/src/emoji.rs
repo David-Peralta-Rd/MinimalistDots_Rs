@@ -1,0 +1,183 @@
+//! Subcomando `emoji`: selector de emojis que copia la elección al portapapeles.
+
+use md_core::MenuEntry;
+
+use crate::menu::{MenuResult, run_entries};
+use crate::util;
+
+/// Lista curada de emojis (símbodo, nombre). El nombre sirve para filtrar.
+const EMOJIS: &[(&str, &str)] = &[
+    ("😀", "cara sonriente"),
+    ("😃", "cara sonriente ojos grandes"),
+    ("😄", "cara sonriendo ojos sonrientes"),
+    ("😁", "cara radiante"),
+    ("😆", "cara riendo"),
+    ("😅", "cara sonriente sudor"),
+    ("🤣", "revolcándose de risa"),
+    ("😂", "lágrimas de alegría"),
+    ("🙂", "cara ligeramente sonriente"),
+    ("😉", "guiño"),
+    ("😊", "sonrisa tímida"),
+    ("😇", "ángel"),
+    ("🥰", "cara con corazones"),
+    ("😍", "corazones en los ojos"),
+    ("🤩", "estrella en los ojos"),
+    ("😘", "beso volado"),
+    ("😗", "beso"),
+    ("😚", "beso con ojos cerrados"),
+    ("😙", "beso sonriente"),
+    ("😋", "saboreando"),
+    ("😛", "sacando lengua"),
+    ("😜", "lengua guiño"),
+    ("🤪", "cara loca"),
+    ("😝", "lengua ojos cerrados"),
+    ("🤑", "cara dinero"),
+    ("🤗", "abrazo"),
+    ("🤭", "mano en la boca"),
+    ("🤫", "silencio"),
+    ("🤔", "pensando"),
+    ("🤐", "cremallera"),
+    ("🤨", "ceja levantada"),
+    ("😐", "neutral"),
+    ("😑", "expresión plana"),
+    ("😶", "sin boca"),
+    ("😏", "sonrisa maliciosa"),
+    ("😒", "descontento"),
+    ("🙄", "ojos en blanco"),
+    ("😬", "cara forzada"),
+    ("🤥", "mentiroso"),
+    ("😌", "aliviado"),
+    ("😔", "pensativo"),
+    ("😪", "soñoliento"),
+    ("🤤", "baboso"),
+    ("😴", "durmiendo"),
+    ("😷", "mascarilla"),
+    ("🤒", "termómetro"),
+    ("🤕", "venda"),
+    ("🤢", "náuseas"),
+    ("🤮", "vomitando"),
+    ("🤧", "estornudo"),
+    ("🥵", "calor"),
+    ("🥶", "frío"),
+    ("🥴", "mareado"),
+    ("😵", "aturdido"),
+    ("🤯", "cabeza explotando"),
+    ("🤠", "vaquero"),
+    ("🥳", "fiesta"),
+    ("😎", "gafas de sol"),
+    ("🤓", "nerd"),
+    ("🧐", "monóculo"),
+    ("😕", "confundido"),
+    ("😟", "preocupado"),
+    ("🙁", "triste"),
+    ("☹️", "fruncido"),
+    ("😮", "sorpresa"),
+    ("😯", "sorprendido"),
+    ("😲", "asombrado"),
+    ("😳", "sonrojado"),
+    ("🥺", "súplica"),
+    ("😦", "fruncido abierto"),
+    ("😧", "angustiado"),
+    ("😨", "miedoso"),
+    ("😰", "sudor ansiedad"),
+    ("😥", "decepcionado aliviado"),
+    ("😢", "llorando"),
+    ("😭", "llanto"),
+    ("😱", "grito"),
+    ("😖", "frustrado"),
+    ("😣", "perseverante"),
+    ("😞", "decepcionado"),
+    ("😓", "sudor frío"),
+    ("😩", "cansado"),
+    ("😫", "agotado"),
+    ("🥱", "bostezo"),
+    ("😤", "humo narices"),
+    ("😡", "enfadado"),
+    ("😠", "enojado"),
+    ("🤬", "insultando"),
+    ("😈", "diablo sonriente"),
+    ("👿", "diablo enfadado"),
+    ("💀", "calavera"),
+    ("☠️", "calavera huesos"),
+    ("💩", "caca"),
+    ("🤡", "payaso"),
+    ("👹", "ogro"),
+    ("👺", "duende"),
+    ("👻", "fantasma"),
+    ("👽", "alien"),
+    ("👾", "monstruo espacio"),
+    ("🤖", "robot"),
+    ("😺", "gato sonriente"),
+    ("😸", "gato ojos sonrientes"),
+    ("😹", "gato lágrimas alegría"),
+    ("😻", "gato corazones"),
+    ("😼", "gato sonrisa maliciosa"),
+    ("😽", "gato beso"),
+    ("🙀", "gato sorprendido"),
+    ("😿", "gato llorando"),
+    ("😾", "gato enfadado"),
+    ("🙈", "no ver"),
+    ("🙉", "no oír"),
+    ("🙊", "no hablar"),
+    ("💋", "beso labios"),
+    ("💌", "carta amor"),
+    ("💘", "flecha cupido"),
+    ("💝", "corazón lazo"),
+    ("💖", "corazón brillante"),
+    ("💗", "corazón creciendo"),
+    ("💓", "corazón latiendo"),
+    ("💞", "corazones girando"),
+    ("💕", "dos corazones"),
+    ("💟", "decoración corazón"),
+    ("❣️", "corazón exclamación"),
+    ("💔", "corazón roto"),
+    ("❤️", "corazón rojo"),
+    ("🧡", "corazón naranja"),
+    ("💛", "corazón amarillo"),
+    ("💚", "corazón verde"),
+    ("💙", "corazón azul"),
+    ("💜", "corazón morado"),
+    ("🖤", "corazón negro"),
+    ("🤍", "corazón blanco"),
+    ("🤎", "corazón marrón"),
+    ("💯", "cien"),
+    ("💢", "símbodo enfado"),
+    ("💥", "colisión"),
+    ("💫", "mareado"),
+    ("💦", "salpicadura"),
+    ("💨", "dash"),
+    ("🕳️", "agujero"),
+    ("💣", "bomba"),
+    ("💬", "bocadillo"),
+    ("👁️‍🗨️", "ojo en bocadillo"),
+    ("🗨️", "bocadillo izquierda"),
+    ("🗯️", "bocadillo enfado"),
+    ("💭", "pensamiento"),
+    (" ", "espacio"),
+];
+
+/// Ejecuta el selector de emojis.
+pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    let emojis: Vec<&str> = EMOJIS.iter().map(|(e, _)| *e).collect();
+    let entries: Vec<MenuEntry> = EMOJIS
+        .iter()
+        .map(|(e, name)| MenuEntry::new(format!("{e}  {name}")))
+        .collect();
+
+    match run_entries(&entries, "😀", false, false, false, None, None, None, None)? {
+        MenuResult::Selected(index) => {
+            if let Some(emoji) = emojis.get(index) {
+                util::copy_to_clipboard(emoji)?;
+            }
+            Ok(())
+        }
+        MenuResult::Typed(query) => {
+            // Si el usuario escribe un emoji directamente, lo copiamos tal cual.
+            if !query.trim().is_empty() {
+                util::copy_to_clipboard(&query)?;
+            }
+            Ok(())
+        }
+        MenuResult::Cancelled | MenuResult::Delete(_) | MenuResult::Wipe => Ok(()),
+    }
+}

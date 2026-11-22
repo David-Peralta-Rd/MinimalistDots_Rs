@@ -41,4 +41,5 @@ return {
     notifications       = MD .. " notify history",
     notifications_dnd   = MD .. " notify dnd",
     notifications_close = MD .. " notify dismiss",
+    emoji              = MD .. " emoji",
 }

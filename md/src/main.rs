@@ -6,6 +6,7 @@ mod ai;
 mod binds;
 mod clip;
 mod clock;
+mod emoji;
 mod i18n;
 mod language;
 mod launcher;
@@ -40,6 +41,9 @@ enum Command {
 
     /// Historial del portapapeles (cliphist): elegir para copiar, borrar.
     Clip,
+
+    /// Selector de emojis: elige uno y lo copia al portapapeles.
+    Emoji,
 
     /// Visor de atajos de teclado agrupados por categoría.
     Binds,
@@ -143,6 +147,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     match cli.command {
         Command::Launcher => launcher::run()?,
         Command::Clip => clip::run()?,
+        Command::Emoji => emoji::run()?,
         Command::Binds => binds::run()?,
         Command::Process => process::run()?,
         Command::Wallpaper { json, apply } => {
