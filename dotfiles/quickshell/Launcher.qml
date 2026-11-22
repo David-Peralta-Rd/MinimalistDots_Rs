@@ -103,7 +103,7 @@ ShellRoot {
                         focus: true
                         onTextChanged: { root.query = text; root.updateFilter() }
                         onAccepted: {
-                            if (root.filtered.length > 0) root.select(root.entries.indexOf(root.filtered[0]))
+                            if (root.filtered.length > 0) root.select(root.filtered[0].index)
                         }
                         Keys.onEscapePressed: root.cancel()
                     }
@@ -147,7 +147,7 @@ ShellRoot {
                             id: mouseArea
                             anchors.fill: parent
                             hoverEnabled: true
-                            onClicked: root.select(root.entries.indexOf(modelData))
+                            onClicked: root.select(modelData.index)
                         }
                     }
                 }

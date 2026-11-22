@@ -27,14 +27,16 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         })
         .collect();
 
-    // Serializa las entradas para QuickShell.
+    // Serializa las entradas para QuickShell (conservando el índice original).
     let json_entries: Vec<serde_json::Value> = entries
         .iter()
-        .map(|e| {
+        .enumerate()
+        .map(|(i, e)| {
             serde_json::json!({
                 "label": e.label,
                 "icon": e.icon,
                 "extra": e.extra,
+                "index": i,
             })
         })
         .collect();
