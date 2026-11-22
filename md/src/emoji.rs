@@ -569,8 +569,27 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     f.write_all(data.to_string().as_bytes())?;
     f.flush()?;
 
+    let texts = Texts::load();
+    let search_prompt = texts.t("escritorio.buscar_emoji");
+    let search_prompt = if search_prompt == "escritorio.buscar_emoji" || search_prompt.trim().is_empty() {
+        "Buscar…".to_owned()
+    } else {
+        search_prompt
+    };
+    let copied_msg = texts.t("escritorio.emoji_copiado");
+    let copied_msg = if copied_msg == "escritorio.emoji_copiado" || copied_msg.trim().is_empty() {
+        "Se copió emoji: {emoji}".to_owned()
+    } else {
+        copied_msg
+    };
+
     let data_path_s = data_path.to_string_lossy().to_string();
-    let envs = vec![("MD_EMOJI_DATA", data_path_s.as_str()), ("QML_XHR_ALLOW_FILE_READ", "1")];
+    let envs = vec![
+        ("MD_EMOJI_DATA", data_path_s.as_str()),
+        ("MD_EMOJI_SEARCH", search_prompt.as_str()),
+        ("MD_EMOJI_COPIED", copied_msg.as_str()),
+        ("QML_XHR_ALLOW_FILE_READ", "1"),
+    ];
 
     let _ = crate::quickshell::spawn_wait("Emoji.qml", &envs);
 

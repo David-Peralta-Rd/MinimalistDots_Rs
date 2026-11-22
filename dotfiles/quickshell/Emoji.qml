@@ -13,6 +13,7 @@ ShellRoot {
     property var categories: []
     property string selectedCategory: "all"
     property string query: ""
+    property string lastEmoji: ""
 
     FileView {
         id: dataFile
@@ -44,6 +45,8 @@ ShellRoot {
         sequence: "Escape"
         onActivated: Qt.quit()
     }
+
+    Component.onCompleted: searchField.forceActiveFocus()
 
     PanelWindow {
         implicitWidth: 460
@@ -78,7 +81,7 @@ ShellRoot {
             radius: 14
             color: Theme.fondo
             border.width: 1
-            border.color: Theme.bordeInactivo
+            border.color: searchField.activeFocus ? Theme.bordeActivo : Theme.bordeInactivo
             clip: true
 
             Column {
@@ -106,7 +109,7 @@ ShellRoot {
                         id: searchField
                         anchors.fill: parent
                         anchors.margins: 8
-                        placeholderText: "Buscar…"
+                        placeholderText: Quickshell.env("MD_EMOJI_SEARCH") || "Buscar…"
                         color: Theme.texto
                         placeholderTextColor: Theme.textoSuave
                         font.pixelSize: 13
@@ -201,10 +204,19 @@ ShellRoot {
 
     Process {
         id: copyProc
+        onExited: {
+            notifyProc.command = ["notify-send", (Quickshell.env("MD_EMOJI_COPIED") || "Se copió emoji: {emoji}").replace("{emoji}", root.lastEmoji)]
+            notifyProc.running = true
+        }
+    }
+
+    Process {
+        id: notifyProc
         onExited: Qt.quit()
     }
 
     function copyEmoji(e) {
+        root.lastEmoji = e
         copyProc.command = ["wl-copy", e]
         copyProc.running = true
     }
