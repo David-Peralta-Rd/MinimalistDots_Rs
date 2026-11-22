@@ -79,6 +79,7 @@ ShellRoot {
             color: Theme.fondo
             border.width: 1
             border.color: Theme.bordeInactivo
+            clip: true
 
             Column {
                 anchors.fill: parent
@@ -115,41 +116,33 @@ ShellRoot {
                     }
                 }
 
-                // Categorías horizontales
-                Flickable {
+                // Categorías en dos filas horizontales (sin barra desplazable)
+                Flow {
                     width: parent.width
-                    height: 34
-                    contentWidth: catRow.implicitWidth
-                    clip: true
-                    ScrollBar.horizontal: ScrollBar { policy: ScrollBar.AsNeeded }
+                    spacing: 6
+                    Repeater {
+                        model: root.categories
+                        Rectangle {
+                            height: 28
+                            width: catLabel.implicitWidth + 14
+                            radius: 14
+                            color: root.selectedCategory === modelData.key ? Theme.seleccion : Theme.superficie
+                            border.width: 1
+                            border.color: root.selectedCategory === modelData.key ? Theme.bordeActivo : Theme.bordeInactivo
 
-                    Row {
-                        id: catRow
-                        spacing: 6
-                        Repeater {
-                            model: root.categories
-                            Rectangle {
-                                height: 30
-                                width: catLabel.implicitWidth + 16
-                                radius: 15
-                                color: root.selectedCategory === modelData.key ? Theme.seleccion : Theme.superficie
-                                border.width: 1
-                                border.color: root.selectedCategory === modelData.key ? Theme.bordeActivo : Theme.bordeInactivo
+                            Text {
+                                id: catLabel
+                                anchors.centerIn: parent
+                                text: modelData.label || modelData.key
+                                color: root.selectedCategory === modelData.key ? Theme.contrasteClaro : Theme.texto
+                                font.pixelSize: 11
+                                font.weight: Font.DemiBold
+                            }
 
-                                Text {
-                                    id: catLabel
-                                    anchors.centerIn: parent
-                                    text: modelData.label || modelData.key
-                                    color: root.selectedCategory === modelData.key ? Theme.contrasteClaro : Theme.texto
-                                    font.pixelSize: 12
-                                    font.weight: Font.DemiBold
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.selectedCategory = modelData.key
-                                }
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.selectedCategory = modelData.key
                             }
                         }
                     }
@@ -159,10 +152,11 @@ ShellRoot {
                 GridView {
                     id: grid
                     width: parent.width
-                    height: parent.height - 110
+                    height: Math.max(120, parent.height - 170)
                     cellWidth: 64
                     cellHeight: 64
                     clip: true
+                    boundsBehavior: Flickable.StopAtBounds
                     model: root.filteredEmojis()
                     ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
