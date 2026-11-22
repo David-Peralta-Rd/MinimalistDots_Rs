@@ -2,11 +2,7 @@
 
 use std::collections::HashMap;
 
-use md_core::MenuEntry;
-
 use crate::i18n::Texts;
-use crate::menu::{MenuResult, run_entries};
-use crate::util;
 
 /// Lista única de emojis: (símbodo, nombre_por_defecto, categoría).
 /// Añadir un emoji es añadir una línea aquí; la categoría se deriva automáticamente.
@@ -527,43 +523,57 @@ fn category_label(texts: &Texts, key: &str) -> String {
 }
 
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+    use std::io::Write;
+
     let texts = Texts::load();
-    let prompt = texts.t("escritorio.emoji_prompt");
-    let prompt = if prompt == "escritorio.emoji_prompt" || prompt.trim().is_empty() { "😀".to_owned() } else { prompt };
+    let names = localized_names();
 
     // Categorías presentes (en orden fijo) + "all".
     let mut present: Vec<&str> = Vec::new();
     for key in CATEGORY_ORDER {
-        if *key == "all" || EMOJIS.iter().any(|(_, _, c)| *c == *key) { present.push(*key); }
+        if *key == "all" || EMOJIS.iter().any(|(_, _, c)| *c == *key) {
+            present.push(*key);
+        }
     }
 
-    let cat_entries: Vec<MenuEntry> = present.iter().map(|key| MenuEntry::new(category_label(&texts, key))).collect();
-    let cat = match run_entries(&cat_entries, &prompt, false, false, false, None, None, None, None)? {
-        MenuResult::Selected(i) => i,
-        _ => return Ok(()),
-    };
-    let chosen_cat = present[cat];
-
-    let names = localized_names();
-    let list: Vec<(&str, &str)> = EMOJIS.iter()
-        .filter(|(_, _, c)| chosen_cat == "all" || *c == chosen_cat)
-        .map(|(e, n, _)| (*e, *n))
+    let categories: Vec<serde_json::Value> = present
+        .iter()
+        .map(|key| {
+            serde_json::json!({
+                "key": key,
+                "label": category_label(&texts, key),
+            })
+        })
         .collect();
-    let emojis: Vec<&str> = list.iter().map(|(e, _)| *e).collect();
-    let entries: Vec<MenuEntry> = list.iter().map(|(e, fallback)| {
-        let name = names.get(*e).cloned().unwrap_or_else(|| (*fallback).to_owned());
-        MenuEntry::new(format!("{e}  {name}"))
-    }).collect();
 
-    match run_entries(&entries, &prompt, false, false, false, None, None, None, None)? {
-        MenuResult::Selected(index) => {
-            if let Some(emoji) = emojis.get(index) { util::copy_to_clipboard(emoji)?; }
-            Ok(())
-        }
-        MenuResult::Typed(query) => {
-            if !query.trim().is_empty() { util::copy_to_clipboard(&query)?; }
-            Ok(())
-        }
-        MenuResult::Cancelled | MenuResult::Delete(_) | MenuResult::Wipe => Ok(()),
-    }
+    let emojis: Vec<serde_json::Value> = EMOJIS
+        .iter()
+        .map(|(e, fallback, c)| {
+            let name = names.get(*e).cloned().unwrap_or_else(|| (*fallback).to_owned());
+            serde_json::json!({
+                "emoji": e,
+                "name": name,
+                "category": c,
+            })
+        })
+        .collect();
+
+    let data = serde_json::json!({
+        "categories": categories,
+        "emojis": emojis,
+    });
+
+    // Archivo temporal con los datos para el QML.
+    let data_path = std::env::temp_dir().join(format!("md-emoji-{}.json", std::process::id()));
+    let mut f = std::fs::File::create(&data_path)?;
+    f.write_all(data.to_string().as_bytes())?;
+    f.flush()?;
+
+    let data_path_s = data_path.to_string_lossy().to_string();
+    let envs = vec![("MD_EMOJI_DATA", data_path_s.as_str()), ("QML_XHR_ALLOW_FILE_READ", "1")];
+
+    let _ = crate::quickshell::spawn_wait("Emoji.qml", &envs);
+
+    let _ = std::fs::remove_file(&data_path);
+    Ok(())
 }
